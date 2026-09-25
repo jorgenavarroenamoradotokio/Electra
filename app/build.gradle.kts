@@ -186,6 +186,12 @@ dependencies {
     // Logging
     implementation(libs.timber)
 
+    // Red
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2.conver)
+    implementation(libs.okhhtp3)
+    implementation(libs.okhttp3.logging)
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
