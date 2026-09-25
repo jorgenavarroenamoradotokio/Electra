@@ -1,15 +1,64 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# =========================================================
+# Electra — .gitignore (raíz del proyecto)
+# =========================================================
+
+# --- Gradle: cachés y salidas de build ---------------------
+# OJO: ".gradle/" (con punto) es la caché local.
+# "gradle/" (sin punto) contiene el wrapper, el version catalog
+# y gradle-daemon-jvm.properties, y SÍ se versiona.
+.gradle/
+build/
+.kotlin/
+
+
+CLAUDE.md
+.claude/*
+
+# Refuerzo explícito: nunca ignorar la configuración compartida
+!gradle/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+!gradle/libs.versions.toml
+!gradle/gradle-daemon-jvm.properties
+
+# --- Configuración local de cada máquina -------------------
+# Ruta del SDK de Android (se genera automáticamente)
 local.properties
+
+# --- Firma de la app: secretos -----------------------------
+keystore.properties
+*.jks
+*.keystore
+
+# --- Certificados y truststores (por si se copian al repo) -
+*.cer
+*.crt
+cacerts*
+
+# --- Android Studio / IntelliJ -----------------------------
+.idea/
+*.iml
+captures/
+.navigation/
+
+# --- Artefactos generados ----------------------------------
+*.apk
+*.aab
+*.ap_
+output-metadata.json
+app/release/
+app/pro/
+
+# --- Build nativo (NDK) ------------------------------------
+.cxx/
+.externalNativeBuild/
+
+# --- Logs y ficheros de diagnóstico ------------------------
+*.log
+gradle-log.txt
+gradle-debug.txt
+
+# --- Sistema operativo -------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
