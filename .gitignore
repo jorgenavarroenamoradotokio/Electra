@@ -13,6 +13,11 @@ build/
 
 CLAUDE.md
 .claude/*
+.agents/*
+data/
+skills-lock.json
+skills/*
+
 
 # Refuerzo explícito: nunca ignorar la configuración compartida
 !gradle/

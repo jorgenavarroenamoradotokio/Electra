@@ -105,6 +105,8 @@ public class LoginActivity extends AppCompatActivity {
         binding.inputUsername.setEnabled(!isLoading);
         binding.inputPassword.setEnabled(!isLoading);
         binding.buttonLogin.setEnabled(!isLoading);
+        // El indicador ocupa el centro del botón: su texto se oculta para que no se solapen
+        binding.buttonLogin.setText(isLoading ? null : getString(R.string.login_button));
         binding.progress.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
 
         if (state instanceof UiState.Error) {

@@ -93,8 +93,8 @@ android {
         applicationId = "com.redur.electra"
         minSdk = 29
         targetSdk = 36
-        versionCode = 1
-        versionName = "dev"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

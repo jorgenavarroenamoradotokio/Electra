@@ -21,6 +21,7 @@
             android:layout_height="0dp"
             android:layout_weight="2" />
 
+        <!-- Cabecera: la marca aporta el color; el texto queda neutro para no competir con la acción -->
         <ImageView
             android:id="@+id/image_brand"
             android:layout_width="@dimen/login_brand_size"
@@ -35,8 +36,8 @@
             android:layout_marginTop="@dimen/spacing_l"
             android:accessibilityHeading="true"
             android:text="@string/app_name"
-            android:textAppearance="?attr/textAppearanceHeadline4"
-            android:textColor="@color/green_redur" />
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="?attr/colorOnSurface" />
 
         <TextView
             android:id="@+id/text_subtitle"
@@ -44,16 +45,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xs"
             android:text="@string/login_subtitle"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textColor="@color/green_redur_light" />
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
+        <!-- errorEnabled reserva desde el inicio la línea de error: al validar, el formulario no salta -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_username"
             style="?attr/textInputOutlinedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xl"
-            android:hint="@string/login_username_hint">
+            android:hint="@string/login_username_hint"
+            app:boxCornerRadiusBottomEnd="@dimen/corner_radius_m"
+            app:boxCornerRadiusBottomStart="@dimen/corner_radius_m"
+            app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
+            app:boxCornerRadiusTopStart="@dimen/corner_radius_m"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_username"
@@ -71,9 +78,14 @@
             style="?attr/textInputOutlinedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_m"
+            android:layout_marginTop="@dimen/spacing_s"
             android:hint="@string/login_password_hint"
-            app:endIconMode="password_toggle">
+            app:boxCornerRadiusBottomEnd="@dimen/corner_radius_m"
+            app:boxCornerRadiusBottomStart="@dimen/corner_radius_m"
+            app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
+            app:boxCornerRadiusTopStart="@dimen/corner_radius_m"
+            app:endIconMode="password_toggle"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_password"
@@ -86,37 +98,44 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Acción secundaria: enlace discreto, alineado con el borde del campo -->
         <Button
             android:id="@+id/button_forgot_password"
-            style="?attr/borderlessButtonStyle"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginTop="@dimen/spacing_xs"
             android:minHeight="@dimen/touch_target_min"
-            android:text="@string/login_forgot_password"
-            android:textColor="@color/green_redur_light"/>
+            android:text="@string/login_forgot_password" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_login"
+        <!-- El indicador se superpone al botón: la carga se comunica en el punto donde el usuario actuó -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_l"
-            android:minHeight="@dimen/button_height"
-            android:stateListAnimator="@animator/scale_on_press"
-            android:text="@string/login_button"
-            android:color="@color/green_redur"/>
+            android:layout_marginTop="@dimen/spacing_l">
 
-        <!-- invisible (no gone): reserva su hueco para que el formulario no salte al mostrarse -->
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/spacing_m"
-            android:contentDescription="@string/login_loading"
-            android:indeterminate="true"
-            android:visibility="invisible" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/button_height"
+                android:stateListAnimator="@animator/scale_on_press"
+                android:text="@string/login_button"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                app:cornerRadius="@dimen/corner_radius_m" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/login_loading"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                app:indicatorSize="@dimen/progress_indicator_size"
+                app:trackThickness="@dimen/progress_indicator_thickness" />
+
+        </FrameLayout>
 
         <Space
             android:layout_width="match_parent"
