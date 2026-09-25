@@ -1,3 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="login_error_generic">Could not sign in. Check your connection and try again.</string>
 </resources>

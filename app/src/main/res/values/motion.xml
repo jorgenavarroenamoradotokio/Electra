@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Duraciones cortas: el feedback debe sentirse inmediato -->
+    <integer name="motion_duration_press">100</integer>
+    <integer name="motion_duration_release">150</integer>
+    <integer name="motion_duration_layout">200</integer>
+
+    <!-- Escala al pulsar botones principales -->
+    <item name="press_scale" format="float" type="dimen">0.97</item>
+</resources>

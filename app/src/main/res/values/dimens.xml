@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Espaciado -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_m">16dp</dimen>
+    <dimen name="spacing_l">24dp</dimen>
+    <dimen name="spacing_xl">40dp</dimen>
+
+    <!-- Pantalla -->
+    <dimen name="screen_padding_horizontal">24dp</dimen>
+    <dimen name="screen_padding_vertical">32dp</dimen>
+
+    <!-- Componentes -->
+    <dimen name="touch_target_min">48dp</dimen>
+    <dimen name="button_height">56dp</dimen>
+
+    <!-- Login -->
+    <dimen name="login_brand_size">64dp</dimen>
+</resources>
