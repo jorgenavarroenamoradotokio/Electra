@@ -183,6 +183,9 @@ dependencies {
     implementation(libs.hilt.android)
     annotationProcessor(libs.hilt.compiler)
 
+    // Logging
+    implementation(libs.timber)
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
