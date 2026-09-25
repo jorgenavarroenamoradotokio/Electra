@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- colores base -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- colores corporativos -->
+    <color name="green_redur">#0F4945</color>
+    <color name="green_redur_light">#1A7A73</color>
+    <color name="aegean">#1F456E</color>
+    <color name="red">#FF0000</color>
+
+    <!-- colores drawer nav -->
+    <color name="drawer_item_text">#212529</color>
+    <color name="drawer_item_icon">#495057</color>
+    <color name="drawer_item_arrow">#ADB5BD</color>
+
+    <!-- colores error -->
+    <color name="msg_error_bg">#FFE0E0</color>
+    <color name="msg_error_text">#9B1C1C</color>
+    <color name="msg_error_icon">#FA0707</color>
+
+    <!-- colores warning -->
+    <color name="msg_warning_bg">#FFF8E1</color>
+    <color name="msg_warning_text">#856404</color>
+    <color name="msg_warning_icon">#F59E0B</color>
+
+    <!-- colores info -->
+    <color name="msg_info_bg">#E1F5FE</color>
+    <color name="msg_info_text">#1A4371</color>
+    <color name="msg_info_icon">#3B82F6</color>
+
+    <!-- colores success -->
+    <color name="msg_success_bg">#DEF7EC</color>
+    <color name="msg_success_text">#03543F</color>
+    <color name="msg_success_icon">#0F4945</color>
+
+</resources>
