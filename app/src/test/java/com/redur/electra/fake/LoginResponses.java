@@ -4,6 +4,7 @@ import com.redur.electra.data.remote.dto.response.ApiErrorDetailResponseDTO;
 import com.redur.electra.data.remote.dto.response.ApiResponseDTO;
 import com.redur.electra.data.remote.dto.response.user.MenuDTO;
 import com.redur.electra.data.remote.dto.response.user.PermisoDTO;
+import com.redur.electra.data.remote.dto.response.user.PermisoUsuarioDTO;
 import com.redur.electra.data.remote.dto.response.user.UserDTO;
 
 import java.util.List;
@@ -21,7 +22,8 @@ public final class LoginResponses {
     public static UserDTO user() {
         return new UserDTO("jperez", "Juan Pérez", "P01", List.of(
                 new MenuDTO(1, "Recepción", null, List.of(new PermisoDTO(10), new PermisoDTO(11))),
-                new MenuDTO(2, "Descarga", 1, List.of(new PermisoDTO(20)))));
+                new MenuDTO(2, "Descarga", 1, List.of(new PermisoDTO(20)))),
+                List.of(new PermisoUsuarioDTO(1, "CAMBIAR_PLAZA")));
     }
 
     public static Response<ApiResponseDTO<UserDTO>> ok(UserDTO user) {

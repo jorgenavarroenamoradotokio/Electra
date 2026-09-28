@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Carpetas que FileProvider puede compartir: solo las de logs (ver FileLoggingTree#resolveLogDir) -->
+<paths>
+    <external-files-path
+        name="logs"
+        path="logs/" />
+    <files-path
+        name="logs_internal"
+        path="logs/" />
+</paths>

@@ -8,6 +8,7 @@ public record UserDTO(
         @SerializedName("userName") String username,
         @SerializedName("nombre") String fullname,
         @SerializedName("plzsId") String plzsId,
-        @SerializedName("menu") List<MenuDTO> menu
+        @SerializedName("menu") List<MenuDTO> menu,
+        @SerializedName("permiso") List<PermisoUsuarioDTO> permission
 ) {
 }

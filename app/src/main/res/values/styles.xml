@@ -14,4 +14,26 @@
         <!-- El menú desplegable sigue el tema claro/oscuro de la app, no el de la franja -->
         <item name="popupTheme">@style/Theme.Electra</item>
     </style>
+
+    <!--
+        Fila de acción a todo el ancho (icono + texto alineados al inicio), para listas de opciones
+        como las del perfil. Neutra por defecto; la variante Destructive se reserva para salir/borrar.
+    -->
+    <style name="Widget.Electra.Button.ListAction" parent="Widget.Material3.Button.TextButton.Icon">
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:paddingStart">@dimen/spacing_m</item>
+        <item name="android:paddingEnd">@dimen/spacing_m</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodyLarge</item>
+        <item name="android:textColor">@color/list_action_content</item>
+        <item name="iconTint">@color/list_action_icon</item>
+        <item name="iconGravity">start</item>
+        <item name="iconPadding">@dimen/spacing_m</item>
+        <item name="cornerRadius">@dimen/corner_radius_m</item>
+    </style>
+
+    <style name="Widget.Electra.Button.ListAction.Destructive">
+        <item name="android:textColor">@color/list_action_destructive</item>
+        <item name="iconTint">@color/list_action_destructive</item>
+    </style>
 </resources>

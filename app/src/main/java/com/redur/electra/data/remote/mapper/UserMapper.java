@@ -7,6 +7,7 @@ import com.redur.electra.data.model.user.MenuItem;
 import com.redur.electra.data.model.user.User;
 import com.redur.electra.data.remote.dto.response.user.MenuDTO;
 import com.redur.electra.data.remote.dto.response.user.PermisoDTO;
+import com.redur.electra.data.remote.dto.response.user.PermisoUsuarioDTO;
 import com.redur.electra.data.remote.dto.response.user.UserDTO;
 
 import java.util.ArrayList;
@@ -29,7 +30,22 @@ public class UserMapper {
 
     @NonNull
     public User toUser(@NonNull UserDTO dto) {
-        return new User(dto.username(), dto.fullname(), dto.plzsId(), toMenu(dto.menu()));
+        return new User(dto.username(), dto.fullname(), dto.plzsId(), toMenu(dto.menu()), toUserPermissions(dto.permission()));
+    }
+
+    /** Permisos generales del usuario. Se descartan entradas o ids ausentes en el JSON. */
+    @NonNull
+    private Set<Integer> toUserPermissions(@Nullable Collection<PermisoUsuarioDTO> permissions) {
+        Set<Integer> values = new HashSet<>();
+        if (permissions == null) {
+            return values;
+        }
+        for (PermisoUsuarioDTO permission : permissions) {
+            if (permission != null && permission.id() != null) {
+                values.add(permission.id());
+            }
+        }
+        return values;
     }
 
     @NonNull

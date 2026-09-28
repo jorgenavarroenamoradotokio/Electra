@@ -104,9 +104,11 @@ public class LoginRepository {
             callback.onError(new AppError.Api(null, body.errorText()));
             return;
         }
-        Timber.d("Usuario conectado correctamente%s", body.data());
+        Timber.d("Usuario conectado correctamente %s", body.data());
         User user = mapper.toUser(body.data());
+        Timber.d("datos sesion alamacenada %s", user.toString());
         session.start(user);
+
         callback.onSuccess(user);
     }
 

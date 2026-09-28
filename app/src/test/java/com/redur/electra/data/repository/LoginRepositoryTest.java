@@ -99,7 +99,7 @@ public class LoginRepositoryTest {
 
     @Test
     public void usuarioSinNombreDeUsuario_seConsideraRespuestaInvalida() {
-        api.willReturn(FakeCall.success(LoginResponses.ok(new UserDTO(null, "Juan", null, null))));
+        api.willReturn(FakeCall.success(LoginResponses.ok(new UserDTO(null, "Juan", null, null, null))));
 
         repository.login("jperez", "secreta", callback);
 

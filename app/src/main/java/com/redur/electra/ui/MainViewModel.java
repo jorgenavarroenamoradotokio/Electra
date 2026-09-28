@@ -24,10 +24,6 @@ public class MainViewModel extends ViewModel {
     @Nullable
     public String getUserDisplayName() {
         User user = session.getUser();
-        if (user == null) {
-            return null;
-        }
-        String fullName = user.fullName();
-        return fullName != null && !fullName.isBlank() ? fullName : user.username();
+        return user != null ? user.displayName() : null;
     }
 }

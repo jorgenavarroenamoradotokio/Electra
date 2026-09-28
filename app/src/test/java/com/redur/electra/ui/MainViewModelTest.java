@@ -9,6 +9,7 @@ import com.redur.electra.data.session.UserSession;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Set;
 
 public class MainViewModelTest {
 
@@ -22,14 +23,14 @@ public class MainViewModelTest {
 
     @Test
     public void conNombreCompleto_seMuestraElNombreCompleto() {
-        session.start(new User("jperez", "Juan Pérez", "P01", List.of()));
+        session.start(new User("jperez", "Juan Pérez", "P01", List.of(), Set.of()));
 
         assertEquals("Juan Pérez", viewModel.getUserDisplayName());
     }
 
     @Test
     public void sinNombreCompleto_seMuestraElUsuario() {
-        session.start(new User("jperez", "  ", "P01", List.of()));
+        session.start(new User("jperez", "  ", "P01", List.of(), Set.of()));
 
         assertEquals("jperez", viewModel.getUserDisplayName());
     }
