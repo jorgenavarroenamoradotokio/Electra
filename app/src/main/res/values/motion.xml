@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Duraciones cortas: el feedback debe sentirse inmediato -->
+    <integer name="motion_duration_press">100</integer>
+    <integer name="motion_duration_release">150</integer>
+    <integer name="motion_duration_layout">200</integer>
+    <integer name="motion_duration_enter">300</integer>
+
+    <!-- Escala al pulsar botones principales -->
+    <item name="press_scale" format="float" type="dimen">0.97</item>
+
+    <!-- Desplazamiento de entrada: sutil, solo para dar sensación de llegada -->
+    <dimen name="motion_enter_offset">24dp</dimen>
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Feedback táctil: el botón cede ligeramente al pulsarlo y vuelve al soltar. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true" android:state_pressed="true">
+        <set>
+            <objectAnimator
+                android:duration="@integer/motion_duration_press"
+                android:interpolator="@android:interpolator/decelerate_quad"
+                android:propertyName="scaleX"
+                android:valueTo="@dimen/press_scale"
+                android:valueType="floatType" />
+            <objectAnimator
+                android:duration="@integer/motion_duration_press"
+                android:interpolator="@android:interpolator/decelerate_quad"
+                android:propertyName="scaleY"
+                android:valueTo="@dimen/press_scale"
+                android:valueType="floatType" />
+        </set>
+    </item>
+    <item>
+        <set>
+            <objectAnimator
+                android:duration="@integer/motion_duration_release"
+                android:interpolator="@android:interpolator/decelerate_quad"
+                android:propertyName="scaleX"
+                android:valueTo="1"
+                android:valueType="floatType" />
+            <objectAnimator
+                android:duration="@integer/motion_duration_release"
+                android:interpolator="@android:interpolator/decelerate_quad"
+                android:propertyName="scaleY"
+                android:valueTo="1"
+                android:valueType="floatType" />
+        </set>
+    </item>
+</selector>

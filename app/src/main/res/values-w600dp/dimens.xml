@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- En tablet/horizontal el formulario no ocupa todo el ancho -->
+    <dimen name="screen_padding_horizontal">120dp</dimen>
+</resources>

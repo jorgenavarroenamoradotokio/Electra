@@ -1,3 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="login_forgot_password_unavailable">Password recovery is not available yet. Contact your administrator.</string>
+    <string name="login_loading">Signing in…</string>
 </resources>

@@ -45,7 +45,7 @@ val environments = listOf(
         name = "dev",
         isRelease = false,
         appName = "Electra DEV",
-        baseUrl = "http://10.80.70.132:8201/",
+        baseUrl = "http://192.168.1.17:8085/",
         logging = Logging(toLogcat = true, toFile = false, minLevel = LogLevel.VERBOSE),
     ),
     Environment(
@@ -93,8 +93,8 @@ android {
         applicationId = "com.redur.electra"
         minSdk = 29
         targetSdk = 36
-        versionCode = 1
-        versionName = "dev"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -186,8 +186,15 @@ dependencies {
     // Logging
     implementation(libs.timber)
 
+    // Red
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2.conver)
+    implementation(libs.okhhtp3)
+    implementation(libs.okhttp3.logging)
+
     // Test
     testImplementation(libs.junit)
+    testImplementation(libs.arch.core.testing)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }

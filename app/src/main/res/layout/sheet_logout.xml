@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Hoja de confirmación de cierre de sesión: icono, pregunta directa, consecuencia y dos acciones
+    apiladas a todo el ancho (la principal arriba, al alcance del pulgar).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/screen_padding_horizontal"
+    android:paddingBottom="@dimen/spacing_l"
+    tools:context=".ui.logout.LogoutBottomSheet">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/image_logout"
+        android:layout_width="@dimen/icon_badge_size"
+        android:layout_height="@dimen/icon_badge_size"
+        android:background="@drawable/bg_icon_badge"
+        android:importantForAccessibility="no"
+        android:scaleType="center"
+        android:src="@drawable/ic_logout_24"
+        app:tint="?attr/colorPrimary" />
+
+    <TextView
+        android:id="@+id/text_logout_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:accessibilityHeading="true"
+        android:gravity="center"
+        android:text="@string/logout_title"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:textColor="?attr/colorOnSurface" />
+
+    <TextView
+        android:id="@+id/text_logout_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:gravity="center"
+        android:text="@string/logout_message"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_confirm_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_l"
+        android:minHeight="@dimen/button_height"
+        android:stateListAnimator="@animator/scale_on_press"
+        android:text="@string/logout_confirm"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        app:cornerRadius="@dimen/corner_radius_m" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_cancel_logout"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:minHeight="@dimen/button_height"
+        android:text="@string/logout_cancel"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        app:cornerRadius="@dimen/corner_radius_m" />
+
+</LinearLayout>

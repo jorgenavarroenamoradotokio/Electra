@@ -11,8 +11,8 @@ build/
 .kotlin/
 
 
-CLAUDE.md
-.claude/*
+
+
 
 # Refuerzo explícito: nunca ignorar la configuración compartida
 !gradle/
