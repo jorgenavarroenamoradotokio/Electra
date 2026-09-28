@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="login_error_generic">No se ha podido iniciar sesión. Comprueba tu conexión e inténtalo de nuevo.</string>
+
+    <!-- Genéricos -->
+    <string name="error_unknown">Algo ha fallado. Inténtalo de nuevo en unos momentos.</string>
+    <string name="error_network_no_connection">Sin conexión. Comprueba tu red e inténtalo de nuevo.</string>
+    <string name="error_network_timeout">El servidor está tardando demasiado en responder. Inténtalo de nuevo.</string>
+
+    <!-- Códigos de API -->
+    <string name="error_login_failed">Usuario o contraseña incorrectos. Revísalos e inténtalo de nuevo.</string>
+    <string name="error_user_not_active">Tu usuario no está activo. Contacta con tu administrador.</string>
+    <string name="error_user_menu_not_configuration">Tu usuario no tiene menú configurado. Contacta con tu administrador.</string>
+    <string name="error_truck_plaza_failed">No se ha podido asignar la plaza del camión. Inténtalo de nuevo.</string>
+    <string name="error_truck_request_invalid">La solicitud del camión no es válida. Revisa los datos e inténtalo de nuevo.</string>
+    <string name="error_truck_barcode_invalid">El código de barras no es válido. Vuelve a escanearlo.</string>
 </resources>

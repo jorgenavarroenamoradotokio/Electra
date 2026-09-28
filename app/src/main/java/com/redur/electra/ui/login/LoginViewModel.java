@@ -69,7 +69,8 @@ public class LoginViewModel extends ViewModel {
         // Cambiamos el estado a loading para indicar que se esta ejecutando la llamada
         loginState.setValue(new UiState.Loading());
         // Pendiente: autenticar contra el backend cuando exista el contrato de la API. La llamada del
-        // Repository irá fuera del hilo principal y publicará Success o Error con postValue.
+        // Repository irá fuera del hilo principal y publicará Success o
+        // Error(ErrorUiMapper.toUiText(appError)) con postValue.
         // Mientras no exista, se resuelve al instante y el progreso no llega a verse.
 
         // Cambiamos a estado correcto porque la llamada fue correcta
