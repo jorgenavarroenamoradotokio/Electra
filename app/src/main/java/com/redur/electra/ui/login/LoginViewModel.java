@@ -19,6 +19,7 @@ import com.redur.electra.data.repository.LoginRepository;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import timber.log.Timber;
 
 @HiltViewModel
 public class LoginViewModel extends ViewModel {
@@ -66,14 +67,15 @@ public class LoginViewModel extends ViewModel {
             return;
         }
 
+        Timber.d("Iniciamos la validacion de los datos del form");
         // Comprobamos el status del formulario para comprobar si estan los campos obligatorios correctos
         LoginFormState validated = new LoginFormState(
-                Validations.isBlank(username) ? R.string.login_error_username_required : null,
-                Validations.isBlank(password) ? R.string.login_error_password_required : null
+               username == null || Validations.isBlank(username) ? R.string.login_error_username_required : null,
+                password == null || Validations.isBlank(password) ? R.string.login_error_password_required : null
         );
         formState.setValue(validated);
 
-        // En caso de no estarlo marcamos el proceso global como pendiente
+        // Si la validacion es incorrecta marcamos el estado como pendiente
         if (!validated.isValid()) {
             loginState.setValue(new UiState.Idle());
             return;
@@ -81,7 +83,7 @@ public class LoginViewModel extends ViewModel {
 
         // Cambiamos el estado a loading para indicar que se esta ejecutando la llamada
         loginState.setValue(new UiState.Loading());
-        // Retrofit entrega el resultado en el hilo principal: basta con setValue
+
         pendingLogin = repository.login(username.trim(), password, new ResultCallback<>() {
             @Override
             public void onSuccess(@NonNull User user) {
@@ -110,6 +112,4 @@ public class LoginViewModel extends ViewModel {
         LoginFormState state = formState.getValue();
         return state != null ? state : LoginFormState.EMPTY;
     }
-
-
 }

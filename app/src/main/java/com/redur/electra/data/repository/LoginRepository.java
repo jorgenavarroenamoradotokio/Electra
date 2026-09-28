@@ -80,27 +80,31 @@ public class LoginRepository {
     private void handleResponse(@NonNull Response<ApiResponseDTO<UserDTO>> response,
                                 @NonNull ResultCallback<User> callback) {
         if (!response.isSuccessful()) {
+            Timber.e("%s%s", HTTP_ERROR_PREFIX, response.code());
             callback.onError(new AppError.Api(HTTP_ERROR_PREFIX + response.code(), null));
             return;
         }
 
         ApiResponseDTO<UserDTO> body = response.body();
         if (body == null) {
-            callback.onError(new AppError.Api(null, null));
+            Timber.e("%s%s", HTTP_ERROR_PREFIX, response.code());
+            callback.onError(new AppError.Api(HTTP_ERROR_PREFIX + response.code(), null));
             return;
         }
 
         ApiErrorDetailResponseDTO apiError = firstError(body.errorList());
         if (apiError != null) {
+            Timber.e("%s%s", apiError.code(), apiError.description());
             callback.onError(new AppError.Api(apiError.code(), apiError.description()));
             return;
         }
 
         if (body.data() == null || body.data().username() == null) {
+            Timber.e("%s", body.errorText());
             callback.onError(new AppError.Api(null, body.errorText()));
             return;
         }
-
+        Timber.d("Usuario conectado correctamente%s", body.data());
         User user = mapper.toUser(body.data());
         session.start(user);
         callback.onSuccess(user);
