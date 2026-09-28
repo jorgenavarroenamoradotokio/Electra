@@ -197,7 +197,12 @@ public class LoginActivity extends AppCompatActivity {
         binding.buttonLogin.setText(isLoading ? null : getString(R.string.login_button));
         binding.progress.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
 
-        showLoginError(state instanceof UiState.Error error ? error.message() : null);
+        // Durante un reintento el aviso anterior se mantiene hasta conocer el nuevo resultado
+        if (state instanceof UiState.Error error) {
+            showLoginError(error.message());
+        } else if (!isLoading) {
+            showLoginError(null);
+        }
 
         // Pendiente: UiState.Success → navegar a la pantalla principal cuando exista
     }
@@ -210,7 +215,10 @@ public class LoginActivity extends AppCompatActivity {
         layout.setError(errorRes != null ? getString(errorRes) : null);
     }
 
-    /** El aviso permanece hasta el siguiente intento (Loading lo oculta). */
+    /**
+     * El aviso permanece mientras se reintenta: ocultarlo en Loading lanzaba un fade-out que, si la
+     * respuesta llegaba antes de terminar, quedaba interrumpido y dejaba la tarjeta invisible.
+     */
     private void showLoginError(@Nullable UiText message) {
         // El texto se fija antes de mostrarse para que TalkBack anuncie el mensaje correcto
         if (message != null) {
