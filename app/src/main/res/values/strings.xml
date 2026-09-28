@@ -8,4 +8,10 @@
     <string name="login_forgot_password">Forgot your password?</string>
     <string name="login_button">Sign in</string>
     <string name="login_version">Version %1$s</string>
+
+    <!-- Cierre de sesión -->
+    <string name="logout_title">Sign out?</string>
+    <string name="logout_message">You will need to enter your username and password again to continue.</string>
+    <string name="logout_confirm">Sign out</string>
+    <string name="logout_cancel">Cancel</string>
 </resources>

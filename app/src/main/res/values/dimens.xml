@@ -18,6 +18,7 @@
     <dimen name="corner_radius_xl">28dp</dimen>
     <dimen name="progress_indicator_size">24dp</dimen>
     <dimen name="progress_indicator_thickness">3dp</dimen>
+    <dimen name="icon_badge_size">56dp</dimen>
 
     <!-- Login -->
     <dimen name="login_brand_size">56dp</dimen>

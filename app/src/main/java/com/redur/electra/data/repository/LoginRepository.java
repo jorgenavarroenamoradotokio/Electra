@@ -110,6 +110,12 @@ public class LoginRepository {
         callback.onSuccess(user);
     }
 
+    /** Cierra la sesión local: los datos del usuario dejan de estar disponibles para la app. */
+    public void logout() {
+        Timber.d("Cerrando sesión del usuario");
+        session.clear();
+    }
+
     @Nullable
     private static ApiErrorDetailResponseDTO firstError(@Nullable List<ApiErrorDetailResponseDTO> errors) {
         if (errors == null) {

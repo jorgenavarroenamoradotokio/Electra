@@ -1,5 +1,6 @@
 package com.redur.electra.ui.login;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import com.redur.electra.R;
 import com.redur.electra.core.ui.UiState;
 import com.redur.electra.core.ui.UiText;
 import com.redur.electra.databinding.ActivityLoginBinding;
+import com.redur.electra.ui.MainActivity;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -204,7 +206,20 @@ public class LoginActivity extends AppCompatActivity {
             showLoginError(null);
         }
 
-        // Pendiente: UiState.Success → navegar a la pantalla principal cuando exista
+        if (state instanceof UiState.Success) {
+            navigateToMain();
+        }
+    }
+
+    /**
+     * El login sale de la pila: "atrás" desde la pantalla principal cierra la app en lugar de
+     * volver al formulario, y el Success retenido por el ViewModel no puede re-emitirse.
+     */
+    private void navigateToMain() {
+        Intent intent = new Intent(this, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     /**
