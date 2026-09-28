@@ -1,13 +1,20 @@
 package com.redur.electra.ui.login;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.redur.electra.R;
+import com.redur.electra.core.async.Cancellable;
+import com.redur.electra.core.async.ResultCallback;
+import com.redur.electra.core.error.AppError;
+import com.redur.electra.core.ui.ErrorUiMapper;
 import com.redur.electra.core.ui.UiState;
 import com.redur.electra.core.util.Validations;
+import com.redur.electra.data.model.user.User;
+import com.redur.electra.data.repository.LoginRepository;
 
 import javax.inject.Inject;
 
@@ -19,8 +26,14 @@ public class LoginViewModel extends ViewModel {
     private final MutableLiveData<LoginFormState> formState = new MutableLiveData<>(LoginFormState.EMPTY);
     private final MutableLiveData<UiState> loginState = new MutableLiveData<>(new UiState.Idle());
 
+    private final LoginRepository repository;
+
+    @Nullable
+    private Cancellable pendingLogin;
+
     @Inject
-    public LoginViewModel() {
+    public LoginViewModel(LoginRepository repository) {
+        this.repository = repository;
     }
 
     /** Estado del formulario */
@@ -68,13 +81,29 @@ public class LoginViewModel extends ViewModel {
 
         // Cambiamos el estado a loading para indicar que se esta ejecutando la llamada
         loginState.setValue(new UiState.Loading());
-        // Pendiente: autenticar contra el backend cuando exista el contrato de la API. La llamada del
-        // Repository irá fuera del hilo principal y publicará Success o
-        // Error(ErrorUiMapper.toUiText(appError)) con postValue.
-        // Mientras no exista, se resuelve al instante y el progreso no llega a verse.
+        // Retrofit entrega el resultado en el hilo principal: basta con setValue
+        pendingLogin = repository.login(username.trim(), password, new ResultCallback<>() {
+            @Override
+            public void onSuccess(@NonNull User user) {
+                pendingLogin = null;
+                loginState.setValue(new UiState.Success());
+            }
 
-        // Cambiamos a estado correcto porque la llamada fue correcta
-        loginState.setValue(new UiState.Success());
+            @Override
+            public void onError(@NonNull AppError error) {
+                pendingLogin = null;
+                loginState.setValue(new UiState.Error(ErrorUiMapper.toUiText(error)));
+            }
+        });
+    }
+
+    @Override
+    protected void onCleared() {
+        // Evita que la respuesta llegue a un ViewModel ya destruido
+        if (pendingLogin != null) {
+            pendingLogin.cancel();
+            pendingLogin = null;
+        }
     }
 
     private LoginFormState currentState() {

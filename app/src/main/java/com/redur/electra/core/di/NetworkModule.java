@@ -4,7 +4,10 @@ package com.redur.electra.core.di;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.redur.electra.BuildConfig;
+import com.redur.electra.core.log.SensitiveAwareHttpLoggingInterceptor;
+import com.redur.electra.data.remote.api.LoginApiService;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -14,7 +17,6 @@ import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.components.SingletonComponent;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
@@ -38,11 +40,10 @@ public class NetworkModule {
                 .writeTimeout(20, TimeUnit.SECONDS);
 
         if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(message -> Timber.tag("OkHttp").d(message));
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            logging.redactHeader("Authorization");
-            logging.redactHeader("Cookie");
-            builder.addInterceptor(logging);
+            // El login viaja con contraseña y devuelve datos de usuario: nunca registrar sus cuerpos
+            builder.addInterceptor(new SensitiveAwareHttpLoggingInterceptor(
+                    message -> Timber.tag("OkHttp").d(message),
+                    Set.of(LoginApiService.LOGIN_PATH)));
         }
 
         return builder.build();
@@ -56,5 +57,10 @@ public class NetworkModule {
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
+    }
+
+    @Provides
+    static LoginApiService provideLoginApiService(Retrofit retrofit) {
+        return retrofit.create(LoginApiService.class);
     }
 }

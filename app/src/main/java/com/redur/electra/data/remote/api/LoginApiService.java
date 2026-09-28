@@ -10,7 +10,9 @@ import retrofit2.http.POST;
 
 public interface LoginApiService {
 
-    @POST("ElectraWS/mobile/login/")
+    String LOGIN_PATH = "ElectraWS/mobile/login/";
+
+    @POST(LOGIN_PATH)
     Call<ApiResponseDTO<UserDTO>> login(@Body LoginRequestDTO loginRequest);
 
 }
