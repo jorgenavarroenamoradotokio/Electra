@@ -14,4 +14,9 @@
     <string name="logout_message">Tendrás que volver a introducir tu usuario y contraseña para continuar.</string>
     <string name="logout_confirm">Cerrar sesión</string>
     <string name="logout_cancel">Cancelar</string>
+
+    <!-- Toolbar -->
+    <string name="toolbar_settings">Ajustes</string>
+    <string name="toolbar_profile">Perfil</string>
+    <string name="toolbar_version">Versión %1$s</string>
 </resources>

@@ -2,4 +2,5 @@
 <resources>
     <string name="login_forgot_password_unavailable">Password recovery is not available yet. Contact your administrator.</string>
     <string name="login_loading">Signing in…</string>
+    <string name="feature_unavailable">This section is not available yet.</string>
 </resources>
