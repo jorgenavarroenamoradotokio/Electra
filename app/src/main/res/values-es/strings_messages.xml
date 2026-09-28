@@ -2,4 +2,5 @@
 <resources>
     <string name="login_forgot_password_unavailable">La recuperación de contraseña aún no está disponible. Contacta con tu administrador.</string>
     <string name="login_loading">Iniciando sesión…</string>
+    <string name="feature_unavailable">Esta sección aún no está disponible.</string>
 </resources>

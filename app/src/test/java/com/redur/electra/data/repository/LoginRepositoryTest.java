@@ -113,7 +113,7 @@ public class LoginRepositoryTest {
 
         repository.login("jperez", "secreta", callback);
 
-        assertEquals(new AppError.Api(null, null), callback.error);
+        assertEquals(new AppError.Api("HTTP_200", null), callback.error);
     }
 
     @Test
