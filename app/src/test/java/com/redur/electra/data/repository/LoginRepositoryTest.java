@@ -3,6 +3,7 @@ package com.redur.electra.data.repository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -21,6 +22,7 @@ import com.redur.electra.data.remote.dto.request.login.LoginRequestDTO;
 import com.redur.electra.data.remote.dto.response.ApiResponseDTO;
 import com.redur.electra.data.remote.dto.response.user.UserDTO;
 import com.redur.electra.data.remote.mapper.UserMapper;
+import com.redur.electra.data.session.Credentials;
 import com.redur.electra.data.session.UserSession;
 import com.redur.electra.fake.FakeCall;
 import com.redur.electra.fake.FakeLoginApiService;
@@ -61,6 +63,25 @@ public class LoginRepositoryTest {
         assertEquals(1, callback.invocations);
     }
 
+    /** La API no devuelve la contraseña: la sesión guarda la que se envió en el login. */
+    @Test
+    public void loginCorrecto_guardaLasCredencialesEnviadas() {
+        api.willReturn(FakeCall.success(LoginResponses.ok(LoginResponses.user())));
+
+        repository.login("jperez", "secreta", callback);
+
+        assertEquals(new Credentials("jperez", "secreta"), session.getCredentials());
+    }
+
+    @Test
+    public void loginFallido_noGuardaCredenciales() {
+        api.willReturn(FakeCall.success(LoginResponses.apiError("ERROR_A01", "Credenciales inválidas")));
+
+        repository.login("jperez", "mala", callback);
+
+        assertNull(session.getCredentials());
+    }
+
     @Test
     public void enviaLasCredencialesYElIdioma() {
         api.willReturn(FakeCall.success(LoginResponses.ok(LoginResponses.user())));
@@ -99,7 +120,7 @@ public class LoginRepositoryTest {
 
     @Test
     public void usuarioSinNombreDeUsuario_seConsideraRespuestaInvalida() {
-        api.willReturn(FakeCall.success(LoginResponses.ok(new UserDTO(null, "Juan", null, null))));
+        api.willReturn(FakeCall.success(LoginResponses.ok(new UserDTO(null, "Juan", null, null, null))));
 
         repository.login("jperez", "secreta", callback);
 

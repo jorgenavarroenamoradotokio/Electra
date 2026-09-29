@@ -5,9 +5,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.gson.Gson;
 import com.redur.electra.data.model.user.MenuItem;
 import com.redur.electra.data.model.user.User;
 import com.redur.electra.data.remote.dto.response.user.MenuDTO;
+import com.redur.electra.data.remote.dto.response.user.PermisoUsuarioDTO;
 import com.redur.electra.data.remote.dto.response.user.UserDTO;
 import com.redur.electra.fake.LoginResponses;
 
@@ -44,7 +46,7 @@ public class UserMapperTest {
 
     @Test
     public void coleccionesAusentesEnElJson_seTratanComoVacias() {
-        User user = mapper.toUser(new UserDTO("jperez", null, null, null));
+        User user = mapper.toUser(new UserDTO("jperez", null, null, null, null));
 
         assertTrue(user.menu().isEmpty());
         assertNull(user.fullName());
@@ -54,10 +56,35 @@ public class UserMapperTest {
     public void elementosNulosYTextoAusente_noRompenElMapeo() {
         UserDTO dto = new UserDTO("jperez", null, null, Arrays.asList(
                 null,
-                new MenuDTO(3, null, null, Arrays.asList(null, null))));
+                new MenuDTO(3, null, null, Arrays.asList(null, null))),
+                Arrays.asList(null, new PermisoUsuarioDTO(null, "SIN_ID")));
 
         List<MenuItem> menu = mapper.toUser(dto).menu();
 
         assertEquals(List.of(new MenuItem(3, "", null, Set.of())), menu);
+        assertTrue(mapper.toUser(dto).permission().isEmpty());
+    }
+
+    @Test
+    public void mapeaLosPermisosGeneralesDelUsuario() {
+        User user = mapper.toUser(LoginResponses.user());
+
+        assertEquals(Set.of(1), user.permission());
+        assertTrue(user.hasPermission(1));
+    }
+
+    /** Respuesta real de la API: la lista "permiso" usa la clave "permisoId", no "permisosId". */
+    @Test
+    public void jsonDelLogin_leeLosPermisosGeneralesDelUsuario() {
+        String json = "{\"userName\":\"infjorna\",\"plzsId\":\"MAD\",\"nombre\":\"infjorna\","
+                + "\"language\":null,\"menu\":[{\"menuId\":1,\"menuText\":\"Carga Camion Internacional\","
+                + "\"menuDescription\":null,\"menuParentId\":0,\"permisosMenu\":[]}],"
+                + "\"permiso\":[{\"permisoId\":1,\"descripcionPermiso\":\"CAMBIAR_PLAZA\"}]}";
+
+        User user = mapper.toUser(new Gson().fromJson(json, UserDTO.class));
+
+        assertEquals("MAD", user.plazaId());
+        assertEquals(Set.of(1), user.permission());
+        assertTrue(user.hasPermission(1));
     }
 }

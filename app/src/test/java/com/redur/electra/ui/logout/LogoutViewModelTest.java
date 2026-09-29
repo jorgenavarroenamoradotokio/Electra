@@ -10,6 +10,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import com.redur.electra.core.ui.UiState;
 import com.redur.electra.data.remote.mapper.UserMapper;
 import com.redur.electra.data.repository.LoginRepository;
+import com.redur.electra.data.session.Credentials;
 import com.redur.electra.data.session.UserSession;
 import com.redur.electra.fake.FakeLoginApiService;
 import com.redur.electra.fake.LoginResponses;
@@ -29,7 +30,7 @@ public class LogoutViewModelTest {
 
     @Before
     public void setUp() {
-        session.start(new UserMapper().toUser(LoginResponses.user()));
+        session.start(new UserMapper().toUser(LoginResponses.user()), new Credentials("jperez", "secreta"));
     }
 
     @Test
@@ -44,6 +45,7 @@ public class LogoutViewModelTest {
 
         assertFalse(session.isActive());
         assertNull(session.getUser());
+        assertNull(session.getCredentials());
         assertTrue(viewModel.getLogoutState().getValue() instanceof UiState.Success);
     }
 

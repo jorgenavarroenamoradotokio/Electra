@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Perfil: identidad del usuario, su plaza y una lista corta de acciones. Al pie, centrados,
+    cerrar sesión (la única acción que saca de la app) y la versión como dato de referencia.
+    Los insets del sistema se aplican desde ProfileActivity.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.profile.ProfileActivity">
+
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/view_app_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/screen_padding_vertical"
+            android:paddingBottom="@dimen/spacing_l">
+
+            <!-- Identidad -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/screen_padding_horizontal">
+
+                <ImageView
+                    android:id="@+id/image_avatar"
+                    android:layout_width="@dimen/icon_badge_size"
+                    android:layout_height="@dimen/icon_badge_size"
+                    android:background="@drawable/bg_icon_badge"
+                    android:importantForAccessibility="no"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_person_24"
+                    app:tint="?attr/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/text_display_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:accessibilityHeading="true"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:text="Juan Pérez" />
+
+                <TextView
+                    android:id="@+id/text_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="jperez" />
+
+                <!-- Cada dato se lee con TalkBack como una unidad: "Plaza, P01" -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_l"
+                    android:orientation="vertical"
+                    android:screenReaderFocusable="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_plaza_label"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                    <TextView
+                        android:id="@+id/text_plaza"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        tools:text="P01" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_l"
+                android:layout_marginBottom="@dimen/spacing_s" />
+
+            <!--
+                Acciones: el contenedor estrecha el margen para que, sumado al padding de cada fila,
+                el icono quede alineado con el texto de arriba y el área táctil ocupe todo el ancho.
+            -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_s">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_change_plaza"
+                    style="@style/Widget.Electra.Button.ListAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_change_plaza"
+                    app:icon="@drawable/ic_swap_horiz_24" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_send_log"
+                    style="@style/Widget.Electra.Button.ListAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_send_log"
+                    app:icon="@drawable/ic_share_24" />
+
+            </LinearLayout>
+
+            <!-- Ocupa el espacio libre: empuja el pie al final de la pantalla si el contenido es corto -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Pie -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_logout"
+                style="@style/Widget.Electra.Button.ListAction.Destructive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_l"
+                android:text="@string/logout_confirm"
+                app:icon="@drawable/ic_logout_24" />
+
+            <TextView
+                android:id="@+id/text_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                tools:text="Versión 1.0.0-pre (1)" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

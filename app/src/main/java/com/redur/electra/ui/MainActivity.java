@@ -1,5 +1,6 @@
 package com.redur.electra.ui;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import com.redur.electra.BuildConfig;
 import com.redur.electra.R;
 import com.redur.electra.databinding.ActivityMainBinding;
 import com.redur.electra.ui.logout.LogoutBottomSheet;
+import com.redur.electra.ui.profile.ProfileActivity;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -62,8 +64,12 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean onToolbarItemClicked(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings || id == R.id.action_profile) {
-            // Pantallas aún no implementadas: se avisa en lugar de ignorar el toque
+        if (id == R.id.action_profile) {
+            startActivity(new Intent(this, ProfileActivity.class));
+            return true;
+        }
+        if (id == R.id.action_settings) {
+            // Pantalla aún no implementada: se avisa en lugar de ignorar el toque
             Snackbar.make(binding.getRoot(), R.string.feature_unavailable, Snackbar.LENGTH_SHORT).show();
             return true;
         }

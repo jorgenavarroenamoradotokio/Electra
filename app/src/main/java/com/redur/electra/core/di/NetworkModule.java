@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.redur.electra.BuildConfig;
 import com.redur.electra.core.log.SensitiveAwareHttpLoggingInterceptor;
 import com.redur.electra.data.remote.api.LoginApiService;
+import com.redur.electra.data.remote.api.PlaceApiService;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -40,10 +41,13 @@ public class NetworkModule {
                 .writeTimeout(20, TimeUnit.SECONDS);
 
         if (BuildConfig.DEBUG) {
-            // El login viaja con contraseña y devuelve datos de usuario: nunca registrar sus cuerpos
+            // Estas peticiones viajan con contraseña (y el login devuelve datos de usuario):
+            // nunca registrar sus cuerpos
             builder.addInterceptor(new SensitiveAwareHttpLoggingInterceptor(
                     message -> Timber.tag("OkHttp").d(message),
-                    Set.of(LoginApiService.LOGIN_PATH)));
+                    Set.of(LoginApiService.LOGIN_PATH,
+                            PlaceApiService.CHANGE_PLZS_PATH,
+                            PlaceApiService.PLACE_LIST_PATH)));
         }
 
         return builder.build();
@@ -62,5 +66,10 @@ public class NetworkModule {
     @Provides
     static LoginApiService provideLoginApiService(Retrofit retrofit) {
         return retrofit.create(LoginApiService.class);
+    }
+
+    @Provides
+    static PlaceApiService providePlaceApiService(Retrofit retrofit) {
+        return retrofit.create(PlaceApiService.class);
     }
 }

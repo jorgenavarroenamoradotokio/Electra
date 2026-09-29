@@ -1,24 +1,19 @@
 package com.redur.electra.data.repository;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.redur.electra.core.async.Cancellable;
 import com.redur.electra.core.async.ResultCallback;
 import com.redur.electra.core.error.AppError;
-import com.redur.electra.core.error.NetworkType;
 import com.redur.electra.data.model.user.User;
 import com.redur.electra.data.remote.api.LoginApiService;
 import com.redur.electra.data.remote.dto.request.login.LoginRequestDTO;
-import com.redur.electra.data.remote.dto.response.ApiErrorDetailResponseDTO;
 import com.redur.electra.data.remote.dto.response.ApiResponseDTO;
 import com.redur.electra.data.remote.dto.response.user.UserDTO;
 import com.redur.electra.data.remote.mapper.UserMapper;
+import com.redur.electra.data.session.Credentials;
 import com.redur.electra.data.session.UserSession;
 
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -32,9 +27,7 @@ import timber.log.Timber;
  * Autentica contra el backend y, si el login es correcto, abre la {@link UserSession}.
  * Es el único punto que conoce Retrofit y los DTOs del login.
  */
-public class LoginRepository {
-
-    private static final String HTTP_ERROR_PREFIX = "HTTP_";
+public class LoginRepository extends BaseRepository {
 
     private final LoginApiService api;
     private final UserMapper mapper;
@@ -54,6 +47,7 @@ public class LoginRepository {
     @NonNull
     public Cancellable login(@NonNull String username, @NonNull String password,
                              @NonNull ResultCallback<User> callback) {
+
         LoginRequestDTO request = new LoginRequestDTO(username, password, Locale.getDefault().getLanguage());
         Call<ApiResponseDTO<UserDTO>> call = api.login(request);
         call.enqueue(new Callback<>() {
@@ -63,7 +57,7 @@ public class LoginRepository {
                 if (call.isCanceled()) {
                     return;
                 }
-                handleResponse(response, callback);
+                handleResponse(response, new Credentials(username, password), callback);
             }
 
             @Override
@@ -78,35 +72,23 @@ public class LoginRepository {
     }
 
     private void handleResponse(@NonNull Response<ApiResponseDTO<UserDTO>> response,
+                                @NonNull Credentials credentials,
                                 @NonNull ResultCallback<User> callback) {
-        if (!response.isSuccessful()) {
-            Timber.e("%s%s", HTTP_ERROR_PREFIX, response.code());
-            callback.onError(new AppError.Api(HTTP_ERROR_PREFIX + response.code(), null));
+
+        UserDTO data = extractData(response, callback);
+        if (data == null) {
+            return;
+        }
+        if (data.username() == null) {
+            Timber.e("Login sin nombre de usuario: %s", response.body().errorText());
+            callback.onError(new AppError.Api(null, response.body().errorText()));
             return;
         }
 
-        ApiResponseDTO<UserDTO> body = response.body();
-        if (body == null) {
-            Timber.e("%s%s", HTTP_ERROR_PREFIX, response.code());
-            callback.onError(new AppError.Api(HTTP_ERROR_PREFIX + response.code(), null));
-            return;
-        }
+        Timber.d("Usuario conectado correctamente %s", data);
+        User user = mapper.toUser(data);
+        session.start(user, credentials);
 
-        ApiErrorDetailResponseDTO apiError = firstError(body.errorList());
-        if (apiError != null) {
-            Timber.e("%s%s", apiError.code(), apiError.description());
-            callback.onError(new AppError.Api(apiError.code(), apiError.description()));
-            return;
-        }
-
-        if (body.data() == null || body.data().username() == null) {
-            Timber.e("%s", body.errorText());
-            callback.onError(new AppError.Api(null, body.errorText()));
-            return;
-        }
-        Timber.d("Usuario conectado correctamente%s", body.data());
-        User user = mapper.toUser(body.data());
-        session.start(user);
         callback.onSuccess(user);
     }
 
@@ -114,32 +96,5 @@ public class LoginRepository {
     public void logout() {
         Timber.d("Cerrando sesión del usuario");
         session.clear();
-    }
-
-    @Nullable
-    private static ApiErrorDetailResponseDTO firstError(@Nullable List<ApiErrorDetailResponseDTO> errors) {
-        if (errors == null) {
-            return null;
-        }
-        for (ApiErrorDetailResponseDTO error : errors) {
-            if (error != null) {
-                return error;
-            }
-        }
-        return null;
-    }
-
-    @NonNull
-    private static AppError toAppError(@NonNull Throwable t) {
-        // SocketTimeoutException hereda de InterruptedIOException
-        if (t instanceof InterruptedIOException) {
-            return new AppError.Network(NetworkType.TIMEOUT);
-        }
-        if (t instanceof IOException) {
-            return new AppError.Network(NetworkType.NO_CONNECTION);
-        }
-        // Respuesta imposible de interpretar (p. ej. JSON inesperado): no es un fallo de red
-        Timber.e(t, "Respuesta de login no interpretable");
-        return new AppError.Api(null, null);
     }
 }

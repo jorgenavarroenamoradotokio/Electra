@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Opción del desplegable de plazas: código a la izquierda con ancho mínimo común, para que las
+    descripciones queden alineadas en columna, y descripción a continuación (hasta dos líneas).
+    La fila se lee con TalkBack como una unidad: "P02, Valencia Norte".
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/touch_target_min"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/spacing_m"
+    android:paddingVertical="@dimen/spacing_s"
+    android:screenReaderFocusable="true">
+
+    <TextView
+        android:id="@+id/text_plaza_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minEms="4"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        android:textColor="?attr/colorPrimary"
+        tools:text="P02" />
+
+    <TextView
+        android:id="@+id/text_plaza_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_m"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="Valencia Norte" />
+
+</LinearLayout>
