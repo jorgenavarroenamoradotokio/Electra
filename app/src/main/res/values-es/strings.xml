@@ -30,6 +30,12 @@
     <string name="profile_send_log">Enviar registro de actividad</string>
     <string name="profile_log_chooser">Enviar registro con</string>
     <string name="profile_log_subject">Registro de %1$s · %2$s · %3$s</string>
+    <string name="profile_log_sending">Enviando registro… %1$s</string>
+    <string name="profile_log_confirming">Confirmando el envío…</string>
+    <string name="profile_log_progress_description">Progreso del envío del registro</string>
+    <string name="profile_log_retry">Reintentar</string>
+    <string name="profile_log_send_by_email">Enviar por correo</string>
+    <string name="profile_log_email_body">Se adjunta el registro de actividad. No se ha podido enviar desde la app.</string>
 
     <!-- Cambio de plaza -->
     <string name="change_plaza_title">Cambiar de plaza</string>

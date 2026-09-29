@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.redur.electra.BuildConfig;
 import com.redur.electra.core.log.SensitiveAwareHttpLoggingInterceptor;
+import com.redur.electra.data.remote.api.FileApiService;
 import com.redur.electra.data.remote.api.LoginApiService;
 import com.redur.electra.data.remote.api.PlaceApiService;
 
@@ -42,12 +43,14 @@ public class NetworkModule {
 
         if (BuildConfig.DEBUG) {
             // Estas peticiones viajan con contraseña (y el login devuelve datos de usuario):
-            // nunca registrar sus cuerpos
+            // nunca registrar sus cuerpos. Además, volcar el del log lo leería entero antes de
+            // enviarlo y el progreso de la subida saltaría al 100 %
             builder.addInterceptor(new SensitiveAwareHttpLoggingInterceptor(
                     message -> Timber.tag("OkHttp").d(message),
                     Set.of(LoginApiService.LOGIN_PATH,
                             PlaceApiService.CHANGE_PLZS_PATH,
-                            PlaceApiService.PLACE_LIST_PATH)));
+                            PlaceApiService.PLACE_LIST_PATH,
+                            FileApiService.UPLOAD_LOG_PATH)));
         }
 
         return builder.build();
@@ -71,5 +74,10 @@ public class NetworkModule {
     @Provides
     static PlaceApiService providePlaceApiService(Retrofit retrofit) {
         return retrofit.create(PlaceApiService.class);
+    }
+
+    @Provides
+    static FileApiService provideFileApiService(Retrofit retrofit) {
+        return retrofit.create(FileApiService.class);
     }
 }

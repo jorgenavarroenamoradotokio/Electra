@@ -5,6 +5,8 @@
     <string name="feature_unavailable">Esta sección aún no está disponible.</string>
     <string name="profile_log_unavailable">Todavía no hay registro de actividad en este dispositivo. Vuelve a intentarlo tras usar la app un rato.</string>
     <string name="profile_log_share_failed">No se ha podido compartir el registro de actividad. Inténtalo de nuevo.</string>
+    <string name="profile_log_sent">Registro de actividad enviado</string>
+    <string name="profile_log_upload_failed_email">Sigue sin poder enviarse el registro de actividad. Puedes enviarlo por correo.</string>
     <string name="change_plaza_empty">No hay plazas disponibles. Inténtalo más tarde o contacta con tu administrador.</string>
     <string name="change_plaza_success">Plaza cambiada a %1$s</string>
 </resources>

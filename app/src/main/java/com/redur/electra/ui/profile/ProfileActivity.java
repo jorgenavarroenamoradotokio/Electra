@@ -1,5 +1,6 @@
 package com.redur.electra.ui.profile;
 
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,10 +22,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.redur.electra.BuildConfig;
 import com.redur.electra.R;
-import com.redur.electra.core.ui.UiState;
 import com.redur.electra.data.model.user.User;
 import com.redur.electra.databinding.ActivityProfileBinding;
 import com.redur.electra.ui.MainActivity;
@@ -33,6 +34,7 @@ import com.redur.electra.ui.logout.LogoutBottomSheet;
 import com.redur.electra.ui.place.PlaceBottomSheet;
 
 import java.io.File;
+import java.text.NumberFormat;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import timber.log.Timber;
@@ -42,6 +44,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final String LOG_MIME_TYPE = "text/plain";
     private static final String FILE_PROVIDER_SUFFIX = ".fileprovider";
+    private static final String MAILTO_SCHEME = "mailto:";
+    private static final int EMAIL_OFFER_DURATION_MS = 8000;
 
     private ActivityProfileBinding binding;
     private ProfileViewModel viewModel;
@@ -68,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
         setupBackNavigation();
         renderUser(user);
         setupActions();
-        viewModel.getLogShareState().observe(this, this::renderLogShare);
+        viewModel.getLogSendState().observe(this, this::renderLogSend);
     }
 
     /** Igual que la pantalla principal: la franja de la toolbar se extiende bajo la status bar. */
@@ -131,23 +135,73 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void renderLogShare(UiState state) {
-        binding.buttonSendLog.setEnabled(!(state instanceof UiState.Loading));
+    private void renderLogSend(@NonNull LogSendState state) {
+        renderLogSendRow(state);
 
-        if (state instanceof UiState.Success) {
-            File file = viewModel.getLogFile();
-            viewModel.onLogShareHandled();
-            if (file != null) {
-                shareLog(file);
-            }
-        } else if (state instanceof UiState.Error error) {
-            viewModel.onLogShareHandled();
-            Snackbar.make(binding.getRoot(), error.message().resolve(this), Snackbar.LENGTH_LONG).show();
+        if (state instanceof LogSendState.Sent) {
+            viewModel.onLogSendHandled();
+            showMessage(R.string.profile_log_sent);
+        } else if (state instanceof LogSendState.Failed failed) {
+            viewModel.onLogSendHandled();
+            showLogSendFailure(failed);
+        } else if (state instanceof LogSendState.ReadyToEmail ready) {
+            viewModel.onLogSendHandled();
+            emailLog(ready.file());
         }
     }
 
-    /** Abre el selector del sistema para que el usuario elija cómo enviar el fichero. */
-    private void shareLog(@NonNull File file) {
+    /**
+     * Durante el envío la fila no se deshabilita (el atenuado haría ilegible el porcentaje): solo deja
+     * de responder a pulsaciones. Al 100 % la barra pasa a indeterminada mientras responde el servidor.
+     */
+    private void renderLogSendRow(@NonNull LogSendState state) {
+        LinearProgressIndicator progress = binding.progressSendLog;
+        if (!(state instanceof LogSendState.Sending sending)) {
+            binding.buttonSendLog.setClickable(true);
+            binding.buttonSendLog.setText(R.string.profile_send_log);
+            progress.hide();
+            return;
+        }
+
+        binding.buttonSendLog.setClickable(false);
+        boolean confirming = sending.percent() >= LogSendState.Sending.COMPLETE;
+        binding.buttonSendLog.setText(confirming
+                ? getString(R.string.profile_log_confirming)
+                : getString(R.string.profile_log_sending,
+                        NumberFormat.getPercentInstance().format(sending.percent() / 100.0)));
+
+        if (confirming) {
+            progress.setIndeterminate(true);
+        } else {
+            // Solo se anima el avance de una barra que ya mostraba progreso: al aparecer, al
+            // recrearse la pantalla o al reintentar, salta directamente al valor
+            boolean animate = progress.getVisibility() == View.VISIBLE && !progress.isIndeterminate();
+            progress.setIndeterminate(false);
+            progress.setProgressCompat(sending.percent(), animate);
+        }
+        progress.show();
+    }
+
+    private void showLogSendFailure(@NonNull LogSendState.Failed failed) {
+        Snackbar snackbar = Snackbar.make(binding.getRoot(), failed.message().resolve(this),
+                Snackbar.LENGTH_LONG);
+        switch (failed.recovery()) {
+            case RETRY -> snackbar.setAction(R.string.profile_log_retry, v -> viewModel.onSendLogClicked());
+            case SEND_BY_EMAIL -> snackbar
+                    .setAction(R.string.profile_log_send_by_email, v -> viewModel.onSendByEmailClicked())
+                    // Más tiempo para leer la alternativa y decidir. No es indefinido: fuera de un
+                    // CoordinatorLayout no se puede descartar deslizando
+                    .setDuration(EMAIL_OFFER_DURATION_MS);
+            case NONE -> { }
+        }
+        snackbar.show();
+    }
+
+    /**
+     * Abre la app de correo con el log adjunto. Si no hay ninguna instalada, recurre al selector
+     * general para que el usuario elija otra vía.
+     */
+    private void emailLog(@NonNull File file) {
         Uri uri;
         try {
             uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + FILE_PROVIDER_SUFFIX, file);
@@ -165,10 +219,20 @@ public class ProfileActivity extends AppCompatActivity {
                 .setType(LOG_MIME_TYPE)
                 .putExtra(Intent.EXTRA_STREAM, uri)
                 .putExtra(Intent.EXTRA_SUBJECT, subject)
+                .putExtra(Intent.EXTRA_TEXT, getString(R.string.profile_log_email_body))
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         // ClipData permite que el permiso de lectura llegue también a través del selector
         send.setClipData(ClipData.newRawUri(file.getName(), uri));
-        startActivity(Intent.createChooser(send, getString(R.string.profile_log_chooser)));
+
+        // Restringe los destinos a apps de correo sin perder el adjunto de ACTION_SEND
+        Intent email = new Intent(send);
+        email.setSelector(new Intent(Intent.ACTION_SENDTO, Uri.parse(MAILTO_SCHEME)));
+        try {
+            startActivity(email);
+        } catch (ActivityNotFoundException e) {
+            Timber.w("Sin app de correo: se ofrece el selector general para el log");
+            startActivity(Intent.createChooser(send, getString(R.string.profile_log_chooser)));
+        }
     }
 
     private void showCanEditPlaza(){

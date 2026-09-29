@@ -30,6 +30,12 @@
     <string name="profile_send_log">Send activity log</string>
     <string name="profile_log_chooser">Send log with</string>
     <string name="profile_log_subject">%1$s log · %2$s · %3$s</string>
+    <string name="profile_log_sending">Sending log… %1$s</string>
+    <string name="profile_log_confirming">Confirming delivery…</string>
+    <string name="profile_log_progress_description">Log upload progress</string>
+    <string name="profile_log_retry">Try again</string>
+    <string name="profile_log_send_by_email">Send by email</string>
+    <string name="profile_log_email_body">Activity log attached. It could not be sent from the app.</string>
 
     <!-- Cambio de plaza -->
     <string name="change_plaza_title">Change site</string>
