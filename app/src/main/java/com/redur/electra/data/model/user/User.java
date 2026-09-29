@@ -28,6 +28,12 @@ public record User(
         return fullName != null && !fullName.isBlank() ? fullName : username;
     }
 
+    /** Copia del usuario asignado a otra plaza. */
+    @NonNull
+    public User withPlazaId(@NonNull String newPlazaId) {
+        return new User(username, fullName, newPlazaId, menu, permission);
+    }
+
     public boolean hasMenuActive (int menuId){
         return menu.stream().filter(menuItem -> menuItem.id() == menuId).count() == 1;
     }

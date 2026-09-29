@@ -30,4 +30,15 @@
     <string name="profile_send_log">Enviar registro de actividad</string>
     <string name="profile_log_chooser">Enviar registro con</string>
     <string name="profile_log_subject">Registro de %1$s · %2$s · %3$s</string>
+
+    <!-- Cambio de plaza -->
+    <string name="change_plaza_title">Cambiar de plaza</string>
+    <string name="change_plaza_message">Tu plaza actual es %1$s. Elige la plaza con la que vas a trabajar.</string>
+    <string name="change_plaza_hint">Plaza</string>
+    <string name="change_plaza_option">%1$s · %2$s</string>
+    <string name="change_plaza_confirm">Cambiar plaza</string>
+    <string name="change_plaza_cancel">Cancelar</string>
+    <string name="change_plaza_loading">Cambiando de plaza</string>
+    <string name="change_plaza_loading_list">Cargando plazas…</string>
+    <string name="change_plaza_retry">Reintentar</string>
 </resources>

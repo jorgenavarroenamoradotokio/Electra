@@ -5,4 +5,6 @@
     <string name="feature_unavailable">This section is not available yet.</string>
     <string name="profile_log_unavailable">There is no activity log on this device yet. Try again after using the app for a while.</string>
     <string name="profile_log_share_failed">The activity log could not be shared. Try again.</string>
+    <string name="change_plaza_empty">There are no sites available. Try again later or contact your administrator.</string>
+    <string name="change_plaza_success">Site changed to %1$s</string>
 </resources>

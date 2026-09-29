@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Hoja de cambio de plaza: misma anatomía que la de cierre de sesión (icono, título, explicación
+    y acciones apiladas) con un desplegable de plazas entre la explicación y las acciones.
+    Cada opción muestra código y descripción (item_plaza_dropdown); el campo muestra la elegida.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/screen_padding_horizontal"
+    android:paddingBottom="@dimen/spacing_l">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/image_change_plaza"
+        android:layout_width="@dimen/icon_badge_size"
+        android:layout_height="@dimen/icon_badge_size"
+        android:background="@drawable/bg_icon_badge"
+        android:importantForAccessibility="no"
+        android:scaleType="center"
+        android:src="@drawable/ic_swap_horiz_24"
+        app:tint="?attr/colorPrimary" />
+
+    <TextView
+        android:id="@+id/text_change_plaza_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:accessibilityHeading="true"
+        android:gravity="center"
+        android:text="@string/change_plaza_title"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:textColor="?attr/colorOnSurface" />
+
+    <!-- Se rellena con change_plaza_message y la plaza actual -->
+    <TextView
+        android:id="@+id/text_change_plaza_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="Tu plaza actual es P01. Elige la plaza con la que vas a trabajar." />
+
+    <!--
+        Desplegable de solo selección (inputType none): sin teclado ni texto libre.
+        errorEnabled reserva la línea inferior para que un error de carga no desplace las acciones.
+    -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_plaza"
+        style="?attr/textInputOutlinedExposedDropdownMenuStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_l"
+        android:hint="@string/change_plaza_hint"
+        app:boxCornerRadiusBottomEnd="@dimen/corner_radius_m"
+        app:boxCornerRadiusBottomStart="@dimen/corner_radius_m"
+        app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
+        app:boxCornerRadiusTopStart="@dimen/corner_radius_m"
+        app:errorEnabled="true"
+        app:startIconDrawable="@drawable/ic_swap_horiz_24">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/input_plaza"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:maxLines="1"
+            tools:text="P02 · Valencia Norte" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- El indicador se superpone al botón: la carga se comunica donde el usuario actuó -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s">
+
+        <!-- Deshabilitado hasta elegir una plaza distinta de la actual -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_confirm_plaza"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:minHeight="@dimen/button_height"
+            android:stateListAnimator="@animator/scale_on_press"
+            android:text="@string/change_plaza_confirm"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            app:cornerRadius="@dimen/corner_radius_m" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_change_plaza"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/change_plaza_loading"
+            android:indeterminate="true"
+            android:visibility="invisible"
+            app:indicatorSize="@dimen/progress_indicator_size"
+            app:trackThickness="@dimen/progress_indicator_thickness" />
+
+    </FrameLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_cancel_plaza"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:minHeight="@dimen/button_height"
+        android:text="@string/change_plaza_cancel"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        app:cornerRadius="@dimen/corner_radius_m" />
+
+</LinearLayout>

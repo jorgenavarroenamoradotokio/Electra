@@ -30,6 +30,7 @@ import com.redur.electra.databinding.ActivityProfileBinding;
 import com.redur.electra.ui.MainActivity;
 import com.redur.electra.ui.login.LoginActivity;
 import com.redur.electra.ui.logout.LogoutBottomSheet;
+import com.redur.electra.ui.place.PlaceBottomSheet;
 
 import java.io.File;
 
@@ -109,10 +110,25 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setupActions() {
-        // El cambio de plaza aún no tiene flujo propio: se avisa en lugar de ignorar el toque
-        binding.buttonChangePlaza.setOnClickListener(v -> showMessage(R.string.feature_unavailable));
+        binding.buttonChangePlaza.setOnClickListener(v -> PlaceBottomSheet.showIfNotShown(getSupportFragmentManager()));
+        getSupportFragmentManager().setFragmentResultListener(PlaceBottomSheet.RESULT_KEY, this,
+                (key, result) -> onPlazaChanged(result.getString(PlaceBottomSheet.RESULT_PLAZA_ID)));
         binding.buttonSendLog.setOnClickListener(v -> viewModel.onSendLogClicked());
         binding.buttonLogout.setOnClickListener(v ->  LogoutBottomSheet.showIfNotShown(getSupportFragmentManager()));
+    }
+
+    /** La sesión ya refleja la nueva plaza: se repinta el perfil y se confirma el cambio. */
+    private void onPlazaChanged(@Nullable String plazaId) {
+        User user = viewModel.getUser();
+        if (user == null) {
+            navigateToLogin();
+            return;
+        }
+        renderUser(user);
+        if (plazaId != null) {
+            Snackbar.make(binding.getRoot(), getString(R.string.change_plaza_success, plazaId),
+                    Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     private void renderLogShare(UiState state) {

@@ -30,4 +30,15 @@
     <string name="profile_send_log">Send activity log</string>
     <string name="profile_log_chooser">Send log with</string>
     <string name="profile_log_subject">%1$s log · %2$s · %3$s</string>
+
+    <!-- Cambio de plaza -->
+    <string name="change_plaza_title">Change site</string>
+    <string name="change_plaza_message">Your current site is %1$s. Choose the site you will work at.</string>
+    <string name="change_plaza_hint">Site</string>
+    <string name="change_plaza_option">%1$s · %2$s</string>
+    <string name="change_plaza_confirm">Change site</string>
+    <string name="change_plaza_cancel">Cancel</string>
+    <string name="change_plaza_loading">Changing site</string>
+    <string name="change_plaza_loading_list">Loading sites…</string>
+    <string name="change_plaza_retry">Try again</string>
 </resources>

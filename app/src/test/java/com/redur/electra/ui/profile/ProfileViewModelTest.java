@@ -11,6 +11,7 @@ import com.redur.electra.core.ui.UiState;
 import com.redur.electra.core.ui.UiText;
 import com.redur.electra.data.model.user.User;
 import com.redur.electra.data.repository.LogRepository;
+import com.redur.electra.data.session.Credentials;
 import com.redur.electra.data.session.UserSession;
 
 import org.junit.Rule;
@@ -42,7 +43,7 @@ public class ProfileViewModelTest {
     @Test
     public void exponeElUsuarioDeLaSesion() {
         User user = new User("jperez", "Juan Pérez", "P01", List.of(), Set.of());
-        session.start(user);
+        session.start(user, new Credentials("jperez", "secreta"));
 
         assertEquals(user, viewModel(logFile, Runnable::run).getUser());
     }
