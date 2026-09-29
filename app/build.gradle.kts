@@ -46,7 +46,7 @@ val environments = listOf(
         isRelease = false,
         appName = "Electra DEV",
         baseUrl = "http://192.168.1.17:8085/",
-        logging = Logging(toLogcat = true, toFile = false, minLevel = LogLevel.VERBOSE),
+        logging = Logging(toLogcat = true, toFile = true, minLevel = LogLevel.VERBOSE),
     ),
     Environment(
         name = "pre",

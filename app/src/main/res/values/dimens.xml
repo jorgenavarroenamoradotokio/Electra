@@ -19,6 +19,8 @@
     <dimen name="progress_indicator_size">24dp</dimen>
     <dimen name="progress_indicator_thickness">3dp</dimen>
     <dimen name="icon_badge_size">56dp</dimen>
+    <!-- Del borde de una fila ListAction al inicio de su texto: padding + icono + separación -->
+    <dimen name="list_action_text_inset">56dp</dimen>
 
     <!-- Login -->
     <dimen name="login_brand_size">56dp</dimen>

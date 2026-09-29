@@ -119,13 +119,39 @@
                     android:text="@string/profile_change_plaza"
                     app:icon="@drawable/ic_swap_horiz_24" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_send_log"
-                    style="@style/Widget.Electra.Button.ListAction"
+                <!--
+                    El progreso del envío se superpone al pie de la propia fila: aparece donde se pulsó
+                    y no desplaza el resto de la pantalla. Arranca alineado con el texto, no con el icono.
+                -->
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/profile_send_log"
-                    app:icon="@drawable/ic_share_24" />
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_send_log"
+                        style="@style/Widget.Electra.Button.ListAction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_send_log"
+                        app:icon="@drawable/ic_upload_24" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progress_send_log"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginStart="@dimen/list_action_text_inset"
+                        android:layout_marginEnd="@dimen/spacing_m"
+                        android:layout_marginBottom="@dimen/spacing_s"
+                        android:contentDescription="@string/profile_log_progress_description"
+                        android:max="100"
+                        android:visibility="invisible"
+                        app:hideAnimationBehavior="inward"
+                        app:showAnimationBehavior="outward"
+                        app:trackCornerRadius="@dimen/progress_indicator_thickness"
+                        app:trackThickness="@dimen/progress_indicator_thickness" />
+
+                </FrameLayout>
 
             </LinearLayout>
 
