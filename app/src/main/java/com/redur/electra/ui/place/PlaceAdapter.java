@@ -46,11 +46,28 @@ final class PlaceAdapter extends ArrayAdapter<Place> {
         inflater = LayoutInflater.from(context);
     }
 
+    /** Sin cambios no se notifica: cualquier notificación cierra el desplegable si está abierto. */
     void setPlaces(@NonNull List<Place> places) {
+        if (shows(places)) {
+            return;
+        }
         setNotifyOnChange(false);
         clear();
         addAll(places);
         notifyDataSetChanged();
+    }
+
+    /** True si ya ofrece exactamente estas plazas y en el mismo orden. */
+    boolean shows(@NonNull List<Place> places) {
+        if (getCount() != places.size()) {
+            return false;
+        }
+        for (int i = 0; i < places.size(); i++) {
+            if (!places.get(i).equals(getItem(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** Texto que muestra el campo para la plaza elegida: "P02 · Valencia Norte". */

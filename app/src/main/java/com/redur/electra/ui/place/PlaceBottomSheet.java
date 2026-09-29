@@ -31,12 +31,18 @@ public class PlaceBottomSheet extends BottomSheetDialogFragment {
     public static final String RESULT_PLAZA_ID = "plazaId";
 
     private static final String TAG = "PlaceBottomSheet";
+    /** Cada cuánto se comprueba si el desplegable ya se ha cerrado para aplicar plazas nuevas. */
+    private static final long PENDING_PLACES_CHECK_MS = 300L;
 
     @Nullable
     private SheetChangePlazaBinding binding;
     private PlaceViewModel viewModel;
     @Nullable
     private PlaceAdapter adapter;
+    /** Plazas recibidas con el desplegable abierto; se aplican cuando el usuario lo cierra. */
+    @Nullable
+    private List<Place> pendingPlaces;
+    private final Runnable applyPendingPlaces = this::applyPendingPlaces;
 
     /** No apila una segunda hoja si ya hay una visible (p. ej. doble toque en el botón). */
     public static void showIfNotShown(@NonNull FragmentManager fragmentManager) {
@@ -75,12 +81,6 @@ public class PlaceBottomSheet extends BottomSheetDialogFragment {
                 viewModel.onPlaceSelected(place);
             }
         });
-        // Cerrar el desplegable sin elegir deja el campo vacío: sin foco, el hint vuelve a su tamaño
-        views.inputPlaza.setOnDismissListener(() -> {
-            if (views.inputPlaza.length() == 0) {
-                views.inputPlaza.clearFocus();
-            }
-        });
         views.buttonCancelPlaza.setOnClickListener(v -> dismiss());
 
         viewModel.getPlaces().observe(getViewLifecycleOwner(), this::renderPlaces);
@@ -96,9 +96,29 @@ public class PlaceBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void renderPlaces(@NonNull List<Place> places) {
-        if (adapter != null) {
-            adapter.setPlaces(places);
+        pendingPlaces = places;
+        applyPendingPlaces();
+    }
+
+    /**
+     * Cambiar las opciones cierra el desplegable: si el usuario lo tiene abierto (p. ej. al acabar
+     * la sincronización) se espera a que lo cierre, y así las opciones no se mueven mientras elige.
+     */
+    private void applyPendingPlaces() {
+        if (binding == null || adapter == null || pendingPlaces == null) {
+            return;
         }
+        binding.inputPlaza.removeCallbacks(applyPendingPlaces);
+        if (adapter.shows(pendingPlaces)) {
+            pendingPlaces = null;
+            return;
+        }
+        if (binding.inputPlaza.isPopupShowing()) {
+            binding.inputPlaza.postDelayed(applyPendingPlaces, PENDING_PLACES_CHECK_MS);
+            return;
+        }
+        adapter.setPlaces(pendingPlaces);
+        pendingPlaces = null;
     }
 
     private void renderSelection(@Nullable Place place) {
@@ -167,6 +187,10 @@ public class PlaceBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (binding != null) {
+            binding.inputPlaza.removeCallbacks(applyPendingPlaces);
+        }
+        pendingPlaces = null;
         adapter = null;
         binding = null;
     }

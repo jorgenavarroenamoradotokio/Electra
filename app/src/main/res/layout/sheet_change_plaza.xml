@@ -53,6 +53,8 @@
     <!--
         Desplegable de solo selección (inputType none): sin teclado ni texto libre.
         errorEnabled reserva la línea inferior para que un error de carga no desplace las acciones.
+        Sin foco al tocar: el hint solo sube cuando hay plaza elegida, no por abrir el desplegable.
+        No se usa setOnDismissListener: Material lo necesita para cerrar la lista con otro toque.
     -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layout_plaza"
@@ -72,6 +74,7 @@
             android:id="@+id/input_plaza"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"
             android:inputType="none"
             android:maxLines="1"
             tools:text="P02 · Valencia Norte" />
