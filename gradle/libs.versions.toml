@@ -7,6 +7,7 @@ agp = "8.13.2"
 # Android
 appcompat = "1.7.1"
 material = "1.14.0"
+navigation = "2.9.7"
 
 # Dependencias
 hilt = "2.58"
@@ -35,6 +36,8 @@ archCoreTesting = "2.2.0"
 # Android
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigation" }
+navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigation" }
 
 # Dependencias
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }

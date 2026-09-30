@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Cabecera del menú lateral: usuario conectado sobre la franja de marca, igual que la toolbar.
+    El padding del contenedor lo fija MainActivity con los insets (se extiende bajo la status bar).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/green_redur"
+    android:orientation="vertical">
+
+    <!-- Avatar, nombre y usuario se leen con TalkBack como una unidad -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/drawer_content_inset"
+        android:paddingTop="@dimen/spacing_l"
+        android:paddingBottom="@dimen/spacing_m"
+        android:screenReaderFocusable="true">
+
+        <TextView
+            android:id="@+id/text_drawer_avatar"
+            android:layout_width="@dimen/drawer_avatar_size"
+            android:layout_height="@dimen/drawer_avatar_size"
+            android:background="@drawable/bg_drawer_avatar"
+            android:gravity="center"
+            android:importantForAccessibility="no"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="@color/white"
+            tools:text="J" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_m"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_drawer_display_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="@color/white"
+                tools:text="Juan Pérez" />
+
+            <TextView
+                android:id="@+id/text_drawer_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/toolbar_subtitle"
+                tools:text="jperez" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

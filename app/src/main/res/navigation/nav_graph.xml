@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Destinos del menú lateral. Los ids nav_* se registran en MenuActionRegistry. -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.redur.electra.ui.home.HomeFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_home" />
+
+    <dialog
+        android:id="@+id/nav_cambiar_plaza"
+        android:name="com.redur.electra.ui.place.PlaceBottomSheet"
+        tools:layout="@layout/sheet_change_plaza" />
+
+</navigation>

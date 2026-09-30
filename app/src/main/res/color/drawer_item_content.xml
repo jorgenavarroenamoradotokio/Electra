@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Texto de las opciones del menú lateral: sobre la píldora de la opción activa, en colorOnPrimary -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/colorOnPrimary" android:state_selected="true" />
+    <item android:color="?attr/colorOnSurface" />
+</selector>
