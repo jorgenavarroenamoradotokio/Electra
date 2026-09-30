@@ -3,8 +3,6 @@ package com.redur.electra.core.concurrency;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.redur.electra.core.di.IoExecutor;
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 

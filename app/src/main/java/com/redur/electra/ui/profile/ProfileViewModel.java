@@ -11,7 +11,7 @@ import com.redur.electra.R;
 import com.redur.electra.core.async.Cancellable;
 import com.redur.electra.core.async.ResultCallback;
 import com.redur.electra.core.concurrency.MainExecutor;
-import com.redur.electra.core.di.IoExecutor;
+import com.redur.electra.core.concurrency.IoExecutor;
 import com.redur.electra.core.error.AppError;
 import com.redur.electra.core.ui.ErrorUiMapper;
 import com.redur.electra.core.ui.UiText;

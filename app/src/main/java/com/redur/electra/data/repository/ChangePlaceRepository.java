@@ -7,7 +7,7 @@ import androidx.annotation.WorkerThread;
 
 import com.redur.electra.core.async.Cancellable;
 import com.redur.electra.core.async.ResultCallback;
-import com.redur.electra.core.di.IoExecutor;
+import com.redur.electra.core.concurrency.IoExecutor;
 import com.redur.electra.core.concurrency.MainExecutor;
 import com.redur.electra.core.error.AppError;
 import com.redur.electra.data.local.dao.plaza.PlaceDao;

@@ -1,4 +1,4 @@
-package com.redur.electra.core.di;
+package com.redur.electra.core.concurrency;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
