@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fila del menú lateral: píldora en colorPrimary para la opción activa y ripple al tocar -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?attr/colorControlHighlight">
+
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/corner_radius_m" />
+            <solid android:color="@color/white" />
+        </shape>
+    </item>
+
+    <item>
+        <selector>
+            <item android:state_selected="true">
+                <shape android:shape="rectangle">
+                    <corners android:radius="@dimen/corner_radius_m" />
+                    <solid android:color="?attr/colorPrimary" />
+                </shape>
+            </item>
+        </selector>
+    </item>
+
+</ripple>

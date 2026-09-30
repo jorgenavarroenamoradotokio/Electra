@@ -22,6 +22,19 @@
     <!-- Del borde de una fila ListAction al inicio de su texto: padding + icono + separación -->
     <dimen name="list_action_text_inset">56dp</dimen>
 
+    <!-- Menú lateral -->
+    <dimen name="drawer_width">304dp</dimen>
+    <!-- Separación de cada opción (y de su fondo activo) con los bordes del menú -->
+    <dimen name="drawer_item_inset">12dp</dimen>
+    <!-- Inicio del icono de las opciones: drawer_item_inset + spacing_m (padding de la opción) -->
+    <dimen name="drawer_content_inset">28dp</dimen>
+    <!-- Separación vertical entre opciones: las píldoras activas no se tocan -->
+    <dimen name="drawer_item_spacing">2dp</dimen>
+    <dimen name="drawer_icon_size">24dp</dimen>
+    <!-- Sangría por nivel de submenú: icono + separación, el hijo arranca bajo el texto del padre -->
+    <dimen name="drawer_level_indent">40dp</dimen>
+    <dimen name="drawer_avatar_size">40dp</dimen>
+
     <!-- Login -->
     <dimen name="login_brand_size">56dp</dimen>
     <!-- El panel se solapa con la franja de marca lo mismo que mide su radio -->

@@ -47,4 +47,21 @@
     <string name="change_plaza_loading">Cambiando de plaza</string>
     <string name="change_plaza_loading_list">Cargando plazas…</string>
     <string name="change_plaza_retry">Reintentar</string>
+
+    <!-- Menú lateral -->
+    <string name="drawer_group_expanded">Desplegado</string>
+    <string name="drawer_group_collapsed">Plegado</string>
+    <string name="drawer_group_expand">Desplegar</string>
+    <string name="drawer_group_collapse">Plegar</string>
+
+    <!-- Literales del menú lateral: menu_<id del menú en el servidor> -->
+    <string name="menu_0">Inicio</string>
+    <string name="menu_1">Carga de camión</string>
+    <string name="menu_2">Consulta de albarán</string>
+    <string name="menu_3">Administración</string>
+    <string name="menu_4">Cambiar de plaza</string>
+
+    <!-- Inicio -->
+    <string name="home_greeting">Hola, %1$s</string>
+    <string name="home_hint">Abre el menú para elegir una tarea.</string>
 </resources>

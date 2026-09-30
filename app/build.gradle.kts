@@ -179,6 +179,10 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
 
+    // Navegación entre fragments (menú lateral)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
+
     // Inyección de dependencias
     implementation(libs.hilt.android)
     annotationProcessor(libs.hilt.compiler)

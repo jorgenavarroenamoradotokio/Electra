@@ -47,4 +47,21 @@
     <string name="change_plaza_loading">Changing site</string>
     <string name="change_plaza_loading_list">Loading sites…</string>
     <string name="change_plaza_retry">Try again</string>
+
+    <!-- Menú lateral -->
+    <string name="drawer_group_expanded">Expanded</string>
+    <string name="drawer_group_collapsed">Collapsed</string>
+    <string name="drawer_group_expand">Expand</string>
+    <string name="drawer_group_collapse">Collapse</string>
+
+    <!-- Literales del menú lateral: menu_<id del menú en el servidor> -->
+    <string name="menu_0">Home</string>
+    <string name="menu_1">Truck loading</string>
+    <string name="menu_2">Delivery note lookup</string>
+    <string name="menu_3">Administration</string>
+    <string name="menu_4">Change site</string>
+
+    <!-- Inicio -->
+    <string name="home_greeting">Hello, %1$s</string>
+    <string name="home_hint">Open the menu to choose a task.</string>
 </resources>

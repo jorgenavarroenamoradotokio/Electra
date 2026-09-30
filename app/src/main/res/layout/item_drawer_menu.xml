@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Fila del menú lateral: icono, texto y, en las opciones con submenú, un chevron que gira al
+    desplegar. La sangría por nivel la aplica DrawerMenuAdapter sobre el padding inicial.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/drawer_item_inset"
+    android:layout_marginVertical="@dimen/drawer_item_spacing"
+    android:background="@drawable/bg_drawer_item"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/touch_target_min"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/spacing_m"
+    android:paddingEnd="@dimen/spacing_s">
+
+    <ImageView
+        android:id="@+id/image_drawer_item_icon"
+        android:layout_width="@dimen/drawer_icon_size"
+        android:layout_height="@dimen/drawer_icon_size"
+        android:importantForAccessibility="no"
+        app:tint="@color/drawer_row_icon"
+        tools:src="@drawable/ic_home_24" />
+
+    <TextView
+        android:id="@+id/text_drawer_item_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_m"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingVertical="@dimen/spacing_s"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        android:textColor="@color/drawer_item_content"
+        tools:text="Inicio" />
+
+    <ImageView
+        android:id="@+id/image_drawer_item_chevron"
+        android:layout_width="@dimen/drawer_icon_size"
+        android:layout_height="@dimen/drawer_icon_size"
+        android:layout_marginStart="@dimen/spacing_s"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_expand_more_24"
+        android:visibility="gone"
+        app:tint="@color/drawer_row_icon"
+        tools:visibility="visible" />
+
+</LinearLayout>
