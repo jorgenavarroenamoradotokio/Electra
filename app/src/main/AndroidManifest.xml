@@ -4,6 +4,18 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Toma de foto: la cámara no es imprescindible para instalar la app -->
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="false" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Galería: permiso por versión de Android (ver AppPermission.GALLERY) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
     <application
         android:name=".ElectraApp"
         android:allowBackup="true"
@@ -33,7 +45,7 @@
             android:exported="false"
             android:parentActivityName=".ui.MainActivity" />
 
-        <!-- Comparte los ficheros de log con otras apps (correo, mensajería) sin exponer rutas -->
+        <!-- Comparte logs (correo, mensajería) y el destino de las fotos (cámara) sin exponer rutas -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

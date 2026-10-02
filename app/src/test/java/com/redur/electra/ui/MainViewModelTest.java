@@ -30,7 +30,7 @@ public class MainViewModelTest {
 
     private static final int HOME = MenuActionRegistry.HOME_MENU_ID;
     /** Id que no está en MenuActionRegistry: se muestra con el texto del servidor. */
-    private static final int UNREGISTERED_MENU_ID = 5;
+    private static final int UNREGISTERED_MENU_ID = 50;
 
     private final UserSession session = new UserSession();
     private final MainViewModel viewModel = new MainViewModel(session);
@@ -87,7 +87,7 @@ public class MainViewModelTest {
 
         List<DrawerMenuRow> rows = rows();
 
-        assertEquals(List.of(HOME, 1, 2, 3, 5), ids(rows));
+        assertEquals(List.of(HOME, 1, 2, 3, UNREGISTERED_MENU_ID), ids(rows));
         DrawerMenuRow administracion = rows.get(3);
         assertTrue(administracion.group());
         assertFalse(administracion.expanded());
@@ -101,7 +101,7 @@ public class MainViewModelTest {
         viewModel.onGroupToggled(3);
 
         List<DrawerMenuRow> rows = rows();
-        assertEquals(List.of(HOME, 1, 2, 3, 4, 5), ids(rows));
+        assertEquals(List.of(HOME, 1, 2, 3, 4, UNREGISTERED_MENU_ID), ids(rows));
         assertTrue(rows.get(3).expanded());
         assertEquals(1, rows.get(4).depth());
         assertEquals(0, rows.get(5).depth());
@@ -114,7 +114,7 @@ public class MainViewModelTest {
 
         viewModel.onGroupToggled(3);
 
-        assertEquals(List.of(HOME, 1, 2, 3, 5), ids(rows()));
+        assertEquals(List.of(HOME, 1, 2, 3, UNREGISTERED_MENU_ID), ids(rows()));
     }
 
     @Test
@@ -124,7 +124,7 @@ public class MainViewModelTest {
         viewModel.onMenuShown(4);
 
         List<DrawerMenuRow> rows = rows();
-        assertEquals(List.of(HOME, 1, 2, 3, 4, 5), ids(rows));
+        assertEquals(List.of(HOME, 1, 2, 3, 4, UNREGISTERED_MENU_ID), ids(rows));
         assertFalse(rows.get(0).selected());
         assertTrue(rows.get(4).selected());
     }
@@ -138,6 +138,17 @@ public class MainViewModelTest {
         assertEquals(new UiText.Res(R.string.menu_1), rows.get(1).title());
         assertEquals(new UiText.Raw("NUEVO"), rows.get(4).title());
         assertEquals(R.drawable.ic_description_24, rows.get(4).icon());
+    }
+
+    @Test
+    public void tomaDeFoto_seMuestraConSuLiteralYSuIconoCuandoLaEnviaElServidor() {
+        startWithMenu(new MenuItem(5, "TOMA FOTO", null, Set.of()));
+
+        DrawerMenuRow row = rows().get(1);
+
+        assertEquals(5, row.menuId());
+        assertEquals(new UiText.Res(R.string.menu_5), row.title());
+        assertEquals(R.drawable.ic_photo_camera_24, row.icon());
     }
 
     @Test

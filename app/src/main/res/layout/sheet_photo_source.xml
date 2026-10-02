@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Hoja de toma de foto: misma anatomía que las de cierre de sesión y cambio de plaza (icono,
+    título, explicación, acciones y cancelar). Los dos orígenes son opciones equivalentes, por eso
+    se presentan como filas de acción iguales y no como un botón principal y otro secundario.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/screen_padding_horizontal"
+    android:paddingBottom="@dimen/spacing_l"
+    tools:context=".ui.photo.PhotoSourceBottomSheet">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/image_photo_source"
+        android:layout_width="@dimen/icon_badge_size"
+        android:layout_height="@dimen/icon_badge_size"
+        android:background="@drawable/bg_icon_badge"
+        android:importantForAccessibility="no"
+        android:scaleType="center"
+        android:src="@drawable/ic_photo_camera_24"
+        app:tint="?attr/colorPrimary" />
+
+    <TextView
+        android:id="@+id/text_photo_source_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:accessibilityHeading="true"
+        android:gravity="center"
+        android:text="@string/photo_source_title"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:textColor="?attr/colorOnSurface" />
+
+    <TextView
+        android:id="@+id/text_photo_source_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:gravity="center"
+        android:text="@string/photo_source_message"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant" />
+
+    <!-- Se deshabilitan mientras se pide permiso o está abierta la cámara/galería: sin dobles toques -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_take_photo"
+        style="@style/Widget.Electra.Button.ListAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_l"
+        android:text="@string/photo_source_take_photo"
+        app:icon="@drawable/ic_photo_camera_24" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_pick_image"
+        style="@style/Widget.Electra.Button.ListAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/photo_source_pick_image"
+        app:icon="@drawable/ic_photo_library_24" />
+
+    <!--
+        Por qué no se pudo completar el último intento y qué hacer. Aviso (no error): el icono y el
+        texto lo comunican sin depender del color, y TalkBack lo anuncia al aparecer.
+    -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_photo_notice"
+        style="?attr/materialCardViewFilledStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:accessibilityLiveRegion="polite"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/msg_warning_bg"
+        app:cardCornerRadius="@dimen/corner_radius_m"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/text_photo_notice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/spacing_s"
+            android:gravity="center_vertical"
+            android:padding="@dimen/spacing_m"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/msg_warning_text"
+            app:drawableStartCompat="@drawable/ic_error_24"
+            app:drawableTint="@color/msg_warning_icon"
+            tools:text="@string/photo_camera_denied" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_cancel_photo"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:minHeight="@dimen/button_height"
+        android:text="@string/photo_source_cancel"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        app:cornerRadius="@dimen/corner_radius_m" />
+
+</LinearLayout>

@@ -60,6 +60,22 @@
     <string name="menu_2">Consulta de albarán</string>
     <string name="menu_3">Administración</string>
     <string name="menu_4">Cambiar de plaza</string>
+    <string name="menu_5">Toma de foto</string>
+
+    <!-- Toma de foto -->
+    <string name="photo_source_title">Añadir foto</string>
+    <string name="photo_source_message">Haz una foto con la cámara o elige una imagen de la galería.</string>
+    <string name="photo_source_take_photo">Hacer foto</string>
+    <string name="photo_source_pick_image">Elegir de la galería</string>
+    <string name="photo_source_cancel">Cancelar</string>
+
+    <!-- Permisos denegados para siempre -->
+    <string name="permission_open_settings">Abrir ajustes</string>
+    <string name="permission_not_now">Ahora no</string>
+    <string name="permission_camera_blocked_title">El acceso a la cámara está desactivado</string>
+    <string name="permission_camera_blocked_message">Para hacer fotos, abre los ajustes, entra en Permisos › Cámara y permite el acceso mientras usas la app.</string>
+    <string name="permission_gallery_blocked_title">El acceso a tus fotos está desactivado</string>
+    <string name="permission_gallery_blocked_message">Para elegir imágenes, abre los ajustes, entra en Permisos › Fotos y vídeos y permite el acceso.</string>
 
     <!-- Inicio -->
     <string name="home_greeting">Hola, %1$s</string>

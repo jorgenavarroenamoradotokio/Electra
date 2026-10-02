@@ -9,4 +9,10 @@
     <string name="profile_log_upload_failed_email">Sigue sin poder enviarse el registro de actividad. Puedes enviarlo por correo.</string>
     <string name="change_plaza_empty">No hay plazas disponibles. Inténtalo más tarde o contacta con tu administrador.</string>
     <string name="change_plaza_success">Plaza cambiada a %1$s</string>
+    <string name="photo_camera_denied">Sin acceso a la cámara no puedes hacer fotos. Pulsa «Hacer foto» de nuevo y elige permitir.</string>
+    <string name="photo_gallery_denied">Sin acceso a tus fotos no puedes elegir una imagen. Pulsa «Elegir de la galería» de nuevo y permite el acceso.</string>
+    <string name="photo_camera_open_failed">No se ha podido abrir la cámara. Comprueba que el dispositivo tiene una app de cámara e inténtalo de nuevo.</string>
+    <string name="photo_gallery_open_failed">No se ha podido abrir la galería. Inténtalo de nuevo.</string>
+    <string name="photo_capture_failed">No se ha podido preparar la foto. Comprueba que el dispositivo tiene espacio libre e inténtalo de nuevo.</string>
+    <string name="photo_ready">Imagen lista</string>
 </resources>

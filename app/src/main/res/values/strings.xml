@@ -60,6 +60,22 @@
     <string name="menu_2">Delivery note lookup</string>
     <string name="menu_3">Administration</string>
     <string name="menu_4">Change site</string>
+    <string name="menu_5">Take photo</string>
+
+    <!-- Toma de foto -->
+    <string name="photo_source_title">Add a photo</string>
+    <string name="photo_source_message">Take a photo with the camera or choose an image from the gallery.</string>
+    <string name="photo_source_take_photo">Take photo</string>
+    <string name="photo_source_pick_image">Choose from gallery</string>
+    <string name="photo_source_cancel">Cancel</string>
+
+    <!-- Permisos denegados para siempre -->
+    <string name="permission_open_settings">Open settings</string>
+    <string name="permission_not_now">Not now</string>
+    <string name="permission_camera_blocked_title">Camera access is turned off</string>
+    <string name="permission_camera_blocked_message">To take photos, open settings, go to Permissions › Camera and allow access while using the app.</string>
+    <string name="permission_gallery_blocked_title">Photo access is turned off</string>
+    <string name="permission_gallery_blocked_message">To choose images, open settings, go to Permissions › Photos and videos and allow access.</string>
 
     <!-- Inicio -->
     <string name="home_greeting">Hello, %1$s</string>

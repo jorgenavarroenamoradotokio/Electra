@@ -17,4 +17,9 @@
         android:name="com.redur.electra.ui.place.PlaceBottomSheet"
         tools:layout="@layout/sheet_change_plaza" />
 
+    <dialog
+        android:id="@+id/nav_toma_foto"
+        android:name="com.redur.electra.ui.photo.PhotoSourceBottomSheet"
+        tools:layout="@layout/sheet_photo_source" />
+
 </navigation>

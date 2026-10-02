@@ -32,6 +32,7 @@ import com.redur.electra.ui.menu.DrawerMenuRow;
 import com.redur.electra.ui.menu.MenuAction;
 import com.redur.electra.ui.menu.MenuActionRegistry;
 import com.redur.electra.ui.menu.MenuArgs;
+import com.redur.electra.ui.photo.PhotoSourceBottomSheet;
 import com.redur.electra.ui.place.PlaceBottomSheet;
 import com.redur.electra.ui.profile.ProfileActivity;
 
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         setupDrawer();
         setupBackNavigation();
         listenPlazaChanges(navHost.getChildFragmentManager());
+        listenPhotoResults(navHost.getChildFragmentManager());
     }
 
     /**
@@ -73,6 +75,15 @@ public class MainActivity extends AppCompatActivity {
             if (plazaId != null) {
                 Snackbar.make(binding.getRoot(), getString(R.string.change_plaza_success, plazaId),
                         Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /** Imagen hecha o elegida desde "Toma de foto" (destino del menú, como el cambio de plaza). */
+    private void listenPhotoResults(@NonNull FragmentManager navHostFragmentManager) {
+        navHostFragmentManager.setFragmentResultListener(PhotoSourceBottomSheet.RESULT_KEY, this, (key, result) -> {
+            if (result.getString(PhotoSourceBottomSheet.RESULT_IMAGE_URI) != null) {
+                Snackbar.make(binding.getRoot(), R.string.photo_ready, Snackbar.LENGTH_SHORT).show();
             }
         });
     }
