@@ -48,7 +48,10 @@ public class LoginRepository extends BaseRepository {
     public Cancellable login(@NonNull String username, @NonNull String password,
                              @NonNull ResultCallback<User> callback) {
 
-        LoginRequestDTO request = new LoginRequestDTO(username, password, Locale.getDefault().getLanguage());
+        String locale = Locale.getDefault().getLanguage();
+        locale = locale.equals("en") ? "uk" : locale;
+
+        LoginRequestDTO request = new LoginRequestDTO(username, password, locale);
         Call<ApiResponseDTO<UserDTO>> call = api.login(request);
         call.enqueue(new Callback<>() {
             @Override
