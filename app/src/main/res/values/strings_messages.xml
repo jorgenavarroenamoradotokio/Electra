@@ -9,4 +9,10 @@
     <string name="profile_log_upload_failed_email">The activity log still could not be sent. You can send it by email instead.</string>
     <string name="change_plaza_empty">There are no sites available. Try again later or contact your administrator.</string>
     <string name="change_plaza_success">Site changed to %1$s</string>
+    <string name="photo_camera_denied">Without camera access you cannot take photos. Tap Take photo again and choose to allow it.</string>
+    <string name="photo_gallery_denied">Without access to your photos you cannot choose an image. Tap Choose from gallery again and allow access.</string>
+    <string name="photo_camera_open_failed">The camera could not be opened. Check that the device has a camera app and try again.</string>
+    <string name="photo_gallery_open_failed">The gallery could not be opened. Try again.</string>
+    <string name="photo_capture_failed">The photo could not be prepared. Check that the device has free space and try again.</string>
+    <string name="photo_ready">Image ready</string>
 </resources>
