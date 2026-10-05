@@ -7,6 +7,7 @@ import androidx.annotation.StringRes;
 import com.redur.electra.R;
 import com.redur.electra.core.error.AppError;
 import com.redur.electra.core.error.NetworkType;
+import com.redur.electra.core.error.PrinterFailure;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,6 +45,9 @@ public final class ErrorUiMapper {
         if (error instanceof AppError.Api api) {
             return mapApi(api.code(), api.serverMessage());
         }
+        if (error instanceof AppError.Printer printer) {
+            return new UiText.Res(mapPrinter(printer.failure()));
+        }
         // Inalcanzable mientras AppError solo permita los subtipos anteriores
         return new UiText.Res(R.string.error_unknown);
     }
@@ -69,6 +73,15 @@ public final class ErrorUiMapper {
         return switch (type) {
             case NO_CONNECTION -> R.string.error_network_no_connection;
             case TIMEOUT -> R.string.error_network_timeout;
+        };
+    }
+
+    @StringRes
+    private static int mapPrinter(@NonNull PrinterFailure failure) {
+        return switch (failure) {
+            case CONNECTION -> R.string.error_printer_connection;
+            case SEND -> R.string.error_printer_send;
+            case BLUETOOTH_UNAVAILABLE -> R.string.error_printer_bluetooth_unavailable;
         };
     }
 }

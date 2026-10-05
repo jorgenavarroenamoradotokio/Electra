@@ -61,6 +61,7 @@
     <string name="menu_3">Administración</string>
     <string name="menu_4">Cambiar de plaza</string>
     <string name="menu_5">Toma de foto</string>
+    <string name="menu_6">Gestión de etiquetas ZPL</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Añadir foto</string>
@@ -73,6 +74,34 @@
     <string name="photo_upload_progress_description">Progreso del envío de la imagen</string>
     <string name="photo_upload_retry">Volver a enviar</string>
 
+    <!-- Etiquetas -->
+    <string name="label_options_title">Etiqueta</string>
+    <string name="label_options_message">Previsualiza la etiqueta o envíala a la impresora.</string>
+    <string name="label_options_preview">Previsualizar</string>
+    <string name="label_options_print">Imprimir</string>
+    <string name="label_options_cancel">Cancelar</string>
+    <string name="label_preview_title">Vista previa de la etiqueta</string>
+    <string name="label_preview_generating">Generando etiqueta…</string>
+    <string name="label_preview_generating_hint">Aparecerá aquí en cuanto esté lista.</string>
+    <string name="label_preview_error_title">No se ha podido mostrar la etiqueta</string>
+    <string name="label_preview_retry">Reintentar</string>
+    <string name="label_preview_page_description">Etiqueta, página %1$d de %2$d</string>
+
+    <!-- Impresión de etiquetas por Bluetooth -->
+    <string name="print_title">Imprimir etiqueta</string>
+    <string name="print_message_choose">Toca la impresora a la que enviar la etiqueta.</string>
+    <string name="print_message_permission">Para buscar impresoras cercanas y enviarles la etiqueta, la app necesita acceso a los dispositivos cercanos (Bluetooth).</string>
+    <string name="print_message_unsupported">Este dispositivo no tiene Bluetooth, así que no puede enviar etiquetas a una impresora.</string>
+    <string name="print_message_bluetooth_off">El Bluetooth está desactivado. Actívalo para buscar la impresora.</string>
+    <string name="print_allow_access">Permitir acceso</string>
+    <string name="print_enable_bluetooth">Activar Bluetooth</string>
+    <string name="print_searching">Buscando impresoras cercanas…</string>
+    <string name="print_generating">Generando etiqueta…</string>
+    <string name="print_sending">Enviando a %1$s…</string>
+    <string name="print_search_again">Buscar de nuevo</string>
+    <string name="print_no_printers">No se ha encontrado ninguna impresora. Comprueba que está encendida, cerca y con el Bluetooth visible.</string>
+    <string name="print_printer_paired">Emparejada · %1$s</string>
+
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Abrir ajustes</string>
     <string name="permission_not_now">Ahora no</string>
@@ -80,6 +109,8 @@
     <string name="permission_camera_blocked_message">Para hacer fotos, abre los ajustes, entra en Permisos › Cámara y permite el acceso mientras usas la app.</string>
     <string name="permission_gallery_blocked_title">El acceso a tus fotos está desactivado</string>
     <string name="permission_gallery_blocked_message">Para elegir imágenes, abre los ajustes, entra en Permisos › Fotos y vídeos y permite el acceso.</string>
+    <string name="permission_bluetooth_blocked_title">El acceso a dispositivos cercanos está desactivado</string>
+    <string name="permission_bluetooth_blocked_message">Para imprimir etiquetas, abre los ajustes, entra en Permisos › Dispositivos cercanos (Ubicación en versiones antiguas de Android) y permite el acceso.</string>
 
     <!-- Inicio -->
     <string name="home_greeting">Hola, %1$s</string>

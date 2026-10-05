@@ -16,6 +16,32 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
+    <!--
+        Impresión de etiquetas por Bluetooth (ver AppPermission.BLUETOOTH). Hasta Android 11 se usan
+        los permisos antiguos (concedidos al instalar) y la ubicación para buscar dispositivos; desde
+        Android 12, "Dispositivos cercanos" sin uso de la ubicación.
+    -->
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="false" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="30" />
+    <!--
+        usesPermissionFlags solo existe desde Android 12, igual que el permiso. No se marca con
+        tools:targetApi: hace fallar el detector de lint de Timber con AGP 8.13.
+    -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
     <application
         android:name=".ElectraApp"
         android:allowBackup="true"

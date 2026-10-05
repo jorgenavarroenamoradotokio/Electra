@@ -14,4 +14,7 @@
     <string name="error_truck_plaza_failed">The truck bay could not be assigned. Try again.</string>
     <string name="error_truck_request_invalid">The truck request is not valid. Review the data and try again.</string>
     <string name="error_truck_barcode_invalid">The barcode is not valid. Scan it again.</string>
+    <string name="error_printer_connection">The printer could not be reached. Check that it is on, close by and not in use by another device, then tap it again.</string>
+    <string name="error_printer_send">The connection with the printer was lost while sending the label. Tap the printer to try again.</string>
+    <string name="error_printer_bluetooth_unavailable">Bluetooth is no longer available. Check that it is on and that the app can access nearby devices.</string>
 </resources>

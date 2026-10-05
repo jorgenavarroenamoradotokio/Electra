@@ -9,6 +9,7 @@ import android.util.Log;
 import com.redur.electra.R;
 import com.redur.electra.core.error.AppError;
 import com.redur.electra.core.error.NetworkType;
+import com.redur.electra.core.error.PrinterFailure;
 import com.redur.electra.rule.TimberTestRule;
 
 import org.junit.Rule;
@@ -79,5 +80,15 @@ public class ErrorUiMapperTest {
             UiText text = ErrorUiMapper.toUiText(new AppError.Network(type));
             assertFalse(type.name(), new UiText.Res(R.string.error_unknown).equals(text));
         }
+    }
+
+    @Test
+    public void falloDeImpresora_explicaQueHacerSegunElMotivo() {
+        assertEquals(new UiText.Res(R.string.error_printer_connection),
+                ErrorUiMapper.toUiText(new AppError.Printer(PrinterFailure.CONNECTION)));
+        assertEquals(new UiText.Res(R.string.error_printer_send),
+                ErrorUiMapper.toUiText(new AppError.Printer(PrinterFailure.SEND)));
+        assertEquals(new UiText.Res(R.string.error_printer_bluetooth_unavailable),
+                ErrorUiMapper.toUiText(new AppError.Printer(PrinterFailure.BLUETOOTH_UNAVAILABLE)));
     }
 }

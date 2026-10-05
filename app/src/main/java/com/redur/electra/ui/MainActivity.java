@@ -26,6 +26,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 import com.redur.electra.R;
 import com.redur.electra.databinding.ActivityMainBinding;
+import com.redur.electra.ui.label.PrintLabelBottomSheet;
 import com.redur.electra.ui.logout.LogoutBottomSheet;
 import com.redur.electra.ui.menu.DrawerMenuAdapter;
 import com.redur.electra.ui.menu.DrawerMenuRow;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         setupBackNavigation();
         listenPlazaChanges(navHost.getChildFragmentManager());
         listenPhotoResults(navHost.getChildFragmentManager());
+        listenLabelPrinted(navHost.getChildFragmentManager());
     }
 
     /**
@@ -198,6 +200,17 @@ public class MainActivity extends AppCompatActivity {
         navHostFragmentManager.setFragmentResultListener(PhotoSourceBottomSheet.RESULT_KEY, this, (key, result) -> {
             if (result.getString(PhotoSourceBottomSheet.RESULT_IMAGE_URI) != null) {
                 Snackbar.make(binding.getRoot(), R.string.photo_uploaded, Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /** Etiqueta enviada a una impresora Bluetooth desde la hoja de impresión. */
+    private void listenLabelPrinted(@NonNull FragmentManager navHostFragmentManager) {
+        navHostFragmentManager.setFragmentResultListener(PrintLabelBottomSheet.RESULT_KEY, this, (key, result) -> {
+            String printerName = result.getString(PrintLabelBottomSheet.RESULT_PRINTER_NAME);
+            if (printerName != null) {
+                Snackbar.make(binding.getRoot(), getString(R.string.print_done, printerName),
+                        Snackbar.LENGTH_SHORT).show();
             }
         });
     }

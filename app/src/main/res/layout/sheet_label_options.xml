@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Hoja de etiqueta: misma anatomía que las de toma de foto y cambio de plaza (icono, título,
+    explicación, acciones y cancelar). Previsualizar e imprimir son opciones equivalentes, por eso
+    se presentan como filas de acción iguales.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/screen_padding_horizontal"
+    android:paddingBottom="@dimen/spacing_l"
+    tools:context=".ui.label.LabelOptionsBottomSheet">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:layout_width="@dimen/icon_badge_size"
+        android:layout_height="@dimen/icon_badge_size"
+        android:background="@drawable/bg_icon_badge"
+        android:importantForAccessibility="no"
+        android:scaleType="center"
+        android:src="@drawable/ic_label_24"
+        app:tint="?attr/colorPrimary" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:accessibilityHeading="true"
+        android:gravity="center"
+        android:text="@string/label_options_title"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:textColor="?attr/colorOnSurface" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:gravity="center"
+        android:text="@string/label_options_message"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_label_preview"
+        style="@style/Widget.Electra.Button.ListAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_l"
+        android:text="@string/label_options_preview"
+        app:icon="@drawable/ic_visibility_24" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_label_print"
+        style="@style/Widget.Electra.Button.ListAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_options_print"
+        app:icon="@drawable/ic_print_24" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_label_cancel"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:minHeight="@dimen/button_height"
+        android:text="@string/label_options_cancel"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        app:cornerRadius="@dimen/corner_radius_m" />
+
+</LinearLayout>

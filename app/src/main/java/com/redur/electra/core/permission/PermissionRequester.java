@@ -43,12 +43,8 @@ public final class PermissionRequester {
 
     /** Comprueba el permiso sin preguntar al usuario. */
     public static boolean isGranted(@NonNull Context context, @NonNull AppPermission permission) {
-        for (String manifestPermission : permission.manifestPermissions()) {
-            if (ContextCompat.checkSelfPermission(context, manifestPermission) == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            }
-        }
-        return false;
+        return permission.isGranted(manifestPermission ->
+                ContextCompat.checkSelfPermission(context, manifestPermission) == PackageManager.PERMISSION_GRANTED);
     }
 
     /**

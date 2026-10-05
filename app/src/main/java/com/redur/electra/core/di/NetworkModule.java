@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.redur.electra.BuildConfig;
 import com.redur.electra.core.log.SensitiveAwareHttpLoggingInterceptor;
 import com.redur.electra.data.remote.api.FileApiService;
+import com.redur.electra.data.remote.api.LabelApiService;
 import com.redur.electra.data.remote.api.LoginApiService;
 import com.redur.electra.data.remote.api.PlaceApiService;
 
@@ -50,7 +51,9 @@ public class NetworkModule {
                     Set.of(LoginApiService.LOGIN_PATH,
                             PlaceApiService.CHANGE_PLZS_PATH,
                             PlaceApiService.PLACE_LIST_PATH,
-                            FileApiService.UPLOAD_LOG_PATH)));
+                            FileApiService.UPLOAD_LOG_PATH,
+                            FileApiService.UPLOAD_IMG_PATH,
+                            LabelApiService.CREATE_ZPL_PATH)));
         }
 
         return builder.build();
@@ -79,5 +82,10 @@ public class NetworkModule {
     @Provides
     static FileApiService provideFileApiService(Retrofit retrofit) {
         return retrofit.create(FileApiService.class);
+    }
+
+    @Provides
+    static LabelApiService provideLabelApiService(Retrofit retrofit) {
+        return retrofit.create(LabelApiService.class);
     }
 }

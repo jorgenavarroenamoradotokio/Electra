@@ -15,4 +15,7 @@
     <string name="photo_gallery_open_failed">The gallery could not be opened. Try again.</string>
     <string name="photo_capture_failed">The photo could not be prepared. Check that the device has free space and try again.</string>
     <string name="photo_uploaded">Image sent</string>
+    <string name="label_preview_unreadable">The label arrived damaged and cannot be displayed. Try again; if it keeps happening, contact your administrator.</string>
+    <string name="print_done">Label sent to %1$s</string>
+    <string name="print_location_off">To search for new printers, turn on location. Paired printers are listed below.</string>
 </resources>

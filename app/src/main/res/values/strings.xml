@@ -61,6 +61,7 @@
     <string name="menu_3">Administration</string>
     <string name="menu_4">Change site</string>
     <string name="menu_5">Take photo</string>
+    <string name="menu_6">ZPL label management</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Add a photo</string>
@@ -73,6 +74,34 @@
     <string name="photo_upload_progress_description">Image upload progress</string>
     <string name="photo_upload_retry">Send again</string>
 
+    <!-- Etiquetas -->
+    <string name="label_options_title">Label</string>
+    <string name="label_options_message">Preview the label or send it to the printer.</string>
+    <string name="label_options_preview">Preview</string>
+    <string name="label_options_print">Print</string>
+    <string name="label_options_cancel">Cancel</string>
+    <string name="label_preview_title">Label preview</string>
+    <string name="label_preview_generating">Generating label…</string>
+    <string name="label_preview_generating_hint">It will appear here as soon as it is ready.</string>
+    <string name="label_preview_error_title">The label could not be shown</string>
+    <string name="label_preview_retry">Try again</string>
+    <string name="label_preview_page_description">Label, page %1$d of %2$d</string>
+
+    <!-- Impresión de etiquetas por Bluetooth -->
+    <string name="print_title">Print label</string>
+    <string name="print_message_choose">Tap the printer to send the label to.</string>
+    <string name="print_message_permission">To find nearby printers and send them the label, the app needs access to nearby devices (Bluetooth).</string>
+    <string name="print_message_unsupported">This device has no Bluetooth, so it cannot send labels to a printer.</string>
+    <string name="print_message_bluetooth_off">Bluetooth is turned off. Turn it on to find the printer.</string>
+    <string name="print_allow_access">Allow access</string>
+    <string name="print_enable_bluetooth">Turn on Bluetooth</string>
+    <string name="print_searching">Searching for nearby printers…</string>
+    <string name="print_generating">Generating label…</string>
+    <string name="print_sending">Sending to %1$s…</string>
+    <string name="print_search_again">Search again</string>
+    <string name="print_no_printers">No printers found. Check that the printer is on, close by and has Bluetooth discoverable.</string>
+    <string name="print_printer_paired">Paired · %1$s</string>
+
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Open settings</string>
     <string name="permission_not_now">Not now</string>
@@ -80,6 +109,8 @@
     <string name="permission_camera_blocked_message">To take photos, open settings, go to Permissions › Camera and allow access while using the app.</string>
     <string name="permission_gallery_blocked_title">Photo access is turned off</string>
     <string name="permission_gallery_blocked_message">To choose images, open settings, go to Permissions › Photos and videos and allow access.</string>
+    <string name="permission_bluetooth_blocked_title">Nearby devices access is turned off</string>
+    <string name="permission_bluetooth_blocked_message">To print labels, open settings, go to Permissions › Nearby devices (Location on older Android versions) and allow access.</string>
 
     <!-- Inicio -->
     <string name="home_greeting">Hello, %1$s</string>
