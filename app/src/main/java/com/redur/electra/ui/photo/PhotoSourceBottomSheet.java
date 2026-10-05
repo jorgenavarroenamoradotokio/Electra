@@ -16,13 +16,16 @@ import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.redur.electra.BuildConfig;
+import com.redur.electra.R;
 import com.redur.electra.core.permission.PermissionRequester;
 import com.redur.electra.core.ui.UiText;
 import com.redur.electra.databinding.SheetPhotoSourceBinding;
 import com.redur.electra.ui.permission.PermissionSettingsBottomSheet;
 
 import java.io.File;
+import java.text.NumberFormat;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import timber.log.Timber;
@@ -30,8 +33,9 @@ import timber.log.Timber;
 /**
  * Hacer una foto o elegir una imagen de la galería, como hoja inferior. Pide el permiso del origen
  * elegido (el sistema ofrece "Mientras se usa la app", "Solo esta vez" o "No permitir"); si está
- * denegado para siempre, ofrece ir a ajustes. Con la imagen lista publica {@link #RESULT_KEY} con
- * su content:// en {@link #RESULT_IMAGE_URI} y se cierra.
+ * denegado para siempre, ofrece ir a ajustes. Con la imagen lista la envía al backend mostrando el
+ * progreso; si falla, permite reenviarla o elegir otra. Una vez enviada publica {@link #RESULT_KEY}
+ * con su content:// en {@link #RESULT_IMAGE_URI} y se cierra.
  */
 @AndroidEntryPoint
 public class PhotoSourceBottomSheet extends BottomSheetDialogFragment {
@@ -77,6 +81,7 @@ public class PhotoSourceBottomSheet extends BottomSheetDialogFragment {
         SheetPhotoSourceBinding views = requireBinding();
         views.buttonTakePhoto.setOnClickListener(v -> onSourceClicked(PhotoSource.CAMERA));
         views.buttonPickImage.setOnClickListener(v -> onSourceClicked(PhotoSource.GALLERY));
+        views.buttonRetryUpload.setOnClickListener(v -> viewModel.onRetryUploadClicked());
         views.buttonCancelPhoto.setOnClickListener(v -> dismiss());
 
         getChildFragmentManager().setFragmentResultListener(PermissionSettingsBottomSheet.RESULT_KEY,
@@ -107,12 +112,15 @@ public class PhotoSourceBottomSheet extends BottomSheetDialogFragment {
 
     private void render(@NonNull PhotoSourceState state) {
         SheetPhotoSourceBinding views = requireBinding();
-        boolean ready = state instanceof PhotoSourceState.Ready;
-        views.buttonTakePhoto.setEnabled(ready);
-        views.buttonPickImage.setEnabled(ready);
+        boolean canChoose = state.canChooseSource();
+        views.buttonTakePhoto.setEnabled(canChoose);
+        views.buttonPickImage.setEnabled(canChoose);
 
         // El aviso del intento anterior deja de ser cierto en cuanto empieza otro
-        renderNotice(state instanceof PhotoSourceState.Ready readyState ? readyState.notice() : null);
+        renderNotice(noticeOf(state));
+        views.buttonRetryUpload.setVisibility(
+                state instanceof PhotoSourceState.UploadFailed ? View.VISIBLE : View.GONE);
+        renderUploadProgress(state);
 
         if (state instanceof PhotoSourceState.LaunchCamera launch) {
             launchCamera(launch.output());
@@ -121,12 +129,49 @@ public class PhotoSourceBottomSheet extends BottomSheetDialogFragment {
         } else if (state instanceof PhotoSourceState.PermissionBlocked blocked) {
             PermissionSettingsBottomSheet.showIfNotShown(getChildFragmentManager(), blocked.permission());
             viewModel.onSettingsPromptShown();
-        } else if (state instanceof PhotoSourceState.Picked picked) {
+        } else if (state instanceof PhotoSourceState.Uploaded uploaded) {
             Bundle result = new Bundle();
-            result.putString(RESULT_IMAGE_URI, picked.imageUri());
+            result.putString(RESULT_IMAGE_URI, uploaded.imageUri());
             getParentFragmentManager().setFragmentResult(RESULT_KEY, result);
             dismiss();
         }
+    }
+
+    @Nullable
+    private static UiText noticeOf(@NonNull PhotoSourceState state) {
+        if (state instanceof PhotoSourceState.Ready ready) {
+            return ready.notice();
+        }
+        if (state instanceof PhotoSourceState.UploadFailed failed) {
+            return failed.message();
+        }
+        return null;
+    }
+
+    /** Al 100 % la barra pasa a indeterminada mientras responde el servidor. */
+    private void renderUploadProgress(@NonNull PhotoSourceState state) {
+        SheetPhotoSourceBinding views = requireBinding();
+        if (!(state instanceof PhotoSourceState.Uploading uploading)) {
+            views.layoutUploadProgress.setVisibility(View.GONE);
+            return;
+        }
+        LinearProgressIndicator progress = views.progressUpload;
+        boolean confirming = uploading.percent() >= PhotoSourceState.Uploading.COMPLETE;
+        views.textUploadProgress.setText(confirming
+                ? getString(R.string.photo_upload_confirming)
+                : getString(R.string.photo_upload_sending,
+                        NumberFormat.getPercentInstance().format(uploading.percent() / 100.0)));
+        if (confirming) {
+            progress.setIndeterminate(true);
+        } else {
+            // Solo se anima el avance de una barra que ya mostraba progreso: al aparecer, al
+            // recrearse la vista o al reintentar, salta directamente al valor
+            boolean animate = views.layoutUploadProgress.getVisibility() == View.VISIBLE
+                    && !progress.isIndeterminate();
+            progress.setIndeterminate(false);
+            progress.setProgressCompat(uploading.percent(), animate);
+        }
+        views.layoutUploadProgress.setVisibility(View.VISIBLE);
     }
 
     /** El aviso se mantiene hasta el siguiente intento: explica qué ha pasado y qué hacer. */

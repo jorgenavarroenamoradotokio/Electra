@@ -68,6 +68,10 @@
     <string name="photo_source_take_photo">Take photo</string>
     <string name="photo_source_pick_image">Choose from gallery</string>
     <string name="photo_source_cancel">Cancel</string>
+    <string name="photo_upload_sending">Sending image… %1$s</string>
+    <string name="photo_upload_confirming">Confirming delivery…</string>
+    <string name="photo_upload_progress_description">Image upload progress</string>
+    <string name="photo_upload_retry">Send again</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Open settings</string>

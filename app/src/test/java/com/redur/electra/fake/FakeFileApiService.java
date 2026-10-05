@@ -16,6 +16,7 @@ public final class FakeFileApiService implements FileApiService {
     @Nullable
     private List<MultipartBody.Part> lastUploadParts;
     private int uploadCalls;
+    private int imgUploadCalls;
 
     public void willReturnUpload(FakeCall<ApiResponseDTO<Boolean>> call) {
         this.nextUploadCall = call;
@@ -28,12 +29,25 @@ public final class FakeFileApiService implements FileApiService {
         return nextUploadCall;
     }
 
+    @Override
+    public Call<ApiResponseDTO<Boolean>> uploadImg(List<MultipartBody.Part> parts) {
+        uploadCalls++;
+        imgUploadCalls++;
+        lastUploadParts = parts;
+        return nextUploadCall;
+    }
+
     @Nullable
     public List<MultipartBody.Part> lastUploadParts() {
         return lastUploadParts;
     }
 
+    /** Subidas por cualquiera de los endpoints. */
     public int uploadCalls() {
         return uploadCalls;
+    }
+
+    public int imgUploadCalls() {
+        return imgUploadCalls;
     }
 }

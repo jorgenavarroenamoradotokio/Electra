@@ -9,10 +9,20 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.SavedStateHandle;
 
 import com.redur.electra.R;
+import com.redur.electra.core.error.AppError;
+import com.redur.electra.core.error.NetworkType;
 import com.redur.electra.core.permission.AppPermission;
 import com.redur.electra.core.permission.PermissionStatus;
+import com.redur.electra.core.ui.ErrorUiMapper;
 import com.redur.electra.core.ui.UiText;
+import com.redur.electra.data.model.user.User;
+import com.redur.electra.data.repository.ImgUploadRepository;
 import com.redur.electra.data.repository.PhotoRepository;
+import com.redur.electra.data.session.Credentials;
+import com.redur.electra.data.session.UserSession;
+import com.redur.electra.fake.FakeCall;
+import com.redur.electra.fake.FakeFileApiService;
+import com.redur.electra.fake.FileResponses;
 import com.redur.electra.rule.TimberTestRule;
 
 import org.junit.Before;
@@ -22,7 +32,10 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executor;
 
 public class PhotoSourceViewModelTest {
@@ -39,11 +52,20 @@ public class PhotoSourceViewModelTest {
 
     /** Ejecuta en el acto: el trabajo "en segundo plano" termina antes de comprobar. */
     private final Executor direct = Runnable::run;
+    private final FakeFileApiService api = new FakeFileApiService();
+    private final UserSession session = new UserSession();
+    /** Las imágenes se "leen" sin ContentResolver: el contenido no importa al ViewModel. */
+    private final ImgUploadRepository uploadRepository = new ImgUploadRepository(
+            uri -> new ImgUploadRepository.ImageContent("IMG_1.jpg", "image/jpeg", new byte[]{1}),
+            api, session, direct, direct);
     private SavedStateHandle savedState;
     private PhotoSourceViewModel viewModel;
 
     @Before
     public void setUp() {
+        session.start(new User("jperez", "Juan Pérez", "P01", List.of(), Set.of()),
+                new Credentials("jperez", "secreta"));
+        api.willReturnUpload(FakeCall.success(FileResponses.uploaded(true)));
         savedState = new SavedStateHandle();
         viewModel = newViewModel(new PhotoRepository(() -> tmp.getRoot()));
     }
@@ -152,13 +174,14 @@ public class PhotoSourceViewModelTest {
     }
 
     @Test
-    public void fotoHecha_entregaElUriDeLaCaptura() throws IOException {
+    public void fotoHecha_seEnviaYEntregaElUriDeLaCaptura() throws IOException {
         File output = openCamera();
         Files.write(output.toPath(), new byte[]{1, 2, 3});
 
         viewModel.onCameraClosed();
 
-        assertEquals(CAPTURE_URI, ((PhotoSourceState.Picked) state()).imageUri());
+        assertEquals(1, api.imgUploadCalls());
+        assertEquals(CAPTURE_URI, ((PhotoSourceState.Uploaded) state()).imageUri());
     }
 
     @Test
@@ -180,7 +203,7 @@ public class PhotoSourceViewModelTest {
 
         restored.onCameraClosed();
 
-        assertEquals(CAPTURE_URI, ((PhotoSourceState.Picked) restored.getState().getValue()).imageUri());
+        assertEquals(CAPTURE_URI, ((PhotoSourceState.Uploaded) restored.getState().getValue()).imageUri());
     }
 
     @Test
@@ -205,14 +228,52 @@ public class PhotoSourceViewModelTest {
     }
 
     @Test
-    public void imagenElegidaEnLaGaleria_seEntrega() {
-        viewModel.onSourceSelected(PhotoSource.GALLERY);
-        viewModel.onPermissionResult(PermissionStatus.GRANTED);
-        viewModel.onGalleryOpened();
+    public void imagenElegidaEnLaGaleria_seEnviaYEntrega() {
+        pickFromGallery();
 
-        viewModel.onGalleryResult(GALLERY_URI);
+        assertEquals(1, api.imgUploadCalls());
+        assertEquals(GALLERY_URI, ((PhotoSourceState.Uploaded) state()).imageUri());
+    }
 
-        assertEquals(GALLERY_URI, ((PhotoSourceState.Picked) state()).imageUri());
+    @Test
+    public void duranteElEnvio_muestraElProgresoYNoDejaElegirOtroOrigen() {
+        api.willReturnUpload(FakeCall.success(FileResponses.uploaded(true)).deferred());
+
+        pickFromGallery();
+
+        assertEquals(new PhotoSourceState.Uploading(0), state());
+        assertFalse(viewModel.onSourceSelected(PhotoSource.CAMERA));
+    }
+
+    @Test
+    public void envioFallido_explicaElErrorYPermiteElegirOtraImagen() {
+        api.willReturnUpload(FakeCall.failure(new UnknownHostException()));
+
+        pickFromGallery();
+
+        UiText expected = ErrorUiMapper.toUiText(new AppError.Network(NetworkType.NO_CONNECTION));
+        assertEquals(expected, ((PhotoSourceState.UploadFailed) state()).message());
+        assertTrue(viewModel.onSourceSelected(PhotoSource.CAMERA));
+    }
+
+    @Test
+    public void reintentarTrasFallo_reenviaLaMismaImagen() {
+        api.willReturnUpload(FakeCall.failure(new UnknownHostException()));
+        pickFromGallery();
+        api.willReturnUpload(FakeCall.success(FileResponses.uploaded(true)));
+
+        viewModel.onRetryUploadClicked();
+
+        assertEquals(2, api.imgUploadCalls());
+        assertEquals(GALLERY_URI, ((PhotoSourceState.Uploaded) state()).imageUri());
+    }
+
+    @Test
+    public void reintentarSinFalloPrevio_noHaceNada() {
+        viewModel.onRetryUploadClicked();
+
+        assertEquals(0, api.imgUploadCalls());
+        assertTrue(state() instanceof PhotoSourceState.Ready);
     }
 
     @Test
@@ -224,6 +285,13 @@ public class PhotoSourceViewModelTest {
         viewModel.onGalleryResult(null);
 
         assertNull(((PhotoSourceState.Ready) state()).notice());
+    }
+
+    private void pickFromGallery() {
+        viewModel.onSourceSelected(PhotoSource.GALLERY);
+        viewModel.onPermissionResult(PermissionStatus.GRANTED);
+        viewModel.onGalleryOpened();
+        viewModel.onGalleryResult(GALLERY_URI);
     }
 
     private void blockCamera() {
@@ -245,7 +313,7 @@ public class PhotoSourceViewModelTest {
     }
 
     private PhotoSourceViewModel newViewModel(PhotoRepository repository) {
-        return new PhotoSourceViewModel(savedState, repository, direct, direct);
+        return new PhotoSourceViewModel(savedState, repository, uploadRepository, direct, direct);
     }
 
     private PhotoSourceState state() {
