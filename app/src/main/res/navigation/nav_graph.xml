@@ -22,4 +22,21 @@
         android:name="com.redur.electra.ui.photo.PhotoSourceBottomSheet"
         tools:layout="@layout/sheet_photo_source" />
 
+    <!-- Gestión de etiquetas ZPL (menú 6): previsualizar o imprimir por Bluetooth -->
+    <dialog
+        android:id="@+id/nav_label_options"
+        android:name="com.redur.electra.ui.label.LabelOptionsBottomSheet"
+        tools:layout="@layout/sheet_label_options" />
+
+    <fragment
+        android:id="@+id/nav_label_preview"
+        android:name="com.redur.electra.ui.label.LabelPreviewFragment"
+        android:label="@string/label_preview_title"
+        tools:layout="@layout/fragment_label_preview" />
+
+    <dialog
+        android:id="@+id/nav_label_print"
+        android:name="com.redur.electra.ui.label.PrintLabelBottomSheet"
+        tools:layout="@layout/sheet_print_label" />
+
 </navigation>

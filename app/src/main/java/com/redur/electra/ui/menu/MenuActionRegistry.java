@@ -50,6 +50,7 @@ public final class MenuActionRegistry {
         pending(3, R.string.menu_3, R.drawable.ic_account_tree_24);
         dialog(4, R.string.menu_4, R.drawable.ic_swap_horiz_24, R.id.nav_cambiar_plaza);
         dialog(5, R.string.menu_5, R.drawable.ic_photo_camera_24, R.id.nav_toma_foto);
+        dialog(6, R.string.menu_6, R.drawable.ic_label_24, R.id.nav_label_options);
     }
 
     private MenuActionRegistry() {

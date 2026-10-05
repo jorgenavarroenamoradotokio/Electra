@@ -15,4 +15,7 @@
     <string name="photo_gallery_open_failed">No se ha podido abrir la galería. Inténtalo de nuevo.</string>
     <string name="photo_capture_failed">No se ha podido preparar la foto. Comprueba que el dispositivo tiene espacio libre e inténtalo de nuevo.</string>
     <string name="photo_uploaded">Imagen enviada</string>
+    <string name="label_preview_unreadable">La etiqueta ha llegado dañada y no se puede mostrar. Inténtalo de nuevo; si sigue pasando, avisa a tu administrador.</string>
+    <string name="print_done">Etiqueta enviada a %1$s</string>
+    <string name="print_location_off">Para buscar impresoras nuevas, activa la ubicación. Las emparejadas aparecen abajo.</string>
 </resources>

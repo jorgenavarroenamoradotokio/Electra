@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Página de la etiqueta sobre fondo blanco en ambos temas: representa el papel, y el PNG puede
+    tener zonas transparentes que en modo oscuro no se verían.
+-->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="?attr/materialCardViewOutlinedStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_m"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/corner_radius_m">
+
+    <ImageView
+        android:id="@+id/image_label_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:padding="@dimen/spacing_s"
+        android:scaleType="fitCenter" />
+
+</com.google.android.material.card.MaterialCardView>

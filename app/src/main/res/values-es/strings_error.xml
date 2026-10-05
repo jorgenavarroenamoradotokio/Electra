@@ -14,4 +14,7 @@
     <string name="error_truck_plaza_failed">No se ha podido asignar la plaza del camión. Inténtalo de nuevo.</string>
     <string name="error_truck_request_invalid">La solicitud del camión no es válida. Revisa los datos e inténtalo de nuevo.</string>
     <string name="error_truck_barcode_invalid">El código de barras no es válido. Vuelve a escanearlo.</string>
+    <string name="error_printer_connection">No se ha podido conectar con la impresora. Comprueba que está encendida, cerca y sin usar por otro dispositivo, y vuelve a tocarla.</string>
+    <string name="error_printer_send">Se ha perdido la conexión con la impresora al enviar la etiqueta. Tócala para intentarlo de nuevo.</string>
+    <string name="error_printer_bluetooth_unavailable">El Bluetooth ya no está disponible. Comprueba que está activado y que la app puede acceder a los dispositivos cercanos.</string>
 </resources>

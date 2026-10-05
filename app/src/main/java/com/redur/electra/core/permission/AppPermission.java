@@ -12,6 +12,7 @@ import androidx.annotation.StringRes;
 import com.redur.electra.R;
 
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Permisos de sistema que la app pide en tiempo de ejecución, con los textos para recordar al
@@ -25,7 +26,14 @@ public enum AppPermission {
 
     /** Fotos del dispositivo. Desde Android 14 también vale el acceso parcial ("Seleccionar fotos"). */
     GALLERY(R.drawable.ic_photo_library_24,
-            R.string.permission_gallery_blocked_title, R.string.permission_gallery_blocked_message);
+            R.string.permission_gallery_blocked_title, R.string.permission_gallery_blocked_message),
+
+    /**
+     * Buscar impresoras Bluetooth y conectarse a ellas. Desde Android 12 es "Dispositivos
+     * cercanos"; antes, buscar dispositivos exige la ubicación.
+     */
+    BLUETOOTH(R.drawable.ic_bluetooth_24,
+            R.string.permission_bluetooth_blocked_title, R.string.permission_bluetooth_blocked_message);
 
     @DrawableRes
     private final int icon;
@@ -80,20 +88,42 @@ public enum AppPermission {
                 }
                 yield new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
             }
+            case BLUETOOTH -> {
+                if (sdkInt >= Build.VERSION_CODES.S) {
+                    yield new String[]{Manifest.permission.BLUETOOTH_SCAN,
+                            Manifest.permission.BLUETOOTH_CONNECT};
+                }
+                yield new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+            }
         };
     }
 
     /**
-     * Resultado de una petición: basta con que se conceda uno de sus permisos (en la galería, el
-     * acceso parcial a fotos concretas permite igualmente elegir imagen).
+     * Resultado de una petición. En la galería basta con uno (el acceso parcial a fotos concretas
+     * permite igualmente elegir imagen); Bluetooth necesita buscar y conectar, así que todos.
      */
     public boolean isGrantedIn(@NonNull Map<String, Boolean> results) {
-        for (String permission : manifestPermissions()) {
-            if (Boolean.TRUE.equals(results.get(permission))) {
+        return isGranted(manifestPermission -> Boolean.TRUE.equals(results.get(manifestPermission)));
+    }
+
+    /** Si está concedido según {@code isManifestPermissionGranted}, con el mismo criterio que {@link #isGrantedIn}. */
+    public boolean isGranted(@NonNull Predicate<String> isManifestPermissionGranted) {
+        return isGranted(isManifestPermissionGranted, Build.VERSION.SDK_INT);
+    }
+
+    /** {@link #isGranted(Predicate)} para una versión de Android concreta. */
+    public boolean isGranted(@NonNull Predicate<String> isManifestPermissionGranted, int sdkInt) {
+        boolean requiresAll = this == BLUETOOTH;
+        for (String manifestPermission : manifestPermissions(sdkInt)) {
+            boolean granted = isManifestPermissionGranted.test(manifestPermission);
+            if (granted && !requiresAll) {
                 return true;
             }
+            if (!granted && requiresAll) {
+                return false;
+            }
         }
-        return false;
+        return requiresAll;
     }
 
     /** Permiso al que pertenece el resultado de una petición, o null si no es de ninguno. */
