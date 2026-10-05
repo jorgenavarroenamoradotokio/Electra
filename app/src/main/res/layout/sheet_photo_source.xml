@@ -50,7 +50,10 @@
         android:textAppearance="?attr/textAppearanceBodyMedium"
         android:textColor="?attr/colorOnSurfaceVariant" />
 
-    <!-- Se deshabilitan mientras se pide permiso o está abierta la cámara/galería: sin dobles toques -->
+    <!--
+        Se deshabilitan mientras se pide permiso, está abierta la cámara/galería o se envía la imagen:
+        sin dobles toques. Tras un envío fallido se pueden usar para elegir otra imagen.
+    -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_take_photo"
         style="@style/Widget.Electra.Button.ListAction"
@@ -67,6 +70,40 @@
         android:layout_height="wrap_content"
         android:text="@string/photo_source_pick_image"
         app:icon="@drawable/ic_photo_library_24" />
+
+    <!--
+        Envío de la imagen. Al 100 % la barra pasa a indeterminada mientras responde el servidor.
+        "Cancelar" sigue disponible: cerrar la hoja cancela el envío.
+    -->
+    <LinearLayout
+        android:id="@+id/layout_upload_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/spacing_m"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/text_upload_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="@string/photo_upload_confirming" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_upload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:contentDescription="@string/photo_upload_progress_description"
+            android:max="100"
+            app:trackCornerRadius="@dimen/progress_indicator_thickness"
+            app:trackThickness="@dimen/progress_indicator_thickness" />
+
+    </LinearLayout>
 
     <!--
         Por qué no se pudo completar el último intento y qué hacer. Aviso (no error): el icono y el
@@ -98,6 +135,17 @@
             tools:text="@string/photo_camera_denied" />
 
     </com.google.android.material.card.MaterialCardView>
+
+    <!-- Solo tras un envío fallido: reenvía la misma imagen sin tener que hacerla o elegirla otra vez -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_retry_upload"
+        style="@style/Widget.Electra.Button.ListAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/photo_upload_retry"
+        android:visibility="gone"
+        app:icon="@drawable/ic_upload_24"
+        tools:visibility="visible" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_cancel_photo"

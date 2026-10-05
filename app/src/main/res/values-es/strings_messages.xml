@@ -14,5 +14,5 @@
     <string name="photo_camera_open_failed">No se ha podido abrir la cámara. Comprueba que el dispositivo tiene una app de cámara e inténtalo de nuevo.</string>
     <string name="photo_gallery_open_failed">No se ha podido abrir la galería. Inténtalo de nuevo.</string>
     <string name="photo_capture_failed">No se ha podido preparar la foto. Comprueba que el dispositivo tiene espacio libre e inténtalo de nuevo.</string>
-    <string name="photo_ready">Imagen lista</string>
+    <string name="photo_uploaded">Imagen enviada</string>
 </resources>

@@ -66,29 +66,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Los destinos del menú (p. ej. el cambio de plaza) viven en el NavHostFragment: sus resultados
-     * llegan a su FragmentManager hijo, no al de la Activity.
-     */
-    private void listenPlazaChanges(@NonNull FragmentManager navHostFragmentManager) {
-        navHostFragmentManager.setFragmentResultListener(PlaceBottomSheet.RESULT_KEY, this, (key, result) -> {
-            String plazaId = result.getString(PlaceBottomSheet.RESULT_PLAZA_ID);
-            if (plazaId != null) {
-                Snackbar.make(binding.getRoot(), getString(R.string.change_plaza_success, plazaId),
-                        Snackbar.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    /** Imagen hecha o elegida desde "Toma de foto" (destino del menú, como el cambio de plaza). */
-    private void listenPhotoResults(@NonNull FragmentManager navHostFragmentManager) {
-        navHostFragmentManager.setFragmentResultListener(PhotoSourceBottomSheet.RESULT_KEY, this, (key, result) -> {
-            if (result.getString(PhotoSourceBottomSheet.RESULT_IMAGE_URI) != null) {
-                Snackbar.make(binding.getRoot(), R.string.photo_ready, Snackbar.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    /**
      * La toolbar y la cabecera del menú se extienden bajo la status bar; sus contenidos y el
      * cierre de sesión del pie quedan fuera de los recortes y de la barra de navegación.
      */
@@ -198,6 +175,29 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     LogoutBottomSheet.showIfNotShown(getSupportFragmentManager());
                 }
+            }
+        });
+    }
+
+    /**
+     * Los destinos del menú (p. ej. el cambio de plaza) viven en el NavHostFragment: sus resultados
+     * llegan a su FragmentManager hijo, no al de la Activity.
+     */
+    private void listenPlazaChanges(@NonNull FragmentManager navHostFragmentManager) {
+        navHostFragmentManager.setFragmentResultListener(PlaceBottomSheet.RESULT_KEY, this, (key, result) -> {
+            String plazaId = result.getString(PlaceBottomSheet.RESULT_PLAZA_ID);
+            if (plazaId != null) {
+                Snackbar.make(binding.getRoot(), getString(R.string.change_plaza_success, plazaId),
+                        Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /** Imagen hecha o elegida y enviada desde "Toma de foto" (destino del menú, como el cambio de plaza). */
+    private void listenPhotoResults(@NonNull FragmentManager navHostFragmentManager) {
+        navHostFragmentManager.setFragmentResultListener(PhotoSourceBottomSheet.RESULT_KEY, this, (key, result) -> {
+            if (result.getString(PhotoSourceBottomSheet.RESULT_IMAGE_URI) != null) {
+                Snackbar.make(binding.getRoot(), R.string.photo_uploaded, Snackbar.LENGTH_SHORT).show();
             }
         });
     }

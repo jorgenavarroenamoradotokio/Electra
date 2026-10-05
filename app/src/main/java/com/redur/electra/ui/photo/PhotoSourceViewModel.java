@@ -9,10 +9,15 @@ import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.redur.electra.R;
+import com.redur.electra.core.async.Cancellable;
+import com.redur.electra.core.async.ResultCallback;
 import com.redur.electra.core.concurrency.IoExecutor;
 import com.redur.electra.core.concurrency.MainExecutor;
+import com.redur.electra.core.error.AppError;
 import com.redur.electra.core.permission.PermissionStatus;
+import com.redur.electra.core.ui.ErrorUiMapper;
 import com.redur.electra.core.ui.UiText;
+import com.redur.electra.data.repository.ImgUploadRepository;
 import com.redur.electra.data.repository.PhotoRepository;
 
 import java.io.File;
@@ -26,8 +31,9 @@ import timber.log.Timber;
 
 /**
  * Hacer una foto o elegir una imagen: pide el permiso del origen elegido, abre la cámara o la
- * galería y entrega la imagen. El origen pendiente y la captura en curso se guardan en
- * {@link SavedStateHandle}: la app de cámara puede hacer que el sistema mate este proceso.
+ * galería, envía la imagen al backend y la entrega. El origen pendiente y la captura en curso se
+ * guardan en {@link SavedStateHandle}: la app de cámara puede hacer que el sistema mate este proceso.
+ * El envío no sobrevive a la muerte del proceso: se cancela al destruirse el ViewModel.
  */
 @HiltViewModel
 public class PhotoSourceViewModel extends ViewModel {
@@ -41,17 +47,25 @@ public class PhotoSourceViewModel extends ViewModel {
 
     private final SavedStateHandle savedState;
     private final PhotoRepository repository;
+    private final ImgUploadRepository uploadRepository;
     private final Executor ioExecutor;
     private final Executor mainExecutor;
 
-    // Solo accedido desde el hilo principal
+    // Solo accedidos desde el hilo principal
     private boolean cleared;
+    /** Última imagen obtenida: la que se reenvía al reintentar. */
+    @Nullable
+    private String imageUri;
+    @Nullable
+    private Cancellable pendingUpload;
 
     @Inject
     public PhotoSourceViewModel(SavedStateHandle savedState, PhotoRepository repository,
+                                ImgUploadRepository uploadRepository,
                                 @IoExecutor Executor ioExecutor, @MainExecutor Executor mainExecutor) {
         this.savedState = savedState;
         this.repository = repository;
+        this.uploadRepository = uploadRepository;
         this.ioExecutor = ioExecutor;
         this.mainExecutor = mainExecutor;
     }
@@ -62,11 +76,13 @@ public class PhotoSourceViewModel extends ViewModel {
 
     /**
      * @return true si se acepta la elección: la UI debe pedir entonces {@code source.permission()}
-     * y responder con {@link #onPermissionResult}. False si ya hay otra en curso (doble toque).
+     * y responder con {@link #onPermissionResult}. False si ya hay otra en curso (doble toque) o
+     * se está enviando una imagen.
      */
     @MainThread
     public boolean onSourceSelected(@NonNull PhotoSource source) {
-        if (!(state.getValue() instanceof PhotoSourceState.Ready)) {
+        PhotoSourceState current = state.getValue();
+        if (current == null || !current.canChooseSource()) {
             return false;
         }
         savedState.set(KEY_PENDING_SOURCE, source);
@@ -190,10 +206,25 @@ public class PhotoSourceViewModel extends ViewModel {
         }
     }
 
+    /** Vuelve a enviar la imagen cuyo envío falló, sin tener que hacerla o elegirla otra vez. */
+    @MainThread
+    public void onRetryUploadClicked() {
+        String uri = imageUri;
+        if (!(state.getValue() instanceof PhotoSourceState.UploadFailed) || uri == null) {
+            return;
+        }
+        upload(uri);
+    }
+
     @Override
     protected void onCleared() {
-        // Evita que una captura preparada en segundo plano llegue a un ViewModel ya destruido
+        // Evita que una captura preparada en segundo plano o el resultado del envío lleguen a un
+        // ViewModel ya destruido; cerrar la hoja cancela el envío en curso
         cleared = true;
+        if (pendingUpload != null) {
+            pendingUpload.cancel();
+            pendingUpload = null;
+        }
     }
 
     private void open(@NonNull PhotoSource source) {
@@ -225,9 +256,35 @@ public class PhotoSourceViewModel extends ViewModel {
         state.setValue(new PhotoSourceState.LaunchCamera(file));
     }
 
+    /** Imagen obtenida de la cámara o la galería: se envía antes de entregarla. */
     private void deliver(@NonNull String imageUri) {
         savedState.remove(KEY_PENDING_SOURCE);
-        state.setValue(new PhotoSourceState.Picked(imageUri));
+        this.imageUri = imageUri;
+        upload(imageUri);
+    }
+
+    private void upload(@NonNull String uri) {
+        state.setValue(new PhotoSourceState.Uploading(0));
+        pendingUpload = uploadRepository.upload(uri, this::onUploadProgress, new ResultCallback<>() {
+            @Override
+            public void onSuccess(@NonNull Boolean result) {
+                pendingUpload = null;
+                imageUri = null;
+                state.setValue(new PhotoSourceState.Uploaded(uri));
+            }
+
+            @Override
+            public void onError(@NonNull AppError error) {
+                pendingUpload = null;
+                state.setValue(new PhotoSourceState.UploadFailed(ErrorUiMapper.toUiText(error)));
+            }
+        });
+    }
+
+    private void onUploadProgress(int percent) {
+        if (state.getValue() instanceof PhotoSourceState.Uploading) {
+            state.setValue(new PhotoSourceState.Uploading(percent));
+        }
     }
 
     private void finish(@Nullable UiText notice) {
