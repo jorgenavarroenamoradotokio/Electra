@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Tipo de bulto seleccionable: radio, abreviatura (lo que el operario reconoce) con su descripción
+    traducida y, si el tipo la exige, el aviso de foto. La fila completa es el objetivo táctil; el
+    radio es decorativo y TalkBack lee la fila como un único elemento marcable.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bulto_type_row"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/button_height"
+    android:orientation="horizontal"
+    android:paddingVertical="@dimen/spacing_s"
+    android:paddingStart="@dimen/spacing_xs"
+    android:paddingEnd="@dimen/spacing_m">
+
+    <com.google.android.material.radiobutton.MaterialRadioButton
+        android:id="@+id/radio_bulto_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
+        android:importantForAccessibility="no" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_xs"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_bulto_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface"
+            tools:text="PL" />
+
+        <TextView
+            android:id="@+id/text_bulto_type_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="PALET" />
+
+    </LinearLayout>
+
+    <!-- Solo en los tipos que exigen foto: icono y texto, nunca solo color -->
+    <LinearLayout
+        android:id="@+id/layout_bulto_type_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_s"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="@dimen/icon_inline_size"
+            android:layout_height="@dimen/icon_inline_size"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_photo_camera_24"
+            app:tint="?attr/colorOnSurfaceVariant" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_xs"
+            android:text="@string/bulto_type_photo_required"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+    </LinearLayout>
+
+</LinearLayout>

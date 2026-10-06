@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Tipo de bulto: se elige uno de la lista y se puede fijar para las lecturas siguientes.
+    La zona central alterna tres estados excluyentes: cargando, error/vacío (con reintento) y la
+    lista. Las acciones van fijas en el pie, al alcance del pulgar: cancelar a la izquierda y
+    asignar, la principal, a la derecha; asignar solo se habilita con un tipo elegido.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.bulto.BultoTypeFragment">
+
+    <TextView
+        android:id="@+id/text_bulto_type_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/screen_padding_horizontal"
+        android:layout_marginTop="@dimen/spacing_l"
+        android:accessibilityHeading="true"
+        android:text="@string/bulto_type_title"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textColor="?attr/colorOnSurface" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_m"
+        android:layout_weight="1"
+        android:paddingHorizontal="@dimen/screen_padding_horizontal">
+
+        <!-- Se ajusta a su contenido y, si no cabe, la lista se desplaza dentro del marco -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_bulto_types"
+            style="?attr/materialCardViewOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:cardCornerRadius="@dimen/corner_radius_m"
+            tools:visibility="visible">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_bulto_types"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:padding="@dimen/spacing_xs"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="6"
+                tools:listitem="@layout/item_bulto_type" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:id="@+id/layout_bulto_types_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:accessibilityLiveRegion="polite"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
+                android:indeterminate="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:gravity="center"
+                android:text="@string/bulto_type_loading"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+        </LinearLayout>
+
+        <!-- Error y lista vacía comparten anatomía: qué ha pasado y cómo seguir -->
+        <LinearLayout
+            android:id="@+id/layout_bulto_types_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:accessibilityLiveRegion="polite"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="@dimen/icon_badge_size"
+                android:layout_height="@dimen/icon_badge_size"
+                android:background="@drawable/bg_icon_badge"
+                android:importantForAccessibility="no"
+                android:scaleType="center"
+                android:src="@drawable/ic_error_24"
+                app:tint="@color/msg_error_icon" />
+
+            <TextView
+                android:id="@+id/text_bulto_types_error_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:accessibilityHeading="true"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="@string/bulto_type_error_title" />
+
+            <TextView
+                android:id="@+id/text_bulto_types_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                tools:text="@string/error_network_no_connection" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_bulto_types_retry"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_l"
+                android:minHeight="@dimen/button_height"
+                android:text="@string/bulto_type_retry"
+                app:cornerRadius="@dimen/corner_radius_m"
+                app:icon="@drawable/ic_refresh_24" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/check_bulto_type_fixed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_m"
+        android:layout_marginTop="@dimen/spacing_s"
+        android:minHeight="@dimen/touch_target_min"
+        android:text="@string/bulto_type_fixed"
+        android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_s" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_m">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_bulto_type_cancel"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="@dimen/button_height"
+            android:text="@string/bulto_type_cancel"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            app:cornerRadius="@dimen/corner_radius_m"
+            app:icon="@drawable/ic_close_24"
+            app:iconGravity="textStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_bulto_type_confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_s"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:minHeight="@dimen/button_height"
+            android:stateListAnimator="@animator/scale_on_press"
+            android:text="@string/bulto_type_confirm"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            app:cornerRadius="@dimen/corner_radius_m"
+            app:icon="@drawable/ic_check_24"
+            app:iconGravity="textStart" />
+
+    </LinearLayout>
+
+</LinearLayout>

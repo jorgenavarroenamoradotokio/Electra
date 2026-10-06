@@ -14,11 +14,15 @@
     <!-- Componentes -->
     <dimen name="touch_target_min">48dp</dimen>
     <dimen name="button_height">56dp</dimen>
+    <dimen name="corner_radius_s">8dp</dimen>
     <dimen name="corner_radius_m">12dp</dimen>
     <dimen name="corner_radius_xl">28dp</dimen>
     <dimen name="progress_indicator_size">24dp</dimen>
     <dimen name="progress_indicator_thickness">3dp</dimen>
     <dimen name="icon_badge_size">56dp</dimen>
+    <!-- Borde que marca el elemento elegido de una lista de selección -->
+    <dimen name="selection_stroke_width">2dp</dimen>
+    <dimen name="icon_inline_size">16dp</dimen>
     <!-- Del borde de una fila ListAction al inicio de su texto: padding + icono + separación -->
     <dimen name="list_action_text_inset">56dp</dimen>
 
