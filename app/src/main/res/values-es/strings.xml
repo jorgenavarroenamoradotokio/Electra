@@ -62,6 +62,7 @@
     <string name="menu_4">Cambiar de plaza</string>
     <string name="menu_5">Toma de foto</string>
     <string name="menu_6">Gestión de etiquetas ZPL</string>
+    <string name="menu_7">Tipo de bulto</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Añadir foto</string>
@@ -101,6 +102,19 @@
     <string name="print_search_again">Buscar de nuevo</string>
     <string name="print_no_printers">No se ha encontrado ninguna impresora. Comprueba que está encendida, cerca y con el Bluetooth visible.</string>
     <string name="print_printer_paired">Emparejada · %1$s</string>
+
+    <!-- Tipo de bulto -->
+    <string name="bulto_type_title">Elige el tipo de bulto</string>
+    <string name="bulto_type_photo_required">exige foto</string>
+    <string name="bulto_type_item_description">%1$s, %2$s</string>
+    <string name="bulto_type_item_description_photo">%1$s, %2$s, exige foto</string>
+    <string name="bulto_type_fixed">Fijar para las lecturas siguientes</string>
+    <string name="bulto_type_loading">Cargando tipos de bulto…</string>
+    <string name="bulto_type_error_title">No se han podido cargar los tipos de bulto</string>
+    <string name="bulto_type_empty_title">No hay tipos de bulto disponibles</string>
+    <string name="bulto_type_retry">Reintentar</string>
+    <string name="bulto_type_confirm">Asignar</string>
+    <string name="bulto_type_cancel">Cancelar</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Abrir ajustes</string>

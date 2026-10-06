@@ -62,6 +62,7 @@
     <string name="menu_4">Change site</string>
     <string name="menu_5">Take photo</string>
     <string name="menu_6">ZPL label management</string>
+    <string name="menu_7">Package type</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Add a photo</string>
@@ -101,6 +102,19 @@
     <string name="print_search_again">Search again</string>
     <string name="print_no_printers">No printers found. Check that the printer is on, close by and has Bluetooth discoverable.</string>
     <string name="print_printer_paired">Paired · %1$s</string>
+
+    <!-- Tipo de bulto -->
+    <string name="bulto_type_title">Choose the package type</string>
+    <string name="bulto_type_photo_required">photo required</string>
+    <string name="bulto_type_item_description">%1$s, %2$s</string>
+    <string name="bulto_type_item_description_photo">%1$s, %2$s, photo required</string>
+    <string name="bulto_type_fixed">Keep for the next readings</string>
+    <string name="bulto_type_loading">Loading package types…</string>
+    <string name="bulto_type_error_title">Package types could not be loaded</string>
+    <string name="bulto_type_empty_title">No package types available</string>
+    <string name="bulto_type_retry">Try again</string>
+    <string name="bulto_type_confirm">Assign</string>
+    <string name="bulto_type_cancel">Cancel</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Open settings</string>

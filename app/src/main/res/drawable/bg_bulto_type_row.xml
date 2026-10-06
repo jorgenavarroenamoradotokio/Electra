@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Fila de tipo de bulto: transparente en reposo; la elegida (activated) lleva el tinte tonal del
+    color principal y un borde, como en el mockup. El radio de la fila completa la señal sin color.
+-->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?attr/colorControlHighlight">
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/white" />
+            <corners android:radius="@dimen/corner_radius_s" />
+        </shape>
+    </item>
+    <item>
+        <selector>
+            <item android:state_activated="true">
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/icon_badge_background" />
+                    <stroke
+                        android:width="@dimen/selection_stroke_width"
+                        android:color="?attr/colorPrimary" />
+                    <corners android:radius="@dimen/corner_radius_s" />
+                </shape>
+            </item>
+            <item android:drawable="@android:color/transparent" />
+        </selector>
+    </item>
+</ripple>

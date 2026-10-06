@@ -18,4 +18,7 @@
     <string name="label_preview_unreadable">La etiqueta ha llegado dañada y no se puede mostrar. Inténtalo de nuevo; si sigue pasando, avisa a tu administrador.</string>
     <string name="print_done">Etiqueta enviada a %1$s</string>
     <string name="print_location_off">Para buscar impresoras nuevas, activa la ubicación. Las emparejadas aparecen abajo.</string>
+    <string name="bulto_type_empty">No hay tipos de bulto activos. Inténtalo más tarde o contacta con tu administrador.</string>
+    <string name="bulto_type_confirmed">Confirmado</string>
+    <string name="bulto_type_canceled">Cancelado</string>
 </resources>

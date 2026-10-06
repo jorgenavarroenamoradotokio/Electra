@@ -51,6 +51,7 @@ public final class MenuActionRegistry {
         dialog(4, R.string.menu_4, R.drawable.ic_swap_horiz_24, R.id.nav_cambiar_plaza);
         dialog(5, R.string.menu_5, R.drawable.ic_photo_camera_24, R.id.nav_toma_foto);
         dialog(6, R.string.menu_6, R.drawable.ic_label_24, R.id.nav_label_options);
+        screen(7, R.string.menu_7, R.drawable.ic_local_shipping_24, R.id.nav_bulto_type);
     }
 
     private MenuActionRegistry() {
