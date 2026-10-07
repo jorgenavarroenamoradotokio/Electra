@@ -67,6 +67,7 @@
     <string name="menu_9">Weight and dimensions</string>
     <string name="menu_10">Volume</string>
     <string name="menu_11">Incidents</string>
+    <string name="menu_12">Exit gate</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Add a photo</string>
@@ -172,6 +173,20 @@
     <string name="bulto_incidence_retake_photo">Retake photo</string>
     <string name="bulto_incidence_confirm">Accept</string>
     <string name="bulto_incidence_cancel">Cancel</string>
+
+    <!-- Puerta de salida -->
+    <string name="bulto_dock_barcode_hint">Read package</string>
+    <string name="bulto_dock_barcode_helper">Read it with the scanner</string>
+    <string name="bulto_dock_label">Dock</string>
+    <string name="bulto_dock_destination">Hub %1$s · Postcode %2$s · %3$s</string>
+    <string name="bulto_dock_description">Dock %1$s. Hub %2$s, postcode %3$s, %4$s</string>
+    <string name="bulto_dock_waiting_title">Read a package</string>
+    <string name="bulto_dock_waiting">Its exit dock will appear here</string>
+    <string name="bulto_dock_loading">Looking up the dock…</string>
+    <string name="bulto_dock_not_found_title">This package has no dock assigned</string>
+    <string name="bulto_dock_error_title">The dock could not be looked up</string>
+    <string name="bulto_dock_retry">Try again</string>
+    <string name="bulto_dock_cancel">Cancel</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Open settings</string>

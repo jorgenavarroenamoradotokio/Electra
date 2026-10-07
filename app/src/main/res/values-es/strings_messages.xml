@@ -30,4 +30,6 @@
     <string name="bulto_incidence_empty">Esta operación no tiene incidencias. Inténtalo más tarde o contacta con tu administrador.</string>
     <string name="bulto_incidence_saved">Incidencia grabada</string>
     <string name="bulto_incidence_canceled">Incidencia descartada</string>
+    <string name="bulto_dock_not_found">Comprueba la etiqueta y vuelve a leerlo, o avisa a tu responsable.</string>
+    <string name="bulto_dock_canceled">Lectura cancelada. Lee el siguiente bulto</string>
 </resources>
