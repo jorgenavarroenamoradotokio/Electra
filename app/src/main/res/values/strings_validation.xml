@@ -12,4 +12,9 @@
     <string name="bulto_volume_error_barcode">Read or type the package barcode</string>
     <string name="bulto_volume_error_measures">Enter height, width and depth</string>
     <string name="bulto_volume_error_volume">The volume must be greater than 0 and less than 10</string>
+
+    <!-- Incidencias -->
+    <string name="bulto_incidence_error_observations">Write the observations this incident requires</string>
+    <string name="bulto_incidence_error_observations_length">Observations can be up to 40 characters long</string>
+    <string name="bulto_incidence_error_photo">This incident requires a photo. Tap Take photo</string>
 </resources>

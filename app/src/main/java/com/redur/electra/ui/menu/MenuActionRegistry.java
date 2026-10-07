@@ -56,6 +56,7 @@ public final class MenuActionRegistry {
         pending(8, R.string.menu_8, R.drawable.ic_folder_24);
         screen(9, R.string.menu_9, R.drawable.ic_scale_24, R.id.nav_bulto_weight);
         screen(10, R.string.menu_10, R.drawable.ic_straighten_24, R.id.nav_bulto_volume);
+        screen(11, R.string.menu_11, R.drawable.ic_report_problem_24, R.id.nav_bulto_incidence);
     }
 
     private MenuActionRegistry() {

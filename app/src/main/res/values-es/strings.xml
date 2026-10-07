@@ -66,6 +66,7 @@
     <string name="menu_8">Prototipos</string>
     <string name="menu_9">Peso y medidas</string>
     <string name="menu_10">Volumen</string>
+    <string name="menu_11">Incidencias</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Añadir foto</string>
@@ -146,6 +147,27 @@
     <string name="bulto_volume_volume_helper">Se calcula con las tres medidas</string>
     <string name="bulto_volume_confirm">Aceptar</string>
     <string name="bulto_volume_cancel">Cancelar</string>
+
+    <!-- Incidencias -->
+    <string name="bulto_incidence_operation_recogidas">Recogidas</string>
+    <string name="bulto_incidence_barcode_label">Bulto</string>
+    <string name="bulto_incidence_no_barcode">Aún no se ha leído ningún bulto</string>
+    <string name="bulto_incidence_list_label">Incidencia</string>
+    <string name="bulto_incidence_item_description_photo">%1$s, exige foto</string>
+    <string name="bulto_incidence_loading">Cargando incidencias…</string>
+    <string name="bulto_incidence_error_title">No se han podido cargar las incidencias</string>
+    <string name="bulto_incidence_empty_title">No hay incidencias disponibles</string>
+    <string name="bulto_incidence_observations_hint">Observaciones</string>
+    <string name="bulto_incidence_observations_helper">Solo si la incidencia lo exige</string>
+    <string name="bulto_incidence_observations_required">Obligatorias para esta incidencia</string>
+    <string name="bulto_incidence_photo_choose_first">Elige una incidencia para hacer la foto</string>
+    <string name="bulto_incidence_photo_required">Foto obligatoria</string>
+    <string name="bulto_incidence_photo_optional">Foto opcional</string>
+    <string name="bulto_incidence_photo_attached">Foto adjuntada</string>
+    <string name="bulto_incidence_take_photo">Hacer foto</string>
+    <string name="bulto_incidence_retake_photo">Repetir foto</string>
+    <string name="bulto_incidence_confirm">Aceptar</string>
+    <string name="bulto_incidence_cancel">Cancelar</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Abrir ajustes</string>

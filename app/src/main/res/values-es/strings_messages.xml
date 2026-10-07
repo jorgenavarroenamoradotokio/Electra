@@ -27,4 +27,7 @@
     <string name="bulto_weight_canceled_reading">Cancelado. Se ha anulado la lectura del bulto</string>
     <string name="bulto_volume_saved">Volumen grabado. Lee el siguiente bulto</string>
     <string name="bulto_volume_canceled">Lectura cancelada. Lee el siguiente bulto</string>
+    <string name="bulto_incidence_empty">Esta operación no tiene incidencias. Inténtalo más tarde o contacta con tu administrador.</string>
+    <string name="bulto_incidence_saved">Incidencia grabada</string>
+    <string name="bulto_incidence_canceled">Incidencia descartada</string>
 </resources>

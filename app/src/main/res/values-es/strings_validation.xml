@@ -12,4 +12,9 @@
     <string name="bulto_volume_error_barcode">Lee o teclea el CB del bulto</string>
     <string name="bulto_volume_error_measures">Completa alto, ancho y profundo</string>
     <string name="bulto_volume_error_volume">El valor del volumen debe ser mayor a 0 y menor a 10</string>
+
+    <!-- Incidencias -->
+    <string name="bulto_incidence_error_observations">Escribe las observaciones que exige esta incidencia</string>
+    <string name="bulto_incidence_error_observations_length">Las observaciones admiten hasta 40 caracteres</string>
+    <string name="bulto_incidence_error_photo">Esta incidencia exige foto. Pulsa Hacer foto</string>
 </resources>
