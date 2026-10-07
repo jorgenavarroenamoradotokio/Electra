@@ -19,6 +19,8 @@ import com.redur.electra.fake.BultoResponses;
 import com.redur.electra.fake.FakeBultoApiService;
 import com.redur.electra.fake.FakeCall;
 import com.redur.electra.rule.TimberTestRule;
+import com.redur.electra.ui.bulto.tipo.BultoTypeState;
+import com.redur.electra.ui.bulto.tipo.BultoTypeViewModel;
 
 import org.junit.Before;
 import org.junit.Rule;

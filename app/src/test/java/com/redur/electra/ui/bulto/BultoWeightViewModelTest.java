@@ -11,6 +11,10 @@ import androidx.lifecycle.SavedStateHandle;
 
 import com.redur.electra.R;
 import com.redur.electra.data.model.bulto.BultoMeasures;
+import com.redur.electra.ui.bulto.peso.BultoWeightArgs;
+import com.redur.electra.ui.bulto.peso.BultoWeightOrigin;
+import com.redur.electra.ui.bulto.peso.BultoWeightResult;
+import com.redur.electra.ui.bulto.peso.BultoWeightViewModel;
 
 import org.junit.Rule;
 import org.junit.Test;

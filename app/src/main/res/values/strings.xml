@@ -65,6 +65,7 @@
     <string name="menu_7">Package type</string>
     <string name="menu_8">Prototypes</string>
     <string name="menu_9">Weight and dimensions</string>
+    <string name="menu_10">Volume</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Add a photo</string>
@@ -129,6 +130,26 @@
     <string name="bulto_weight_volume_helper">Calculated from the three dimensions</string>
     <string name="bulto_weight_confirm">Accept</string>
     <string name="bulto_weight_cancel">Cancel</string>
+
+    <!-- Volumen (sin peso) -->
+    <string name="bulto_volume_action_ps" translatable="false">PS</string>
+    <string name="bulto_volume_action_tb" translatable="false">TB</string>
+    <string name="bulto_volume_action_kg" translatable="false">KG</string>
+    <string name="bulto_volume_action_inc" translatable="false">INC</string>
+    <string name="bulto_volume_collected_title">Collected</string>
+    <string name="bulto_volume_check_cubicar">Cube weight/volume</string>
+    <string name="bulto_volume_check_previous">Previous weight/volume</string>
+    <string name="bulto_volume_check_full_expedition">Full shipment</string>
+    <string name="bulto_volume_check_volume">Volume (no weight)</string>
+    <string name="bulto_volume_barcode_hint">Package barcode</string>
+    <string name="bulto_volume_barcode_helper">Read it with the scanner or the measuring device</string>
+    <string name="bulto_volume_height_hint">Height (cm)</string>
+    <string name="bulto_volume_width_hint">Width (cm)</string>
+    <string name="bulto_volume_depth_hint">Depth (cm)</string>
+    <string name="bulto_volume_volume_hint">Volume (m³)</string>
+    <string name="bulto_volume_volume_helper">Calculated from the three dimensions</string>
+    <string name="bulto_volume_confirm">Accept</string>
+    <string name="bulto_volume_cancel">Cancel</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Open settings</string>

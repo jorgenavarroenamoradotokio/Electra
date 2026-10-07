@@ -42,15 +42,22 @@
     <!-- Tipo de bulto (menú 7): se elige de la lista y se puede fijar para las lecturas siguientes -->
     <fragment
         android:id="@+id/nav_bulto_type"
-        android:name="com.redur.electra.ui.bulto.BultoTypeFragment"
+        android:name="com.redur.electra.ui.bulto.tipo.BultoTypeFragment"
         android:label="@string/menu_7"
         tools:layout="@layout/fragment_bulto_type" />
 
     <!-- Peso y medidas (menú 9, dentro de Prototipos): desde el menú se abre como el botón KG de un bulto sin datos -->
     <fragment
         android:id="@+id/nav_bulto_weight"
-        android:name="com.redur.electra.ui.bulto.BultoWeightFragment"
+        android:name="com.redur.electra.ui.bulto.peso.BultoWeightFragment"
         android:label="@string/menu_9"
         tools:layout="@layout/fragment_bulto_weight" />
+
+    <!-- Volumen sin peso (menú 10): CB del bulto y sus tres medidas, en bucle -->
+    <fragment
+        android:id="@+id/nav_bulto_volume"
+        android:name="com.redur.electra.ui.bulto.volumen.BultoVolumeFragment"
+        android:label="@string/menu_10"
+        tools:layout="@layout/fragment_bulto_volume" />
 
 </navigation>

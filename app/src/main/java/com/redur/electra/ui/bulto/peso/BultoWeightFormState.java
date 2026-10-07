@@ -1,4 +1,4 @@
-package com.redur.electra.ui.bulto;
+package com.redur.electra.ui.bulto.peso;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;

@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.bulto.BultoTypeFragment">
+    tools:context=".ui.bulto.tipo.BultoTypeFragment">
 
     <TextView
         android:id="@+id/text_bulto_type_title"

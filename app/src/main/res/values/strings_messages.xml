@@ -25,4 +25,6 @@
     <string name="bulto_weight_canceled_unchanged">Canceled. The reading is unchanged</string>
     <string name="bulto_weight_canceled_without_weight">Canceled. The reading is kept without weight</string>
     <string name="bulto_weight_canceled_reading">Canceled. The package reading has been voided</string>
+    <string name="bulto_volume_saved">Volume saved. Read the next package</string>
+    <string name="bulto_volume_canceled">Reading canceled. Read the next package</string>
 </resources>

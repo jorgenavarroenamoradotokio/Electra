@@ -25,4 +25,6 @@
     <string name="bulto_weight_canceled_unchanged">Cancelado. La lectura se mantiene sin cambios</string>
     <string name="bulto_weight_canceled_without_weight">Cancelado. La lectura se mantiene sin peso</string>
     <string name="bulto_weight_canceled_reading">Cancelado. Se ha anulado la lectura del bulto</string>
+    <string name="bulto_volume_saved">Volumen grabado. Lee el siguiente bulto</string>
+    <string name="bulto_volume_canceled">Lectura cancelada. Lee el siguiente bulto</string>
 </resources>
