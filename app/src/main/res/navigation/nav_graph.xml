@@ -60,4 +60,11 @@
         android:label="@string/menu_10"
         tools:layout="@layout/fragment_bulto_volume" />
 
+    <!-- Incidencias (menú 11): la lista depende del tipo de operación; desde el menú, recogidas sin bulto leído -->
+    <fragment
+        android:id="@+id/nav_bulto_incidence"
+        android:name="com.redur.electra.ui.bulto.incidencia.BultoIncidenceFragment"
+        android:label="@string/menu_11"
+        tools:layout="@layout/fragment_bulto_incidence" />
+
 </navigation>
