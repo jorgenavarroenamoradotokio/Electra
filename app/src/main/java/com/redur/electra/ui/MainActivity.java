@@ -58,18 +58,24 @@ public class MainActivity extends AppCompatActivity {
         NavHostFragment navHost = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host);
         navController = navHost.getNavController();
 
+        // Ajustamos el toolabar
         applyWindowInsets();
+        // Implementamos el toolbar
         setupToolbar();
+        // Implementamos el menu
         setupDrawer();
+        // Implementamos el comportamiento cuando se presiona sobre el boton de retroceso
         setupBackNavigation();
+        // Iniciamos evento para poder solicitar el cambio de plaza
         listenPlazaChanges(navHost.getChildFragmentManager());
+        // Iniciamos evento para solicitar foto tomada por camara o desde galeria
         listenPhotoResults(navHost.getChildFragmentManager());
+        // Iniciamos evento para mostrar dispositivos cercanos para imprimir
         listenLabelPrinted(navHost.getChildFragmentManager());
     }
 
     /**
-     * La toolbar y la cabecera del menú se extienden bajo la status bar; sus contenidos y el
-     * cierre de sesión del pie quedan fuera de los recortes y de la barra de navegación.
+     * La toolbar y la cabecera del menú se extienden bajo la status bar;
      */
     private void applyWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (root, windowInsets) -> {
@@ -86,7 +92,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /** Título según el destino y botón de menú en las pantallas del menú ("atrás" en el resto). */
+    /**
+     * Título según el destino y botón de menú en las pantallas del menú ("atrás" en el resto).
+     */
     private void setupToolbar() {
         MaterialToolbar toolbar = binding.appBar.toolbar;
         toolbar.inflateMenu(R.menu.menu_main);
@@ -98,12 +106,19 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
     }
 
+    /**
+     * Indicamos que acciones van a tener lo btn extra que tiene la toolbar
+     */
     private boolean onToolbarItemClicked(MenuItem item) {
         int id = item.getItemId();
+
+        // Indicamos la accion que tendra cuando se haga click sobre el btn de perfil
         if (id == R.id.action_profile) {
             startActivity(new Intent(this, ProfileActivity.class));
             return true;
         }
+
+        // Indicamos la accion que trendra cuando se haga click sobre el btn de settings
         if (id == R.id.action_settings) {
             // Pantalla aún no implementada: se avisa en lugar de ignorar el toque
             showUnavailable();
@@ -112,10 +127,14 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Iniciamos la construccion del menu lateral (Hamburgesa)
+     */
     private void setupDrawer() {
         binding.drawerHeader.textDrawerAvatar.setText(viewModel.getUserInitial());
         binding.drawerHeader.textDrawerDisplayName.setText(viewModel.getUserDisplayName());
         String username = viewModel.getUsername();
+
         // Si no hay nombre completo, el usuario ya se muestra como nombre: no se repite
         boolean showUsername = username != null && !username.equals(viewModel.getUserDisplayName());
         binding.drawerHeader.textDrawerUsername.setText(username);
@@ -126,13 +145,16 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getMenuRows().observe(this, adapter::submitList);
         navController.addOnDestinationChangedListener((controller, destination, args) -> markActiveMenu(destination));
 
+        // Indicamos el comportamiento cuando se hace click sobre un elemento
         binding.buttonDrawerLogout.setOnClickListener(v -> {
             binding.drawerLayout.closeDrawer(binding.drawerPanel);
             LogoutBottomSheet.showIfNotShown(getSupportFragmentManager());
         });
     }
 
-    /** Un menú con submenús se despliega en el sitio; el resto navega y cierra el menú. */
+    /**
+     * Un menú con submenús se despliega en el sitio; el resto navega y cierra el menú.
+     */
     private void onMenuRowClicked(@NonNull DrawerMenuRow row) {
         if (row.group()) {
             viewModel.onGroupToggled(row.menuId());
@@ -141,7 +163,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** Abre el destino del menú pasándole sus permisos, leídos de la sesión en este momento. */
+    /**
+     * Abre el destino del menú pasándole sus permisos, leídos de la sesión en este momento.
+     */
     private void onMenuSelected(int menuId) {
         binding.drawerLayout.closeDrawer(binding.drawerPanel);
         MenuAction action = MenuActionRegistry.getAction(menuId);
@@ -161,13 +185,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Para indicar que la opcion de menu aun no esta disponible
+     */
     private void showUnavailable() {
         Snackbar.make(binding.getRoot(), R.string.feature_unavailable, Snackbar.LENGTH_SHORT).show();
     }
 
     /**
-     * "Atrás" cierra primero el menú y después vuelve a inicio; en inicio no cierra la app, pide
-     * confirmar el cierre de sesión.
+     * Definimos el comportamiento del btn de retroceso.
+     * Si el menu esta abierto lo cierra
+     * Vuelve a la pantalla principal
+     * Si esta en la principal confirma si deseas cerrar sesion
      */
     private void setupBackNavigation() {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -185,20 +214,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Los destinos del menú (p. ej. el cambio de plaza) viven en el NavHostFragment: sus resultados
-     * llegan a su FragmentManager hijo, no al de la Activity.
+     * Comportamiento que tiene la opcion de menu de Cambiar plaza.
+     * No cambia de pantalla se muestra como pantalla emergente
      */
     private void listenPlazaChanges(@NonNull FragmentManager navHostFragmentManager) {
         navHostFragmentManager.setFragmentResultListener(PlaceBottomSheet.RESULT_KEY, this, (key, result) -> {
             String plazaId = result.getString(PlaceBottomSheet.RESULT_PLAZA_ID);
             if (plazaId != null) {
-                Snackbar.make(binding.getRoot(), getString(R.string.change_plaza_success, plazaId),
-                        Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(binding.getRoot(), getString(R.string.change_plaza_success, plazaId), Snackbar.LENGTH_SHORT).show();
             }
         });
     }
 
-    /** Imagen hecha o elegida y enviada desde "Toma de foto" (destino del menú, como el cambio de plaza). */
+    /**
+     * Comportamiento que tiene la opcion de menu de tomar foto
+     * No cambia de pantalla se muestra como pantalla emergente
+     */
     private void listenPhotoResults(@NonNull FragmentManager navHostFragmentManager) {
         navHostFragmentManager.setFragmentResultListener(PhotoSourceBottomSheet.RESULT_KEY, this, (key, result) -> {
             if (result.getString(PhotoSourceBottomSheet.RESULT_IMAGE_URI) != null) {
@@ -207,7 +238,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /** Etiqueta enviada a una impresora Bluetooth desde la hoja de impresión. */
+    /**
+     * Comportamiento cuando se solicita enviar informacion a un dispositivo por bluethood
+     * No cambia de pantalla sse muestra como pantalla emergente
+     */
     private void listenLabelPrinted(@NonNull FragmentManager navHostFragmentManager) {
         navHostFragmentManager.setFragmentResultListener(PrintLabelBottomSheet.RESULT_KEY, this, (key, result) -> {
             String printerName = result.getString(PrintLabelBottomSheet.RESULT_PRINTER_NAME);

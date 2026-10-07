@@ -43,11 +43,14 @@ public class LoginViewModel extends ViewModel {
         return formState;
     }
 
-    /** Estado de la petición (Idle → Loading → Success/Error). */
+    /** Estado de la petición API (Idle → Loading → Success/Error). */
     public LiveData<UiState> getLoginState() {
         return loginState;
     }
 
+    /**
+     * Controlamos el error en el campo username
+     */
     public void onUsernameChanged() {
         LoginFormState current = currentState();
         if (current.usernameError() != null) {
@@ -55,6 +58,9 @@ public class LoginViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Controlamos el error en el campo password
+     */
     public void onPasswordChanged() {
         LoginFormState current = currentState();
         if (current.passwordError() != null) {
@@ -62,13 +68,17 @@ public class LoginViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Logica encargada de validar los datos del formulario y enviar los datos a la API
+     * Procesamos la respuesta y notificamos el estado de la peticion
+     */
     public void onLoginClicked(@Nullable String username, @Nullable String password) {
         // Evita peticiones duplicadas mientras hay una en curso
         if (loginState.getValue() instanceof UiState.Loading) {
             return;
         }
 
-        Timber.d("Iniciamos la validacion de los datos del form");
+        Timber.d("Validamos el formulario de login");
         // Comprobamos el status del formulario para comprobar si estan los campos obligatorios correctos
         LoginFormState validated = new LoginFormState(
                username == null || Validations.isBlank(username) ? R.string.login_error_username_required : null,
@@ -85,6 +95,7 @@ public class LoginViewModel extends ViewModel {
         // Cambiamos el estado a loading para indicar que se esta ejecutando la llamada
         loginState.setValue(new UiState.Loading());
 
+        Timber.d("Enviamos los datos al servidor");
         pendingLogin = repository.login(username.trim(), password, new ResultCallback<>() {
             @Override
             public void onSuccess(@NonNull User user) {

@@ -41,17 +41,23 @@ public class LoginRepository extends BaseRepository {
     }
 
     /**
-     * Lanza el login en segundo plano. El callback llega en el hilo principal y no se invoca si
-     * la operación se cancela.
+     * Lanzamos la peticion de login en segundo plano.
+     * El callback llega en el hilo principal y no se invoca si la operación se cancela.
      */
     @NonNull
     public Cancellable login(@NonNull String username, @NonNull String password,
                              @NonNull ResultCallback<User> callback) {
 
+        // Ajustamos el texto para enviar UK en vez de EN a la API
         String locale = Locale.getDefault().getLanguage();
         locale = locale.equals("en") ? "uk" : locale;
 
+        // Construimos el DTO que vamos a enviar a la api
+        Timber.d("El idioma del usuario que esta usando es %s", locale);
         LoginRequestDTO request = new LoginRequestDTO(username, password, locale);
+        Timber.i("DTO request  %s", request.toString());
+
+        // Procesamos la respuesta de la API
         Call<ApiResponseDTO<UserDTO>> call = api.login(request);
         call.enqueue(new Callback<>() {
             @Override
@@ -65,6 +71,7 @@ public class LoginRepository extends BaseRepository {
 
             @Override
             public void onFailure(@NonNull Call<ApiResponseDTO<UserDTO>> call, @NonNull Throwable t) {
+                Timber.e(t);
                 if (call.isCanceled()) {
                     return;
                 }
@@ -78,26 +85,31 @@ public class LoginRepository extends BaseRepository {
                                 @NonNull Credentials credentials,
                                 @NonNull ResultCallback<User> callback) {
 
+        // Extraemos los datos
         UserDTO data = extractData(response, callback);
         if (data == null) {
             return;
         }
+
+        // Notificamos que el nombre del usuario obtenido es null
         if (data.username() == null) {
             Timber.e("Login sin nombre de usuario: %s", response.body().errorText());
             callback.onError(new AppError.Api(null, response.body().errorText()));
             return;
         }
 
+        // Guardamos la respuesta en la sesion de la aplicacion
         Timber.d("Usuario conectado correctamente %s", data);
         User user = mapper.toUser(data);
         session.start(user, credentials);
-
         callback.onSuccess(user);
     }
 
-    /** Cierra la sesión local: los datos del usuario dejan de estar disponibles para la app. */
+    /**
+     * Cierra la sesión local: los datos del usuario dejan de estar disponibles para la app.
+     */
     public void logout() {
-        Timber.d("Cerrando sesión del usuario");
+        Timber.d("Sesion de usuario cerrada");
         session.clear();
     }
 }

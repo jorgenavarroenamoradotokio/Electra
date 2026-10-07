@@ -52,15 +52,24 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Vinculamos la vista para controlar estados y eventos
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
-        applyWindowInsets();
-        binding.textVersion.setText(getString(R.string.login_version, BuildConfig.VERSION_NAME));
+        // Iniciamos la transicion de entrada del formulario
         if (savedInstanceState == null) {
             playEnterAnimation();
         }
 
+        // Insertamos la version de la app que esta usando el usuario
+        binding.textVersion.setText(getString(R.string.login_version, BuildConfig.VERSION_NAME));
+
+        // Ajustamos las dimensiones y comportamiento de scroll cuando aparece el teclado
+        applyWindowInsets();
+
+        // Asociamos los eventos a los diferentes btn de click de la pantalla
         setupListeners();
+
+        // Eventos de errores de los formularios
         viewModel.getFormState().observe(this, this::renderForm);
         viewModel.getLoginState().observe(this, this::renderLogin);
     }
@@ -75,8 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         int formPaddingBottom = binding.containerForm.getPaddingBottom();
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (root, windowInsets) -> {
-            Insets bars = windowInsets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
             Insets ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) root.getLayoutParams();
             boolean imeOpened = ime.bottom > 0 && params.bottomMargin == 0;
@@ -84,19 +92,22 @@ public class LoginActivity extends AppCompatActivity {
             params.bottomMargin = ime.bottom;
             root.setLayoutParams(params);
             root.setPadding(bars.left, 0, bars.right, 0);
+
             binding.header.setPadding(
                     binding.header.getPaddingLeft(),
                     headerPaddingTop + bars.top,
                     binding.header.getPaddingRight(),
                     binding.header.getPaddingBottom());
+
             // Con el teclado abierto, su inset ya cubre la barra de navegación
             binding.containerForm.setPadding(
                     binding.containerForm.getPaddingLeft(),
                     binding.containerForm.getPaddingTop(),
                     binding.containerForm.getPaddingRight(),
                     formPaddingBottom + Math.max(0, bars.bottom - ime.bottom));
+
+            // Tras el layout con el nuevo margen: antes, el scroll aún no conoce su nueva altura
             if (imeOpened) {
-                // Tras el layout con el nuevo margen: antes, el scroll aún no conoce su nueva altura
                 root.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                     @Override
                     public void onLayoutChange(View view, int left, int top, int right, int bottom,
@@ -122,7 +133,9 @@ public class LoginActivity extends AppCompatActivity {
         target.requestRectangleOnScreen(new Rect(0, 0, target.getWidth(), target.getHeight()));
     }
 
-    /** Solo en la primera apertura: el panel llega desde abajo, breve y con ease-out. */
+    /**
+     *  Animacion de entrada de panel, llega desde abajo, breve y con ease-out (Solo en la primera apertura).
+     */
     private void playEnterAnimation() {
         View panel = binding.containerForm;
         panel.setAlpha(0f);
@@ -134,11 +147,14 @@ public class LoginActivity extends AppCompatActivity {
                 .setInterpolator(new DecelerateInterpolator());
     }
 
+    /**
+     * Vinculamos los elementos de la pantalla con sus posibles eventos
+     */
     private void setupListeners() {
         // Accion del btn de iniciar sesion
         binding.buttonLogin.setOnClickListener(view -> submitLogin());
 
-        // Accion del teclado para enviar datos frm
+        // Control del btn siguiente del teclado, para que cuando sea terminar se envie la informacion
         binding.inputPassword.setOnEditorActionListener((view, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 submitLogin();
@@ -173,6 +189,9 @@ public class LoginActivity extends AppCompatActivity {
         WindowCompat.getInsetsController(getWindow(), field).show(WindowInsetsCompat.Type.ime());
     }
 
+    /**
+     * Ocultamos el teclado
+     */
     private void hideKeyboard() {
         View focus = getCurrentFocus();
         if (focus != null) {
@@ -181,8 +200,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Animacion del los campos cuando existe errores. nunca mientras el usuario escribe
+     */
     private void renderForm(LoginFormState state) {
-        // Solo se anima la aparición de errores (tras enviar); nunca mientras el usuario escribe
+
         if (!state.isValid()) {
             TransitionManager.beginDelayedTransition(binding.containerForm, layoutTransition());
         }
@@ -190,12 +212,18 @@ public class LoginActivity extends AppCompatActivity {
         showError(binding.layoutPassword, state.passwordError());
     }
 
+    /**
+     * Control de los campos del frm para definir el comportamiento cuando se detectas el estado de Loading
+     */
     private void renderLogin(UiState state) {
         boolean isLoading = state instanceof UiState.Loading;
+
+        // Desbloqueamos los componentes cuando el estado no sea Loading
         binding.inputUsername.setEnabled(!isLoading);
         binding.inputPassword.setEnabled(!isLoading);
         binding.buttonLogin.setEnabled(!isLoading);
-        // El indicador ocupa el centro del botón: su texto se oculta para que no se solapen
+
+        // Mostramos el icono de cargando cuando el estado sea Loading, en caso contrario mostramos de nuevo el texto de inicio sesion
         binding.buttonLogin.setText(isLoading ? null : getString(R.string.login_button));
         binding.progress.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
 
@@ -206,18 +234,17 @@ public class LoginActivity extends AppCompatActivity {
             showLoginError(null);
         }
 
+        // Navegamos a la pantalla de incio cuando la peticion es correcta
         if (state instanceof UiState.Success) {
             navigateToMain();
         }
     }
 
     /**
-     * El login sale de la pila: "atrás" desde la pantalla principal cierra la app en lugar de
-     * volver al formulario, y el Success retenido por el ViewModel no puede re-emitirse.
+     * Cerramos la activity del login y navegamos directamente a Main
      */
     private void navigateToMain() {
-        Intent intent = new Intent(this, MainActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent intent = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
