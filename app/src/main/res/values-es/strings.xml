@@ -65,6 +65,7 @@
     <string name="menu_7">Tipo de bulto</string>
     <string name="menu_8">Prototipos</string>
     <string name="menu_9">Peso y medidas</string>
+    <string name="menu_10">Volumen</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Añadir foto</string>
@@ -129,6 +130,22 @@
     <string name="bulto_weight_volume_helper">Se calcula con las tres medidas</string>
     <string name="bulto_weight_confirm">Aceptar</string>
     <string name="bulto_weight_cancel">Cancelar</string>
+
+    <!-- Volumen (sin peso) -->
+    <string name="bulto_volume_collected_title">Recogidas</string>
+    <string name="bulto_volume_check_cubicar">Cubicar peso/volumen</string>
+    <string name="bulto_volume_check_previous">Peso/Volumen anterior</string>
+    <string name="bulto_volume_check_full_expedition">Expedición completa</string>
+    <string name="bulto_volume_check_volume">Volumen (sin peso)</string>
+    <string name="bulto_volume_barcode_hint">CB del bulto</string>
+    <string name="bulto_volume_barcode_helper">Léelo con el escáner o el medidor</string>
+    <string name="bulto_volume_height_hint">Alto (cm)</string>
+    <string name="bulto_volume_width_hint">Ancho (cm)</string>
+    <string name="bulto_volume_depth_hint">Profundo (cm)</string>
+    <string name="bulto_volume_volume_hint">Volumen (m³)</string>
+    <string name="bulto_volume_volume_helper">Se calcula con las tres medidas</string>
+    <string name="bulto_volume_confirm">Aceptar</string>
+    <string name="bulto_volume_cancel">Cancelar</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Abrir ajustes</string>

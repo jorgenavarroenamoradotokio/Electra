@@ -36,4 +36,17 @@
         <item name="android:textColor">@color/list_action_destructive</item>
         <item name="iconTint">@color/list_action_destructive</item>
     </style>
+
+    <!--
+        Acción rápida de la lectura de un bulto (PS, TB, KG, INC): caben en una fila, así
+        que se quitan el ancho mínimo y el padding lateral del botón estándar.
+    -->
+    <style name="Widget.Electra.Button.ReadingAction" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">@dimen/touch_target_min</item>
+        <item name="android:paddingStart">@dimen/spacing_xs</item>
+        <item name="android:paddingEnd">@dimen/spacing_xs</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
+        <item name="cornerRadius">@dimen/corner_radius_s</item>
+    </style>
 </resources>

@@ -22,6 +22,8 @@ public record BultoMeasures(
 
     public static final int WEIGHT_SCALE = 1;
     public static final int VOLUME_SCALE = 2;
+    /** Límite exclusivo: el volumen debe ser mayor que 0 y menor que 10 m³. */
+    public static final BigDecimal MAX_VOLUME_M3 = BigDecimal.TEN;
 
     private static final BigDecimal CM3_PER_M3 = BigDecimal.valueOf(1_000_000);
 
@@ -49,5 +51,10 @@ public record BultoMeasures(
     public static BigDecimal volumeOf(int heightCm, int widthCm, int depthCm) {
         BigDecimal cm3 = BigDecimal.valueOf((long) heightCm * widthCm * depthCm);
         return cm3.divide(CM3_PER_M3, VOLUME_SCALE, RoundingMode.HALF_UP);
+    }
+
+    /** Si el volumen se puede grabar: mayor que 0 y menor que {@link #MAX_VOLUME_M3}. */
+    public static boolean isValidVolume(@NonNull BigDecimal volumeM3) {
+        return volumeM3.signum() > 0 && volumeM3.compareTo(MAX_VOLUME_M3) < 0;
     }
 }

@@ -1,4 +1,4 @@
-package com.redur.electra.ui.bulto;
+package com.redur.electra.ui.bulto.peso;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
@@ -30,8 +30,6 @@ public class BultoWeightViewModel extends ViewModel {
 
     /** Límites exclusivos: el peso debe ser mayor que 0 y menor que 100.000 kg. */
     static final BigDecimal MAX_WEIGHT_KG = BigDecimal.valueOf(100_000);
-    /** Límites exclusivos: el volumen debe ser mayor que 0 y menor que 10 m³. */
-    static final BigDecimal MAX_VOLUME_M3 = BigDecimal.TEN;
 
     /** Hasta 3 dígitos sin separadores. */
     private static final Pattern MEASURE_PATTERN = Pattern.compile("\\d{1,3}");
@@ -118,7 +116,7 @@ public class BultoWeightViewModel extends ViewModel {
             volumeError = R.string.bulto_weight_error_measures;
         } else if (allMeasures) {
             volumeM3 = BultoMeasures.volumeOf(h, w, d);
-            if (!isValidVolume(volumeM3)) {
+            if (!BultoMeasures.isValidVolume(volumeM3)) {
                 volumeError = R.string.bulto_weight_error_volume;
             }
         }
@@ -194,10 +192,6 @@ public class BultoWeightViewModel extends ViewModel {
         return weightKg != null
                 && weightKg.signum() > 0
                 && weightKg.compareTo(MAX_WEIGHT_KG) < 0;
-    }
-
-    private static boolean isValidVolume(@NonNull BigDecimal volumeM3) {
-        return volumeM3.signum() > 0 && volumeM3.compareTo(MAX_VOLUME_M3) < 0;
     }
 
     @NonNull

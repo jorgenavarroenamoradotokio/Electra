@@ -1,4 +1,4 @@
-package com.redur.electra.ui.bulto;
+package com.redur.electra.ui.bulto.tipo;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;

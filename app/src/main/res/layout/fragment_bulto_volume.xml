@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Lectura en modo Volumen (sin peso): con el check marcado se lee el CB del bulto y sus tres
+    medidas, en ese orden y en bucle. El campo enfocado es el dato que se espera ahora. El volumen
+    se calcula, no se teclea. Las acciones van fijas en el pie, como en el tipo de bulto: cancelar
+    a la izquierda y aceptar, la principal, a la derecha.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.bulto.volumen.BultoVolumeFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/screen_padding_horizontal"
+            android:paddingTop="@dimen/spacing_m"
+            android:paddingBottom="@dimen/spacing_m">
+
+            <!-- Acciones rápidas de la lectura -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_bulto_volume_ps"
+                    style="@style/Widget.Electra.Button.ReadingAction"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/bulto_volume_action_ps" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_bulto_volume_tb"
+                    style="@style/Widget.Electra.Button.ReadingAction"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_xs"
+                    android:layout_weight="1"
+                    android:text="@string/bulto_volume_action_tb" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_bulto_volume_kg"
+                    style="@style/Widget.Electra.Button.ReadingAction"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_xs"
+                    android:layout_weight="1"
+                    android:text="@string/bulto_volume_action_kg" />
+
+                <!-- Incidencia: en color de error para distinguirla de un vistazo -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_bulto_volume_inc"
+                    style="@style/Widget.Electra.Button.ReadingAction"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_xs"
+                    android:layout_weight="1"
+                    android:text="@string/bulto_volume_action_inc"
+                    android:textColor="?attr/colorError" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_l"
+                android:accessibilityHeading="true"
+                android:text="@string/bulto_volume_collected_title"
+                android:textAllCaps="true"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:textColor="?attr/colorOnSurface" />
+
+            <!-- Solo el modo Volumen está disponible en esta pantalla; el resto se muestra desactivado -->
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/check_bulto_volume_cubicar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:enabled="false"
+                android:minHeight="@dimen/touch_target_min"
+                android:text="@string/bulto_volume_check_cubicar"
+                android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/check_bulto_volume_previous"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:minHeight="@dimen/touch_target_min"
+                android:text="@string/bulto_volume_check_previous"
+                android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/check_bulto_volume_full_expedition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:minHeight="@dimen/touch_target_min"
+                android:text="@string/bulto_volume_check_full_expedition"
+                android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/check_bulto_volume_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:minHeight="@dimen/touch_target_min"
+                android:text="@string/bulto_volume_check_volume"
+                android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+            <!-- Lectura del modo Volumen: CB y medidas en el orden en que se esperan -->
+            <LinearLayout
+                android:id="@+id/container_bulto_volume_reading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_bulto_volume_barcode"
+                    style="?attr/textInputOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/bulto_volume_barcode_hint"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius_m"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius_m"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius_m"
+                    app:errorEnabled="true"
+                    app:helperText="@string/bulto_volume_barcode_helper">
+
+                    <!-- Los escáneres terminan la lectura con Intro: pasa al alto -->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_bulto_volume_barcode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:inputType="textNoSuggestions|textCapCharacters"
+                        android:maxLines="1"
+                        tools:text="14600400072459116400016247001" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_bulto_volume_height"
+                    style="?attr/textInputOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:hint="@string/bulto_volume_height_hint"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius_m"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius_m"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius_m">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_bulto_volume_height"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:inputType="number"
+                        android:maxLength="@integer/bulto_measure_max_length"
+                        android:maxLines="1"
+                        tools:text="040" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_bulto_volume_width"
+                    style="?attr/textInputOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:hint="@string/bulto_volume_width_hint"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius_m"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius_m"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius_m">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_bulto_volume_width"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:inputType="number"
+                        android:maxLength="@integer/bulto_measure_max_length"
+                        android:maxLines="1"
+                        tools:text="030" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_bulto_volume_depth"
+                    style="?attr/textInputOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:hint="@string/bulto_volume_depth_hint"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius_m"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius_m"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius_m">
+
+                    <!-- La última medida acepta la lectura desde el teclado -->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_bulto_volume_depth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:importantForAutofill="no"
+                        android:inputType="number"
+                        android:maxLength="@integer/bulto_measure_max_length"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--
+                    Calculado, no editable: estilo relleno para distinguirlo de los campos que se
+                    leen. Sigue siendo legible por TalkBack, pero no recibe foco ni teclado.
+                -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_bulto_volume_result"
+                    style="?attr/textInputFilledStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:hint="@string/bulto_volume_volume_hint"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius_m"
+                    app:errorEnabled="true"
+                    app:helperText="@string/bulto_volume_volume_helper">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_bulto_volume_result"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:importantForAutofill="no"
+                        android:inputType="none"
+                        android:longClickable="false"
+                        android:maxLines="1"
+                        tools:text="0,04" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_m">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_bulto_volume_cancel"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="@dimen/button_height"
+            android:text="@string/bulto_volume_cancel"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            app:cornerRadius="@dimen/corner_radius_m"
+            app:icon="@drawable/ic_close_24"
+            app:iconGravity="textStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_bulto_volume_confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_s"
+            android:layout_weight="1"
+            android:minHeight="@dimen/button_height"
+            android:stateListAnimator="@animator/scale_on_press"
+            android:text="@string/bulto_volume_confirm"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            app:cornerRadius="@dimen/corner_radius_m"
+            app:icon="@drawable/ic_check_24"
+            app:iconGravity="textStart" />
+
+    </LinearLayout>
+
+</LinearLayout>

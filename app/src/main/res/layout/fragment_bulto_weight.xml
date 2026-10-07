@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.bulto.BultoWeightFragment">
+    tools:context=".ui.bulto.peso.BultoWeightFragment">
 
     <TextView
         android:id="@+id/text_bulto_weight_title"

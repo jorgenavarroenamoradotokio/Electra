@@ -1,4 +1,4 @@
-package com.redur.electra.ui.bulto;
+package com.redur.electra.ui.bulto.peso;
 
 /**
  * Desde dónde se abre la pantalla de peso y medidas. Cada origen decide con qué datos se abre y

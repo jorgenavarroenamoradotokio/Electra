@@ -1,4 +1,4 @@
-package com.redur.electra.ui.bulto;
+package com.redur.electra.ui.bulto.tipo;
 
 import android.content.Context;
 import android.view.LayoutInflater;

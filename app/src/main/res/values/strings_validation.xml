@@ -7,4 +7,9 @@
     <string name="bulto_weight_error_weight">The weight must be greater than 0 and less than 100,000</string>
     <string name="bulto_weight_error_measures">The volume value is not correct</string>
     <string name="bulto_weight_error_volume">The volume must be greater than 0 and less than 10</string>
+
+    <!-- Volumen (sin peso) -->
+    <string name="bulto_volume_error_barcode">Read or type the package barcode</string>
+    <string name="bulto_volume_error_measures">Enter height, width and depth</string>
+    <string name="bulto_volume_error_volume">The volume must be greater than 0 and less than 10</string>
 </resources>
