@@ -21,4 +21,8 @@
     <string name="bulto_type_empty">There are no active package types. Try again later or contact your administrator.</string>
     <string name="bulto_type_confirmed">Confirmed</string>
     <string name="bulto_type_canceled">Canceled</string>
+    <string name="bulto_weight_confirmed">Confirmed</string>
+    <string name="bulto_weight_canceled_unchanged">Canceled. The reading is unchanged</string>
+    <string name="bulto_weight_canceled_without_weight">Canceled. The reading is kept without weight</string>
+    <string name="bulto_weight_canceled_reading">Canceled. The package reading has been voided</string>
 </resources>

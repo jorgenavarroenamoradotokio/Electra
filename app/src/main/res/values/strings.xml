@@ -63,6 +63,8 @@
     <string name="menu_5">Take photo</string>
     <string name="menu_6">ZPL label management</string>
     <string name="menu_7">Package type</string>
+    <string name="menu_8">Prototypes</string>
+    <string name="menu_9">Weight and dimensions</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Add a photo</string>
@@ -115,6 +117,18 @@
     <string name="bulto_type_retry">Try again</string>
     <string name="bulto_type_confirm">Assign</string>
     <string name="bulto_type_cancel">Cancel</string>
+
+    <!-- Peso y medidas -->
+    <string name="bulto_weight_title">Enter weight and dimensions</string>
+    <string name="bulto_weight_full_expedition_notice">Full shipment: the weight is required. If you cancel, the package reading is voided.</string>
+    <string name="bulto_weight_weight_hint">Weight (kg)</string>
+    <string name="bulto_weight_height_hint">Height (cm)</string>
+    <string name="bulto_weight_width_hint">Width (cm)</string>
+    <string name="bulto_weight_depth_hint">Depth (cm)</string>
+    <string name="bulto_weight_volume_hint">Volume (m³)</string>
+    <string name="bulto_weight_volume_helper">Calculated from the three dimensions</string>
+    <string name="bulto_weight_confirm">Accept</string>
+    <string name="bulto_weight_cancel">Cancel</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Open settings</string>

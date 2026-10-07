@@ -76,7 +76,10 @@ public class MainActivity extends AppCompatActivity {
             Insets bars = windowInsets.getInsets(
                     WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
             binding.appBar.getRoot().setPadding(bars.left, bars.top, bars.right, 0);
-            binding.content.setPadding(0, 0, 0, bars.bottom);
+            // Con edge-to-edge adjustResize no encoge la ventana: el contenido deja sitio al teclado
+            // para que los campos y las acciones del pie no queden debajo
+            Insets ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
+            binding.content.setPadding(0, 0, 0, Math.max(bars.bottom, ime.bottom));
             binding.drawerHeader.getRoot().setPadding(bars.left, bars.top, 0, 0);
             binding.drawerPanel.setPadding(0, 0, 0, bars.bottom);
             return WindowInsetsCompat.CONSUMED;

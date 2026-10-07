@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Peso y medidas: hasta 99999,9 kg y medidas de 3 dígitos en cm -->
+    <integer name="bulto_weight_max_length">7</integer>
+    <integer name="bulto_measure_max_length">3</integer>
+</resources>

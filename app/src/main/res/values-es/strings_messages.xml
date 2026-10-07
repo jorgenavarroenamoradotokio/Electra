@@ -21,4 +21,8 @@
     <string name="bulto_type_empty">No hay tipos de bulto activos. Inténtalo más tarde o contacta con tu administrador.</string>
     <string name="bulto_type_confirmed">Confirmado</string>
     <string name="bulto_type_canceled">Cancelado</string>
+    <string name="bulto_weight_confirmed">Confirmado</string>
+    <string name="bulto_weight_canceled_unchanged">Cancelado. La lectura se mantiene sin cambios</string>
+    <string name="bulto_weight_canceled_without_weight">Cancelado. La lectura se mantiene sin peso</string>
+    <string name="bulto_weight_canceled_reading">Cancelado. Se ha anulado la lectura del bulto</string>
 </resources>

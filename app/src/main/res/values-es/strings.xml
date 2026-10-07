@@ -63,6 +63,8 @@
     <string name="menu_5">Toma de foto</string>
     <string name="menu_6">Gestión de etiquetas ZPL</string>
     <string name="menu_7">Tipo de bulto</string>
+    <string name="menu_8">Prototipos</string>
+    <string name="menu_9">Peso y medidas</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Añadir foto</string>
@@ -115,6 +117,18 @@
     <string name="bulto_type_retry">Reintentar</string>
     <string name="bulto_type_confirm">Asignar</string>
     <string name="bulto_type_cancel">Cancelar</string>
+
+    <!-- Peso y medidas -->
+    <string name="bulto_weight_title">Introduzca peso y medidas</string>
+    <string name="bulto_weight_full_expedition_notice">Expedición completa: el peso es obligatorio. Si cancelas, se anula la lectura del bulto.</string>
+    <string name="bulto_weight_weight_hint">Peso (kg)</string>
+    <string name="bulto_weight_height_hint">Alto (cm)</string>
+    <string name="bulto_weight_width_hint">Ancho (cm)</string>
+    <string name="bulto_weight_depth_hint">Profundo (cm)</string>
+    <string name="bulto_weight_volume_hint">Volumen (m³)</string>
+    <string name="bulto_weight_volume_helper">Se calcula con las tres medidas</string>
+    <string name="bulto_weight_confirm">Aceptar</string>
+    <string name="bulto_weight_cancel">Cancelar</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Abrir ajustes</string>

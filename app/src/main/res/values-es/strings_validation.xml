@@ -2,4 +2,9 @@
 <resources>
     <string name="login_error_username_required">Introduce tu usuario</string>
     <string name="login_error_password_required">Introduce tu contraseña</string>
+
+    <!-- Peso y medidas -->
+    <string name="bulto_weight_error_weight">El valor del peso debe ser mayor que 0 y menor que 100.000</string>
+    <string name="bulto_weight_error_measures">El valor del volumen no es correcto</string>
+    <string name="bulto_weight_error_volume">El valor del volumen debe ser mayor a 0 y menor a 10</string>
 </resources>
