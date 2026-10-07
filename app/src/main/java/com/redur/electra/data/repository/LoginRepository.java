@@ -53,7 +53,7 @@ public class LoginRepository extends BaseRepository {
         locale = locale.equals("en") ? "uk" : locale;
 
         // Construimos el DTO que vamos a enviar a la api
-        Timber.d("El idioma del usuario que esta usando es %s", locale);
+        Timber.d("El idioma del usuario que esta usando: %s", locale);
         LoginRequestDTO request = new LoginRequestDTO(username, password, locale);
         Timber.i("DTO request  %s", request.toString());
 
@@ -99,7 +99,7 @@ public class LoginRepository extends BaseRepository {
         }
 
         // Guardamos la respuesta en la sesion de la aplicacion
-        Timber.d("Usuario conectado correctamente %s", data);
+        Timber.i("Usuario conectado correctamente %s", data);
         User user = mapper.toUser(data);
         session.start(user, credentials);
         callback.onSuccess(user);
@@ -109,7 +109,7 @@ public class LoginRepository extends BaseRepository {
      * Cierra la sesión local: los datos del usuario dejan de estar disponibles para la app.
      */
     public void logout() {
-        Timber.d("Sesion de usuario cerrada");
+        Timber.i("Sesion de usuario cerrada");
         session.clear();
     }
 }

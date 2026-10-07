@@ -4,5 +4,7 @@ public enum NetworkType {
     /** Sin conexión o servidor inalcanzable. */
     NO_CONNECTION,
     /** El servidor no respondió a tiempo. */
-    TIMEOUT
+    TIMEOUT,
+    /** El servicio no esta habilitado*/
+    HTTP_503
 }

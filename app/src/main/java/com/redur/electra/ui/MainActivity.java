@@ -38,6 +38,7 @@ import com.redur.electra.ui.place.PlaceBottomSheet;
 import com.redur.electra.ui.profile.ProfileActivity;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import timber.log.Timber;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Indicamos la accion que tendra cuando se haga click sobre el btn de perfil
         if (id == R.id.action_profile) {
+            Timber.i("Navegamos al layout de perfil");
             startActivity(new Intent(this, ProfileActivity.class));
             return true;
         }
@@ -199,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
      * Si esta en la principal confirma si deseas cerrar sesion
      */
     private void setupBackNavigation() {
+        Timber.i("Lanzamos la pantalla para cerrar sesion");
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

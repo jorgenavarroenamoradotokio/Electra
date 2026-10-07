@@ -3,6 +3,7 @@ package com.redur.electra.core.log;
 import android.content.Context;
 import android.os.Process;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.redur.electra.BuildConfig;
@@ -24,6 +25,7 @@ public final class LoggingInitializer {
 
     private static final long CRASH_FLUSH_TIMEOUT_MS = 2000;
 
+    private static final String LOGCAT_TAG_PREFIX = "Electra.";
     private final Context context;
     @Nullable
     private FileLoggingTree fileTree;
@@ -42,7 +44,12 @@ public final class LoggingInitializer {
         initialized = true;
 
         if (BuildConfig.LOG_TO_LOGCAT) {
-            Timber.plant(new Timber.DebugTree());
+            Timber.plant(new Timber.DebugTree() {
+                @Override
+                protected void log(int priority, @Nullable String tag, @NonNull String message, @Nullable Throwable t) {
+                    super.log(priority, LOGCAT_TAG_PREFIX + tag, message, t);
+                }
+            });
         }
 
         if (BuildConfig.LOG_TO_FILE) {

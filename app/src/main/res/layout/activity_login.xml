@@ -98,7 +98,7 @@
                     android:drawablePadding="@dimen/spacing_s"
                     android:gravity="center_vertical"
                     android:padding="@dimen/spacing_m"
-                    android:text="@string/login_error_generic"
+                    tools:text="@string/error_network_503"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="@color/msg_error_text"
                     app:drawableStartCompat="@drawable/ic_error_24"

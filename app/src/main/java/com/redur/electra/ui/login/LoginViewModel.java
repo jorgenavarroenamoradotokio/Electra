@@ -78,7 +78,8 @@ public class LoginViewModel extends ViewModel {
             return;
         }
 
-        Timber.d("Validamos el formulario de login");
+        Timber.i("Iniciamos proceso de Inicio de sesion");
+        Timber.d("Validamos los datos del formulario");
         // Comprobamos el status del formulario para comprobar si estan los campos obligatorios correctos
         LoginFormState validated = new LoginFormState(
                username == null || Validations.isBlank(username) ? R.string.login_error_username_required : null,

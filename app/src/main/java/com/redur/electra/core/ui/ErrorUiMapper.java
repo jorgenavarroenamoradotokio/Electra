@@ -24,8 +24,9 @@ public final class ErrorUiMapper {
 
     static {
         Map<String, Integer> codes = new HashMap<>();
+        codes.put("HTTP_503",R.string.error_network_503);
         codes.put("ERROR_A01", R.string.error_login_failed);
-        codes.put("ERROR_A02", R.string.error_user_not_active);
+        codes.put("ERROR_A06", R.string.error_user_not_active);
         codes.put("ERROR_M01", R.string.error_user_menu_not_configuration);
         codes.put("ERROR_T01", R.string.error_truck_plaza_failed);
         codes.put("ERROR_C01", R.string.error_truck_request_invalid);
@@ -59,11 +60,14 @@ public final class ErrorUiMapper {
             return new UiText.Res(res);
         }
 
-        // Solo se registra el código: el mensaje del servidor puede contener datos del usuario
+        // En caso de no encontrar el error de la api usamos el txt de error del servidor
         Timber.w("Código de error de API no mapeado: %s", code);
         if (serverMessage != null && !serverMessage.isBlank()) {
             return new UiText.Raw(serverMessage);
         }
+
+        // Error generico error_unknown
+        Timber.w("No se ha encontrado error del servidor procedemos a usar el de por defecto");
         return new UiText.Res(R.string.error_unknown);
     }
 
@@ -73,6 +77,7 @@ public final class ErrorUiMapper {
         return switch (type) {
             case NO_CONNECTION -> R.string.error_network_no_connection;
             case TIMEOUT -> R.string.error_network_timeout;
+            case HTTP_503 -> R.string.error_network_503;
         };
     }
 

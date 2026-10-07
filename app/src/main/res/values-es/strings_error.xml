@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="login_error_generic">No se ha podido iniciar sesión. Comprueba tu conexión e inténtalo de nuevo.</string>
-
     <!-- Genéricos -->
     <string name="error_unknown">Algo ha fallado. Inténtalo de nuevo en unos momentos.</string>
     <string name="error_network_no_connection">Sin conexión. Comprueba tu red e inténtalo de nuevo.</string>
     <string name="error_network_timeout">El servidor está tardando demasiado en responder. Inténtalo de nuevo.</string>
+
+    <!-- Errores de HTTP controlados-->
+    <string name="error_network_503">El servicio no está disponible temporalmente. Inténtalo de nuevo en unos minutos.</string>
 
     <!-- Códigos de API -->
     <string name="error_login_failed">Usuario o contraseña incorrectos. Revísalos e inténtalo de nuevo.</string>

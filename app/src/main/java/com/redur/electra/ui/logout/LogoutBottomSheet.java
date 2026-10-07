@@ -73,8 +73,7 @@ public class LogoutBottomSheet extends BottomSheetDialogFragment {
 
     /** Se vacía la pila: tras cerrar sesión, "atrás" no puede devolver a pantallas autenticadas. */
     private void navigateToLogin() {
-        Intent intent = new Intent(requireContext(), LoginActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent intent = new Intent(requireContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         requireActivity().finish();
     }
