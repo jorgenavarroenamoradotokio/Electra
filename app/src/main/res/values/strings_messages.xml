@@ -30,4 +30,6 @@
     <string name="bulto_incidence_empty">This operation has no incidents. Try again later or contact your administrator.</string>
     <string name="bulto_incidence_saved">Incident saved</string>
     <string name="bulto_incidence_canceled">Incident discarded</string>
+    <string name="bulto_dock_not_found">Check the label and read it again, or tell your supervisor.</string>
+    <string name="bulto_dock_canceled">Reading canceled. Read the next package</string>
 </resources>

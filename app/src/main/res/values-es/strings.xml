@@ -67,6 +67,7 @@
     <string name="menu_9">Peso y medidas</string>
     <string name="menu_10">Volumen</string>
     <string name="menu_11">Incidencias</string>
+    <string name="menu_12">Puerta de salida</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Añadir foto</string>
@@ -168,6 +169,20 @@
     <string name="bulto_incidence_retake_photo">Repetir foto</string>
     <string name="bulto_incidence_confirm">Aceptar</string>
     <string name="bulto_incidence_cancel">Cancelar</string>
+
+    <!-- Puerta de salida -->
+    <string name="bulto_dock_barcode_hint">Leer bulto</string>
+    <string name="bulto_dock_barcode_helper">Léelo con el escáner</string>
+    <string name="bulto_dock_label">Muelle</string>
+    <string name="bulto_dock_destination">Plaza %1$s · CP %2$s · %3$s</string>
+    <string name="bulto_dock_description">Muelle %1$s. Plaza %2$s, código postal %3$s, %4$s</string>
+    <string name="bulto_dock_waiting_title">Lee un bulto</string>
+    <string name="bulto_dock_waiting">Aquí verás el muelle por el que sale</string>
+    <string name="bulto_dock_loading">Buscando el muelle…</string>
+    <string name="bulto_dock_not_found_title">Este bulto no tiene muelle asignado</string>
+    <string name="bulto_dock_error_title">No se ha podido consultar el muelle</string>
+    <string name="bulto_dock_retry">Reintentar</string>
+    <string name="bulto_dock_cancel">Cancelar</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Abrir ajustes</string>

@@ -23,6 +23,10 @@
     <!-- Borde que marca el elemento elegido de una lista de selección -->
     <dimen name="selection_stroke_width">2dp</dimen>
     <dimen name="icon_inline_size">16dp</dimen>
+    <!-- Puerta de salida: el muelle se lee a distancia -->
+    <dimen name="bulto_dock_code_height">112dp</dimen>
+    <dimen name="bulto_dock_code_text_max">88sp</dimen>
+    <dimen name="bulto_dock_code_text_min">32sp</dimen>
     <!-- Del borde de una fila ListAction al inicio de su texto: padding + icono + separación -->
     <dimen name="list_action_text_inset">56dp</dimen>
 
