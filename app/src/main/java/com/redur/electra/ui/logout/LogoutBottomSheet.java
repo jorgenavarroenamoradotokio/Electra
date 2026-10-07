@@ -17,6 +17,7 @@ import com.redur.electra.databinding.SheetLogoutBinding;
 import com.redur.electra.ui.login.LoginActivity;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import timber.log.Timber;
 
 /**
  * Confirmación de cierre de sesión. Se presenta como hoja inferior: mantiene visible el contexto
@@ -34,6 +35,7 @@ public class LogoutBottomSheet extends BottomSheetDialogFragment {
     /** No apila una segunda hoja si ya hay una visible (p. ej. "atrás" pulsado dos veces). */
     public static void showIfNotShown(@NonNull FragmentManager fragmentManager) {
         if (fragmentManager.findFragmentByTag(TAG) == null && !fragmentManager.isStateSaved()) {
+            Timber.i("Abrimos pantalla de cerrar sesion");
             new LogoutBottomSheet().show(fragmentManager, TAG);
         }
     }

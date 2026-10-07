@@ -11,6 +11,7 @@
     <!-- Códigos de API -->
     <string name="error_login_failed">Incorrect username or password. Check them and try again.</string>
     <string name="error_user_not_active">Your user is not active. Contact your administrator.</string>
+    <string name="error_file_not_upload">The document could not be uploaded.</string>
     <string name="error_user_menu_not_configuration">Your user has no menu configured. Contact your administrator.</string>
     <string name="error_truck_plaza_failed">The truck bay could not be assigned. Try again.</string>
     <string name="error_truck_request_invalid">The truck request is not valid. Review the data and try again.</string>

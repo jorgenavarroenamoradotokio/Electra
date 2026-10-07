@@ -68,15 +68,21 @@ public class ProfileActivity extends AppCompatActivity {
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Ajustamos el toolabar
         applyWindowInsets();
+        // Implementamos el toolbar
         setupToolbar();
+        // Implementamos el comportamiento del back
         setupBackNavigation();
+        // Mostramos la informacion del usuario,la version y plaza
         renderUser(user);
         setupActions();
         viewModel.getLogSendState().observe(this, this::renderLogSend);
     }
 
-    /** Igual que la pantalla principal: la franja de la toolbar se extiende bajo la status bar. */
+    /**
+     * La toolbar y la cabecera del menú se extienden bajo la status bar;
+     */
     private void applyWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (root, windowInsets) -> {
             Insets bars = windowInsets.getInsets(
@@ -87,6 +93,9 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Título, btn navegar atras
+     */
     private void setupToolbar() {
         MaterialToolbar toolbar = binding.appBar.toolbar;
         toolbar.setTitle(R.string.profile_title);
@@ -95,7 +104,9 @@ public class ProfileActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> navigateToMain());
     }
 
-    /** "Atrás" y la flecha de la toolbar llevan siempre a la pantalla principal. */
+    /**
+     * Indicamos el comportamiento de atras y btn hacia atras
+     */
     private void setupBackNavigation() {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -115,14 +126,20 @@ public class ProfileActivity extends AppCompatActivity {
         String plazaId = user.plazaId();
         boolean hasPlaza = plazaId != null && !plazaId.isBlank();
         binding.textPlaza.setText(hasPlaza ? plazaId : getString(R.string.profile_plaza_empty));
+
         // Sin plaza el valor baja un escalón: el texto ya lo dice, el color solo lo refuerza
         binding.textPlaza.setTextColor(MaterialColors.getColor(binding.textPlaza,
                 hasPlaza ? com.google.android.material.R.attr.colorOnSurface
                         : com.google.android.material.R.attr.colorOnSurfaceVariant));
+
         binding.textVersion.setText(getString(R.string.login_version, BuildConfig.VERSION_NAME));
+        // Visualizamos o no el btn para la plaza
         binding.buttonChangePlaza.setVisibility(viewModel.canChangePlaza() ? View.VISIBLE : View.GONE);
     }
 
+    /**
+     * Creamos eventos para cerrar sesion, enviar log y cambiar plaza
+     */
     private void setupActions() {
         binding.buttonChangePlaza.setOnClickListener(v -> PlaceBottomSheet.showIfNotShown(getSupportFragmentManager()));
         getSupportFragmentManager().setFragmentResultListener(PlaceBottomSheet.RESULT_KEY, this,
@@ -192,15 +209,16 @@ public class ProfileActivity extends AppCompatActivity {
         progress.show();
     }
 
+    /**
+     * Mensaje que se muestra cuando se produce un error al enviar el fichero.
+     * Dando opcion a reintentar o reenviar por correo
+     */
     private void showLogSendFailure(@NonNull LogSendState.Failed failed) {
-        Snackbar snackbar = Snackbar.make(binding.getRoot(), failed.message().resolve(this),
-                Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(binding.getRoot(), failed.message().resolve(this), Snackbar.LENGTH_LONG);
         switch (failed.recovery()) {
             case RETRY -> snackbar.setAction(R.string.profile_log_retry, v -> viewModel.onSendLogClicked());
             case SEND_BY_EMAIL -> snackbar
                     .setAction(R.string.profile_log_send_by_email, v -> viewModel.onSendByEmailClicked())
-                    // Más tiempo para leer la alternativa y decidir. No es indefinido: fuera de un
-                    // CoordinatorLayout no se puede descartar deslizando
                     .setDuration(EMAIL_OFFER_DURATION_MS);
             case NONE -> { }
         }
@@ -245,22 +263,16 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void showCanEditPlaza(){
-
-    }
-
     /** Reutiliza la instancia existente de la pantalla principal en lugar de apilar otra. */
     private void navigateToMain() {
-        Intent intent = new Intent(this, MainActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        Intent intent = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         finish();
     }
 
     /** Se vacía la pila: sin sesión no puede quedar ninguna pantalla autenticada detrás. */
     private void navigateToLogin() {
-        Intent intent = new Intent(this, LoginActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent intent = new Intent(this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }

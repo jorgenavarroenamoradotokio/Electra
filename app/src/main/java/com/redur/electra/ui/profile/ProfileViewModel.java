@@ -27,6 +27,7 @@ import java.util.concurrent.Executor;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import timber.log.Timber;
 
 @HiltViewModel
 public class ProfileViewModel extends ViewModel {
@@ -80,6 +81,7 @@ public class ProfileViewModel extends ViewModel {
     /** Sube el registro al servidor. También es la acción de "Reintentar". */
     @MainThread
     public void onSendLogClicked() {
+        Timber.i("Iniciamos envio del log por API");
         // Una pulsación repetida durante el envío no lanza una segunda subida
         if (logSendState.getValue() instanceof LogSendState.Sending) {
             return;
@@ -94,6 +96,7 @@ public class ProfileViewModel extends ViewModel {
     /** Alternativa ofrecida cuando la subida ya ha fallado varias veces. */
     @MainThread
     public void onSendByEmailClicked() {
+        Timber.i("Blindamos opcion de enviar por otro canal el Log");
         File file = logFile;
         if (file == null) {
             return;
@@ -123,14 +126,16 @@ public class ProfileViewModel extends ViewModel {
 
     @MainThread
     private void upload(@Nullable File file) {
+        Timber.i("Iniciamos el proceso de subida del fichero log");
         if (cleared) {
             return;
         }
         if (file == null) {
-            logSendState.setValue(new LogSendState.Failed(
-                    new UiText.Res(R.string.profile_log_unavailable), LogSendState.Recovery.NONE));
+            Timber.e("No se ha podido cargar el fichero log para enviar");
+            logSendState.setValue(new LogSendState.Failed(new UiText.Res(R.string.profile_log_unavailable), LogSendState.Recovery.NONE));
             return;
         }
+
         logFile = file;
         pendingUpload = logUploadRepository.upload(file, this::onUploadProgress, new ResultCallback<>() {
             @Override
@@ -157,11 +162,9 @@ public class ProfileViewModel extends ViewModel {
     private void onUploadFailed(@NonNull AppError error) {
         failedUploads++;
         if (failedUploads >= UPLOAD_ATTEMPTS_BEFORE_EMAIL) {
-            logSendState.setValue(new LogSendState.Failed(
-                    new UiText.Res(R.string.profile_log_upload_failed_email), LogSendState.Recovery.SEND_BY_EMAIL));
+            logSendState.setValue(new LogSendState.Failed(new UiText.Res(R.string.profile_log_upload_failed_email), LogSendState.Recovery.SEND_BY_EMAIL));
         } else {
-            logSendState.setValue(new LogSendState.Failed(
-                    ErrorUiMapper.toUiText(error), LogSendState.Recovery.RETRY));
+            logSendState.setValue(new LogSendState.Failed(ErrorUiMapper.toUiText(error), LogSendState.Recovery.RETRY));
         }
     }
 }

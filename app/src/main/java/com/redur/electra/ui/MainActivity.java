@@ -201,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
      * Si esta en la principal confirma si deseas cerrar sesion
      */
     private void setupBackNavigation() {
-        Timber.i("Lanzamos la pantalla para cerrar sesion");
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

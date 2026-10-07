@@ -69,8 +69,13 @@ public class LogUploadRepository extends BaseRepository {
             callback.onError(new AppError.Api(null, null));
             return () -> { };
         }
+
         User user = session.getUser();
         String plzsId = user != null ? user.plazaId() : null;
+
+        // Ajustamos el texto para enviar UK en vez de EN a la API
+        String locale =  Locale.getDefault().getLanguage().equals("en") ? "uk" : Locale.getDefault().getLanguage();
+        Timber.d("El idioma del usuario que esta usando: %s", locale);
 
         AtomicBoolean canceled = new AtomicBoolean();
         AtomicReference<Call<ApiResponseDTO<Boolean>>> pendingCall = new AtomicReference<>();
@@ -81,10 +86,13 @@ public class LogUploadRepository extends BaseRepository {
                 return;
             }
             IntConsumer progressOnMain = percent -> deliver(canceled, () -> onProgress.accept(percent));
+            // Construimos el DTO que vamos a enviar a la api
             UploadFileDTO request = new UploadFileDTO(logFile.getName(),
                     new ProgressRequestBody(content, LOG_MEDIA_TYPE, progressOnMain),
-                    plzsId, credentials.username(), credentials.password(),
-                    Locale.getDefault().getLanguage());
+                    plzsId, credentials.username(), credentials.password(), locale);
+
+
+            Timber.i("DTO request  %s", request.toString());
             Call<ApiResponseDTO<Boolean>> call = api.uploadLog(request.toParts());
             pendingCall.set(call);
             if (canceled.get()) {
@@ -101,8 +109,7 @@ public class LogUploadRepository extends BaseRepository {
         };
     }
 
-    private void enqueue(@NonNull Call<ApiResponseDTO<Boolean>> call, @NonNull String fileName,
-                         @NonNull ResultCallback<Boolean> callback) {
+    private void enqueue(@NonNull Call<ApiResponseDTO<Boolean>> call, @NonNull String fileName, @NonNull ResultCallback<Boolean> callback) {
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponseDTO<Boolean>> call,
@@ -110,15 +117,19 @@ public class LogUploadRepository extends BaseRepository {
                 if (call.isCanceled()) {
                     return;
                 }
+                // Extraemos los datos
                 Boolean uploaded = extractData(response, callback);
                 if (uploaded == null) {
                     return;
                 }
+
+                // Notificamos que no se ha podido enviar el log al servidor
                 if (!uploaded) {
                     Timber.w("El backend no ha aceptado el log %s", fileName);
                     callback.onError(new AppError.Api(null, null));
                     return;
                 }
+
                 Timber.i("Log %s enviado al backend", fileName);
                 callback.onSuccess(Boolean.TRUE);
             }
