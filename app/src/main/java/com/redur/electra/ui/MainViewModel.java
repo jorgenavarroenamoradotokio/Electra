@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,11 +59,8 @@ public class MainViewModel extends ViewModel {
     /** Inicial del nombre para el avatar, o null sin sesión. */
     @Nullable
     public String getUserInitial() {
-        String name = getUserDisplayName();
-        if (name == null || name.isBlank()) {
-            return null;
-        }
-        return new String(Character.toChars(name.strip().codePointAt(0))).toUpperCase(Locale.ROOT);
+        User user = session.getUser();
+        return user != null ? user.initial() : null;
     }
 
     /**

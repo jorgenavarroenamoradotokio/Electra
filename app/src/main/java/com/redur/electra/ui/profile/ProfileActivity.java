@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.redur.electra.BuildConfig;
@@ -105,10 +106,19 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void renderUser(@NonNull User user) {
+        binding.textAvatar.setText(user.initial());
         binding.textDisplayName.setText(user.displayName());
         binding.textUsername.setText(user.username());
+        // Si no hay nombre completo, el usuario ya se muestra como nombre: no se repite
+        binding.textUsername.setVisibility(user.username().equals(user.displayName()) ? View.GONE : View.VISIBLE);
+
         String plazaId = user.plazaId();
-        binding.textPlaza.setText(plazaId != null && !plazaId.isBlank()  ? plazaId : getString(R.string.profile_plaza_empty));
+        boolean hasPlaza = plazaId != null && !plazaId.isBlank();
+        binding.textPlaza.setText(hasPlaza ? plazaId : getString(R.string.profile_plaza_empty));
+        // Sin plaza el valor baja un escalón: el texto ya lo dice, el color solo lo refuerza
+        binding.textPlaza.setTextColor(MaterialColors.getColor(binding.textPlaza,
+                hasPlaza ? com.google.android.material.R.attr.colorOnSurface
+                        : com.google.android.material.R.attr.colorOnSurfaceVariant));
         binding.textVersion.setText(getString(R.string.login_version, BuildConfig.VERSION_NAME));
         binding.buttonChangePlaza.setVisibility(viewModel.canChangePlaza() ? View.VISIBLE : View.GONE);
     }

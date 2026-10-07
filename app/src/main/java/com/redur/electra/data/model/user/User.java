@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,6 +27,16 @@ public record User(
     @NonNull
     public String displayName() {
         return fullName != null && !fullName.isBlank() ? fullName : username;
+    }
+
+    /** Inicial del nombre para el avatar, o null si el nombre está vacío. */
+    @Nullable
+    public String initial() {
+        String name = displayName();
+        if (name.isBlank()) {
+            return null;
+        }
+        return new String(Character.toChars(name.strip().codePointAt(0))).toUpperCase(Locale.ROOT);
     }
 
     /** Copia del usuario asignado a otra plaza. */
