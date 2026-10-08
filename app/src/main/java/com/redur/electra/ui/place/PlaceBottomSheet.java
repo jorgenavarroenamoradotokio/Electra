@@ -19,6 +19,7 @@ import com.redur.electra.databinding.SheetChangePlazaBinding;
 import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import timber.log.Timber;
 
 /**
  * Cambio de plaza como hoja inferior. Al aplicarse el cambio publica {@link #RESULT_KEY} con la
@@ -39,7 +40,7 @@ public class PlaceBottomSheet extends BottomSheetDialogFragment {
     private PlaceViewModel viewModel;
     @Nullable
     private PlaceAdapter adapter;
-    /** Plazas recibidas con el desplegable abierto; se aplican cuando el usuario lo cierra. */
+
     @Nullable
     private List<Place> pendingPlaces;
     private final Runnable applyPendingPlaces = this::applyPendingPlaces;
@@ -47,6 +48,7 @@ public class PlaceBottomSheet extends BottomSheetDialogFragment {
     /** No apila una segunda hoja si ya hay una visible (p. ej. doble toque en el botón). */
     public static void showIfNotShown(@NonNull FragmentManager fragmentManager) {
         if (fragmentManager.findFragmentByTag(TAG) == null && !fragmentManager.isStateSaved()) {
+            Timber.i("Abrimos pantalla de cambiar plaza");
             new PlaceBottomSheet().show(fragmentManager, TAG);
         }
     }

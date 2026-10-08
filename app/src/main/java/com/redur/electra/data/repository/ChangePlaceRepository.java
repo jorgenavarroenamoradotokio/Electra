@@ -88,9 +88,12 @@ public class ChangePlaceRepository extends BaseRepository {
             return () -> { };
         }
 
+        Timber.i("Iniciamos el proceso de obtener todas las plazas de la API y almacenarlas en sqlite");
+        String locale = Locale.getDefault().getLanguage().equals("en") ? "uk" : Locale.getDefault().getLanguage();
+        Timber.d("El idioma del usuario que esta usando: %s", locale);
+
         AtomicBoolean canceled = new AtomicBoolean();
-        PlaceListRequestDTO request = new PlaceListRequestDTO(
-                credentials.username(), credentials.password(), Locale.getDefault().getLanguage());
+        PlaceListRequestDTO request = new PlaceListRequestDTO(credentials.username(), credentials.password(), locale);
         Call<ApiResponseDTO<List<PlaceDTO>>> call = api.getPlaces(request);
         call.enqueue(new Callback<>() {
             @Override
@@ -138,8 +141,14 @@ public class ChangePlaceRepository extends BaseRepository {
             return () -> { };
         }
 
-        ChangePlaceRequestDTO request = new ChangePlaceRequestDTO(credentials.username(),
-                credentials.password(), Locale.getDefault().getLanguage(), plzsId);
+        // Ajustamos el texto para enviar UK en vez de EN a la API
+        String locale = Locale.getDefault().getLanguage().equals("en") ? "uk" : Locale.getDefault().getLanguage();
+        Timber.d("El idioma del usuario que esta usando: %s", locale);
+
+        Timber.i("Iniciamos el proceso de actualizar la plaza del usuario");
+        ChangePlaceRequestDTO request = new ChangePlaceRequestDTO(credentials.username(), credentials.password(), Locale.getDefault().getLanguage(), plzsId);
+        Timber.i("DTO request  %s", request.toString());
+
         Call<ApiResponseDTO<Boolean>> call = api.changePlace(request);
         call.enqueue(new Callback<>() {
 
@@ -174,7 +183,7 @@ public class ChangePlaceRepository extends BaseRepository {
             callback.onError(new AppError.Api(null, null));
             return;
         }
-        Timber.d("Plaza del usuario cambiada a %s", plzsId);
+        Timber.i("Plaza del usuario cambiada a %s", plzsId);
         session.updatePlaza(plzsId);
         callback.onSuccess(Boolean.TRUE);
     }
@@ -183,6 +192,7 @@ public class ChangePlaceRepository extends BaseRepository {
     @NonNull
     private List<Place> readCachedPlaces() {
         try {
+            Timber.i("Leemos las plazas que tenemos en sqlite");
             return dao.getAll();
         } catch (SQLException e) {
             Timber.e(e, "No se han podido leer las plazas del terminal");

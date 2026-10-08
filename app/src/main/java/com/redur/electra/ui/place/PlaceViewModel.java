@@ -105,6 +105,9 @@ public class PlaceViewModel extends ViewModel {
         }
     }
 
+    /**
+     * En caso de no poder cargar las plazas mostramos al usuarios la opcion de volver a recargarlo
+     */
     public void onRetryLoadClicked() {
         if (loadState.getValue() instanceof UiState.Loading) {
             return;
