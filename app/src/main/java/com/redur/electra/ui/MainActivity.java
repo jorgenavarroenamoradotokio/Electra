@@ -10,10 +10,12 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.SystemBarStyle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -46,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
     private NavController navController;
+    /**
+     * Lo que se abre al terminar de cerrarse el menú. Navegar mientras el menú aún se desliza
+     * crea la pantalla nueva en mitad de la animación y esta va a tirones.
+     */
+    @Nullable
+    private Runnable afterDrawerClosed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,12 +154,44 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerDrawerMenu.setAdapter(adapter);
         viewModel.getMenuRows().observe(this, adapter::submitList);
         navController.addOnDestinationChangedListener((controller, destination, args) -> markActiveMenu(destination));
+        binding.drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                runAfterDrawerClosed();
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+                // El usuario ha vuelto a abrir el menú antes de cerrarse: se descarta la acción
+                afterDrawerClosed = null;
+            }
+        });
 
         // Indicamos el comportamiento cuando se hace click sobre un elemento
-        binding.buttonDrawerLogout.setOnClickListener(v -> {
-            binding.drawerLayout.closeDrawer(binding.drawerPanel);
-            LogoutBottomSheet.showIfNotShown(getSupportFragmentManager());
-        });
+        binding.buttonDrawerLogout.setOnClickListener(v ->
+                closeDrawerThen(() -> LogoutBottomSheet.showIfNotShown(getSupportFragmentManager())));
+    }
+
+    /**
+     * Cierra el menú y ejecuta {@code action} cuando ha terminado de cerrarse, para que la
+     * animación del menú no compita con la creación de la pantalla o la hoja que se abre.
+     */
+    private void closeDrawerThen(@NonNull Runnable action) {
+        if (!binding.drawerLayout.isDrawerVisible(binding.drawerPanel)) {
+            action.run();
+            return;
+        }
+        afterDrawerClosed = action;
+        binding.drawerLayout.closeDrawer(binding.drawerPanel);
+    }
+
+    private void runAfterDrawerClosed() {
+        Runnable action = afterDrawerClosed;
+        afterDrawerClosed = null;
+        // Con el estado ya guardado no se pueden confirmar transacciones de fragments
+        if (action != null && !getSupportFragmentManager().isStateSaved()) {
+            action.run();
+        }
     }
 
     /**
@@ -169,7 +209,10 @@ public class MainActivity extends AppCompatActivity {
      * Abre el destino del menú pasándole sus permisos, leídos de la sesión en este momento.
      */
     private void onMenuSelected(int menuId) {
-        binding.drawerLayout.closeDrawer(binding.drawerPanel);
+        closeDrawerThen(() -> openMenu(menuId));
+    }
+
+    private void openMenu(int menuId) {
         MenuAction action = MenuActionRegistry.getAction(menuId);
         MenuArgs args = viewModel.getMenuArgs(menuId);
         if (action == null || args == null) {
