@@ -43,15 +43,14 @@ public final class MenuActionRegistry {
     static {
         // Registrar todas las acciones del Drawer
         screen(HOME_MENU_ID, R.string.menu_0, R.drawable.ic_home_24, R.id.nav_home);
-        // Pantallas aún sin implementar: se registran sus literales y se avisa al pulsarlas
-        pending(1, R.string.menu_1, R.drawable.ic_local_shipping_24);
-        pending(2, R.string.menu_2, R.drawable.ic_receipt_24);
+
         // Agrupador: al pulsarlo despliega sus submenús
         pending(3, R.string.menu_3, R.drawable.ic_account_tree_24);
         dialog(4, R.string.menu_4, R.drawable.ic_swap_horiz_24, R.id.nav_cambiar_plaza);
         dialog(5, R.string.menu_5, R.drawable.ic_photo_camera_24, R.id.nav_toma_foto);
         dialog(6, R.string.menu_6, R.drawable.ic_label_24, R.id.nav_label_options);
         screen(7, R.string.menu_7, R.drawable.ic_local_shipping_24, R.id.nav_bulto_type);
+
         // Agrupador de prototipos: al pulsarlo despliega sus submenús
         pending(8, R.string.menu_8, R.drawable.ic_folder_24);
         screen(9, R.string.menu_9, R.drawable.ic_scale_24, R.id.nav_bulto_weight);

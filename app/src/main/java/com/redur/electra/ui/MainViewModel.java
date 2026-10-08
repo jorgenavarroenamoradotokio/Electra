@@ -182,7 +182,7 @@ public class MainViewModel extends ViewModel {
         return entries;
     }
 
-    /** {@code visited} evita bucles si el servidor repite ids o encadena padres entre sí. */
+    /** evita bucles si el servidor repite ids o encadena padres entre sí. */
     @NonNull
     private DrawerMenuEntry toEntry(@NonNull MenuItem item,
                                     @NonNull Map<Integer, List<MenuItem>> childrenByParent,

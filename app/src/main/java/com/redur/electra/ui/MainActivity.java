@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
      * Iniciamos la construccion del menu lateral (Hamburgesa)
      */
     private void setupDrawer() {
+        // Rellenamos los datos de la cabecera del menu
         binding.drawerHeader.textDrawerAvatar.setText(viewModel.getUserInitial());
         binding.drawerHeader.textDrawerDisplayName.setText(viewModel.getUserDisplayName());
         String username = viewModel.getUsername();
@@ -150,8 +151,11 @@ public class MainActivity extends AppCompatActivity {
         binding.drawerHeader.textDrawerUsername.setText(username);
         binding.drawerHeader.textDrawerUsername.setVisibility(showUsername ? View.VISIBLE : View.GONE);
 
+        // Construimos la lista de las opciones de menu
         DrawerMenuAdapter adapter = new DrawerMenuAdapter(this::onMenuRowClicked);
         binding.recyclerDrawerMenu.setAdapter(adapter);
+
+        // Obtenemos todos los menus, los mandamos al adaptador y los observamos para controlar los eventos de click
         viewModel.getMenuRows().observe(this, adapter::submitList);
         navController.addOnDestinationChangedListener((controller, destination, args) -> markActiveMenu(destination));
         binding.drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
@@ -167,9 +171,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Indicamos el comportamiento cuando se hace click sobre un elemento
-        binding.buttonDrawerLogout.setOnClickListener(v ->
-                closeDrawerThen(() -> LogoutBottomSheet.showIfNotShown(getSupportFragmentManager())));
+        // Indicamos el comportamiento de la opcion de menu fija que es cerrar sesion
+        binding.buttonDrawerLogout.setOnClickListener(v ->  closeDrawerThen(() -> LogoutBottomSheet.showIfNotShown(getSupportFragmentManager())));
     }
 
     /**
@@ -212,6 +215,10 @@ public class MainActivity extends AppCompatActivity {
         closeDrawerThen(() -> openMenu(menuId));
     }
 
+
+    /**
+     * Iniciamos la accion del menu, en caso de no tenerla asignada mostramos mensaje de accion sin vista
+     */
     private void openMenu(int menuId) {
         MenuAction action = MenuActionRegistry.getAction(menuId);
         MenuArgs args = viewModel.getMenuArgs(menuId);
