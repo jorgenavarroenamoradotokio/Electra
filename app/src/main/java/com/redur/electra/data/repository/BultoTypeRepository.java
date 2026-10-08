@@ -60,6 +60,8 @@ public class BultoTypeRepository extends BaseRepository {
         Timber.d("El idioma del usuario que esta usando: %s", locale);
 
         BultoTypeRequestDTO request = new BultoTypeRequestDTO(credentials.username(), credentials.password(), locale);
+        Timber.i("DTO request  %s", request);
+
         Call<ApiResponseDTO<List<BultoTypeDTO>>> call = api.getBultoTypes(request);
         call.enqueue(new Callback<>() {
             @Override

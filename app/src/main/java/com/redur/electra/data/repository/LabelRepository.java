@@ -68,9 +68,14 @@ public class LabelRepository extends BaseRepository {
             callback.onError(new AppError.Api(null, null));
             return () -> { };
         }
+
+        Timber.i("Iniciamos el proceso de obtener la etiqueta zpl para visualizar");
+        String locale = backendLanguage();
+        Timber.d("El idioma del usuario que esta usando: %s", locale);
+
         User user = session.getUser();
-        ZplLabelRequestDTO request = new ZplLabelRequestDTO(credentials.username(),
-                credentials.password(), backendLanguage(), user != null ? user.plazaId() : null);
+        ZplLabelRequestDTO request = new ZplLabelRequestDTO(credentials.username(), credentials.password(), locale, user != null ? user.plazaId() : null);
+        Timber.i("DTO request  %s", request);
 
         AtomicBoolean canceled = new AtomicBoolean();
         Call<ApiResponseDTO<ZplLabelDTO>> call = api.createZpl(request);
@@ -81,10 +86,12 @@ public class LabelRepository extends BaseRepository {
                 if (call.isCanceled()) {
                     return;
                 }
+
                 ZplLabelDTO data = extractData(response, callback);
                 if (data == null) {
                     return;
                 }
+                Timber.i("ZPL obtenida %s",data.zpl());
                 ioExecutor.execute(() -> {
                     ZplLabel label = toLabel(data);
                     deliver(canceled, () -> {
