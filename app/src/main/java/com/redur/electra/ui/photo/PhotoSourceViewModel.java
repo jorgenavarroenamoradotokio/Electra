@@ -264,6 +264,7 @@ public class PhotoSourceViewModel extends ViewModel {
     }
 
     private void upload(@NonNull String uri) {
+        Timber.i("Iniciamos el proceso de subida de imagen");
         state.setValue(new PhotoSourceState.Uploading(0));
         pendingUpload = uploadRepository.upload(uri, this::onUploadProgress, new ResultCallback<>() {
             @Override

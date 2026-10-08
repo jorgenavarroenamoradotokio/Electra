@@ -55,10 +55,6 @@ public class ImgUploadRepository extends BaseRepository {
     private static final String DEFAULT_FILE_PREFIX = "IMG_";
     private static final String DEFAULT_FILE_EXTENSION = ".jpg";
 
-    // El backend identifica el inglés como "uk" (igual que en el login)
-    private static final String LANGUAGE_ENGLISH = "en";
-    private static final String BACKEND_LANGUAGE_ENGLISH = "uk";
-
     /** Lee la imagen apuntada por un content://. */
     @VisibleForTesting
     public interface ImageReader {
@@ -111,6 +107,10 @@ public class ImgUploadRepository extends BaseRepository {
             callback.onError(new AppError.Api(null, null));
             return () -> { };
         }
+
+        String locale = backendLanguage();
+        Timber.d("El idioma del usuario que esta usando: %s", locale);
+
         User user = session.getUser();
         String plzsId = user != null ? user.plazaId() : null;
 
@@ -125,7 +125,9 @@ public class ImgUploadRepository extends BaseRepository {
             IntConsumer progressOnMain = percent -> deliver(canceled, () -> onProgress.accept(percent));
             UploadFileDTO request = new UploadFileDTO(image.fileName(),
                     new ProgressRequestBody(image.bytes(), mediaTypeOf(image), progressOnMain),
-                    plzsId, credentials.username(), credentials.password(), backendLanguage());
+                    plzsId, credentials.username(), credentials.password(), locale);
+
+            Timber.i("DTO request  %s", request);
             Call<ApiResponseDTO<Boolean>> call = api.uploadImg(request.toParts());
             pendingCall.set(call);
             if (canceled.get()) {
@@ -196,12 +198,6 @@ public class ImgUploadRepository extends BaseRepository {
     private static MediaType mediaTypeOf(@NonNull ImageContent image) {
         MediaType type = image.mimeType() != null ? MediaType.parse(image.mimeType()) : null;
         return type != null ? type : MediaType.get(DEFAULT_MIME_TYPE);
-    }
-
-    @NonNull
-    private static String backendLanguage() {
-        String language = Locale.getDefault().getLanguage();
-        return LANGUAGE_ENGLISH.equals(language) ? BACKEND_LANGUAGE_ENGLISH : language;
     }
 
     private void deliver(@NonNull AtomicBoolean canceled, @NonNull Runnable result) {

@@ -71,8 +71,7 @@ public class BultoTypeAdapter extends ListAdapter<BultoType, BultoTypeAdapter.Bu
     @NonNull
     @Override
     public BultoTypeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemBultoTypeBinding binding = ItemBultoTypeBinding.inflate(
-                LayoutInflater.from(parent.getContext()), parent, false);
+        ItemBultoTypeBinding binding = ItemBultoTypeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         return new BultoTypeViewHolder(binding, listener);
     }
 
@@ -121,15 +120,11 @@ public class BultoTypeAdapter extends ListAdapter<BultoType, BultoTypeAdapter.Bu
             Context context = binding.getRoot().getContext();
             binding.textBultoType.setText(type.type());
             binding.textBultoTypeDescription.setText(type.description());
-            binding.textBultoTypeDescription.setVisibility(
-                    type.description().isBlank() ? View.GONE : View.VISIBLE);
+            binding.textBultoTypeDescription.setVisibility(type.description().isBlank() ? View.GONE : View.VISIBLE);
             binding.layoutBultoTypePhoto.setVisibility(type.photoRequired() ? View.VISIBLE : View.GONE);
             binding.radioBultoType.setChecked(selected);
             binding.getRoot().setActivated(selected);
-            binding.getRoot().setContentDescription(context.getString(type.photoRequired()
-                            ? R.string.bulto_type_item_description_photo
-                            : R.string.bulto_type_item_description,
-                    type.type(), type.description()));
+            binding.getRoot().setContentDescription(context.getString(type.photoRequired()  ? R.string.bulto_type_item_description_photo : R.string.bulto_type_item_description, type.type(), type.description()));
             binding.getRoot().setOnClickListener(v -> listener.onBultoTypeClicked(type));
         }
     }

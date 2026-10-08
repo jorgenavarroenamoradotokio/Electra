@@ -89,7 +89,7 @@ public class ChangePlaceRepository extends BaseRepository {
         }
 
         Timber.i("Iniciamos el proceso de obtener todas las plazas de la API y almacenarlas en sqlite");
-        String locale = Locale.getDefault().getLanguage().equals("en") ? "uk" : Locale.getDefault().getLanguage();
+        String locale = backendLanguage();
         Timber.d("El idioma del usuario que esta usando: %s", locale);
 
         AtomicBoolean canceled = new AtomicBoolean();
@@ -141,17 +141,15 @@ public class ChangePlaceRepository extends BaseRepository {
             return () -> { };
         }
 
-        // Ajustamos el texto para enviar UK en vez de EN a la API
-        String locale = Locale.getDefault().getLanguage().equals("en") ? "uk" : Locale.getDefault().getLanguage();
+        Timber.i("Iniciamos el proceso de actualizar la plaza del usuario");
+        String locale = backendLanguage();
         Timber.d("El idioma del usuario que esta usando: %s", locale);
 
-        Timber.i("Iniciamos el proceso de actualizar la plaza del usuario");
         ChangePlaceRequestDTO request = new ChangePlaceRequestDTO(credentials.username(), credentials.password(), Locale.getDefault().getLanguage(), plzsId);
         Timber.i("DTO request  %s", request.toString());
 
         Call<ApiResponseDTO<Boolean>> call = api.changePlace(request);
         call.enqueue(new Callback<>() {
-
             @Override
             public void onResponse(@NonNull Call<ApiResponseDTO<Boolean>> call, @NonNull Response<ApiResponseDTO<Boolean>> response) {
                 if (call.isCanceled()) {

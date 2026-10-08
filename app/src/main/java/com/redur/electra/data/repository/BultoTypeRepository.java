@@ -55,8 +55,11 @@ public class BultoTypeRepository extends BaseRepository {
             return () -> { };
         }
 
-        BultoTypeRequestDTO request = new BultoTypeRequestDTO(credentials.username(),
-                credentials.password(), toBackendLanguage(Locale.getDefault()));
+        Timber.i("Iniciamos el proceso de obtener los tipos de bultos");
+        String locale = backendLanguage();
+        Timber.d("El idioma del usuario que esta usando: %s", locale);
+
+        BultoTypeRequestDTO request = new BultoTypeRequestDTO(credentials.username(), credentials.password(), locale);
         Call<ApiResponseDTO<List<BultoTypeDTO>>> call = api.getBultoTypes(request);
         call.enqueue(new Callback<>() {
             @Override
@@ -69,6 +72,8 @@ public class BultoTypeRepository extends BaseRepository {
                 if (data == null) {
                     return;
                 }
+
+                Timber.i("Los tipos de bultos obtenidos son: %s", data.toString());
                 callback.onSuccess(mapper.toBultoTypes(data));
             }
 
@@ -82,12 +87,5 @@ public class BultoTypeRepository extends BaseRepository {
             }
         });
         return call::cancel;
-    }
-
-    @VisibleForTesting
-    @NonNull
-    static String toBackendLanguage(@NonNull Locale locale) {
-        String language = locale.getLanguage();
-        return LANGUAGE_ENGLISH.equals(language) ? BACKEND_LANGUAGE_ENGLISH : language;
     }
 }

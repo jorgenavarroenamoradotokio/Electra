@@ -118,8 +118,7 @@ public class PhotoSourceBottomSheet extends BottomSheetDialogFragment {
 
         // El aviso del intento anterior deja de ser cierto en cuanto empieza otro
         renderNotice(noticeOf(state));
-        views.buttonRetryUpload.setVisibility(
-                state instanceof PhotoSourceState.UploadFailed ? View.VISIBLE : View.GONE);
+        views.buttonRetryUpload.setVisibility(state instanceof PhotoSourceState.UploadFailed ? View.VISIBLE : View.GONE);
         renderUploadProgress(state);
 
         if (state instanceof PhotoSourceState.LaunchCamera launch) {
@@ -127,6 +126,7 @@ public class PhotoSourceBottomSheet extends BottomSheetDialogFragment {
         } else if (state instanceof PhotoSourceState.LaunchGallery) {
             launchGallery();
         } else if (state instanceof PhotoSourceState.PermissionBlocked blocked) {
+            Timber.i("El permiso esta bloqueado mostramos pantalla para que seleccione ir a ajuste el usuario");
             PermissionSettingsBottomSheet.showIfNotShown(getChildFragmentManager(), blocked.permission());
             viewModel.onSettingsPromptShown();
         } else if (state instanceof PhotoSourceState.Uploaded uploaded) {
@@ -187,8 +187,8 @@ public class PhotoSourceBottomSheet extends BottomSheetDialogFragment {
 
     private void launchCamera(@NonNull File output) {
         try {
-            Uri uri = FileProvider.getUriForFile(requireContext(),
-                    BuildConfig.APPLICATION_ID + FILE_PROVIDER_SUFFIX, output);
+            Timber.i("Abrimos la camara del terminal");
+            Uri uri = FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + FILE_PROVIDER_SUFFIX, output);
             viewModel.onCameraOpened(uri.toString());
             takePicture.launch(uri);
         } catch (IllegalArgumentException e) {
@@ -203,10 +203,9 @@ public class PhotoSourceBottomSheet extends BottomSheetDialogFragment {
 
     private void launchGallery() {
         try {
+            Timber.i("Abrimos la galeria del terminal");
             viewModel.onGalleryOpened();
-            pickImage.launch(new PickVisualMediaRequest.Builder()
-                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                    .build());
+            pickImage.launch(new PickVisualMediaRequest.Builder().setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build());
         } catch (ActivityNotFoundException e) {
             Timber.w(e, "No hay app de galería");
             viewModel.onSourceOpenFailed();

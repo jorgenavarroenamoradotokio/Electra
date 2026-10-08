@@ -71,13 +71,9 @@ public class BultoTypeFragment extends Fragment {
 
     private void render(@NonNull BultoTypeState state) {
         FragmentBultoTypeBinding views = requireBinding();
-        views.layoutBultoTypesLoading.setVisibility(
-                state instanceof BultoTypeState.Loading ? View.VISIBLE : View.GONE);
-        views.cardBultoTypes.setVisibility(
-                state instanceof BultoTypeState.Ready ? View.VISIBLE : View.GONE);
-        views.layoutBultoTypesError.setVisibility(
-                state instanceof BultoTypeState.Failed || state instanceof BultoTypeState.Empty
-                        ? View.VISIBLE : View.GONE);
+        views.layoutBultoTypesLoading.setVisibility(state instanceof BultoTypeState.Loading ? View.VISIBLE : View.GONE);
+        views.cardBultoTypes.setVisibility(state instanceof BultoTypeState.Ready ? View.VISIBLE : View.GONE);
+        views.layoutBultoTypesError.setVisibility(state instanceof BultoTypeState.Failed || state instanceof BultoTypeState.Empty ? View.VISIBLE : View.GONE);
         views.checkBultoTypeFixed.setEnabled(state instanceof BultoTypeState.Ready);
 
         if (state instanceof BultoTypeState.Ready ready && adapter != null) {

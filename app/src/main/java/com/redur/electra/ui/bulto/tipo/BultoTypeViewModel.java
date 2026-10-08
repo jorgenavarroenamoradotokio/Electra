@@ -99,9 +99,7 @@ public class BultoTypeViewModel extends ViewModel {
             @Override
             public void onSuccess(@NonNull List<BultoType> types) {
                 pendingLoad = null;
-                state.setValue(types.isEmpty()
-                        ? new BultoTypeState.Empty()
-                        : new BultoTypeState.Ready(types));
+                state.setValue(types.isEmpty() ? new BultoTypeState.Empty() : new BultoTypeState.Ready(types));
             }
 
             @Override

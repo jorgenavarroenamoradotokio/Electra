@@ -74,7 +74,7 @@ public class LogUploadRepository extends BaseRepository {
         String plzsId = user != null ? user.plazaId() : null;
 
         // Ajustamos el texto para enviar UK en vez de EN a la API
-        String locale =  Locale.getDefault().getLanguage().equals("en") ? "uk" : Locale.getDefault().getLanguage();
+        String locale = backendLanguage();
         Timber.d("El idioma del usuario que esta usando: %s", locale);
 
         AtomicBoolean canceled = new AtomicBoolean();

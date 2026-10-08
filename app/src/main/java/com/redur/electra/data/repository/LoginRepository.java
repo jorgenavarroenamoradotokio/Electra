@@ -49,8 +49,7 @@ public class LoginRepository extends BaseRepository {
                              @NonNull ResultCallback<User> callback) {
 
         // Ajustamos el texto para enviar UK en vez de EN a la API
-        String locale = Locale.getDefault().getLanguage();
-        locale = locale.equals("en") ? "uk" : locale;
+        String locale = backendLanguage();
 
         // Construimos el DTO que vamos a enviar a la api
         Timber.d("El idioma del usuario que esta usando: %s", locale);

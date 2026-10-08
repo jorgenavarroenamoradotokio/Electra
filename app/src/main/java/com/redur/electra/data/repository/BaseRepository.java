@@ -12,6 +12,7 @@ import com.redur.electra.data.remote.dto.response.ApiResponseDTO;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Response;
 import timber.log.Timber;
@@ -23,6 +24,14 @@ import timber.log.Timber;
 public abstract class BaseRepository {
 
     private static final String HTTP_ERROR_PREFIX = "HTTP_";
+    private static final String LANGUAGE_ENGLISH = "en";
+    private static final String BACKEND_LANGUAGE_ENGLISH = "uk";
+
+    @NonNull
+    protected static String backendLanguage() {
+        String language = Locale.getDefault().getLanguage();
+        return LANGUAGE_ENGLISH.equals(language) ? BACKEND_LANGUAGE_ENGLISH : language;
+    }
 
     /**
      * Valida la respuesta y devuelve su {@code data}. Si la respuesta no es válida notifica el

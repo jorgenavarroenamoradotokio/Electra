@@ -42,12 +42,14 @@ public class PermissionSettingsBottomSheet extends BottomSheetDialogFragment {
 
     /** No apila una segunda hoja si ya hay una visible. */
     public static void showIfNotShown(@NonNull FragmentManager fragmentManager, @NonNull AppPermission permission) {
+        Timber.i("Abrimos la pantalla de solicitud de permisos de %s", permission.name());
         if (fragmentManager.findFragmentByTag(TAG) == null && !fragmentManager.isStateSaved()) {
             PermissionSettingsBottomSheet sheet = new PermissionSettingsBottomSheet();
             Bundle args = new Bundle();
             args.putString(ARG_PERMISSION, permission.name());
             sheet.setArguments(args);
             sheet.show(fragmentManager, TAG);
+
         }
     }
 
@@ -69,6 +71,7 @@ public class PermissionSettingsBottomSheet extends BottomSheetDialogFragment {
         views.textPermissionMessage.setText(permission.blockedMessage());
         views.buttonOpenSettings.setOnClickListener(v -> openAppSettings());
         views.buttonNotNow.setOnClickListener(v -> {
+            Timber.w("El usuario ha cancelado el dar permisos de %s", permission.name());
             sendResult(false);
             dismiss();
         });
@@ -86,6 +89,7 @@ public class PermissionSettingsBottomSheet extends BottomSheetDialogFragment {
         Intent appDetails = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts(PACKAGE_SCHEME, requireContext().getPackageName(), null));
         try {
+            Timber.i("Mostramos el activar o no el permisos desde ajustes del terminal");
             startActivity(appDetails);
         } catch (ActivityNotFoundException e) {
             Timber.w(e, "Sin pantalla de ajustes de la app; se abren los ajustes generales");

@@ -147,12 +147,6 @@ public class LabelRepository extends BaseRepository {
         }
     }
 
-    @NonNull
-    private static String backendLanguage() {
-        String language = Locale.getDefault().getLanguage();
-        return LANGUAGE_ENGLISH.equals(language) ? BACKEND_LANGUAGE_ENGLISH : language;
-    }
-
     private void deliver(@NonNull AtomicBoolean canceled, @NonNull Runnable result) {
         mainExecutor.execute(() -> {
             if (!canceled.get()) {
