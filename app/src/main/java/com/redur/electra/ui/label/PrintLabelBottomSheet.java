@@ -77,7 +77,10 @@ public class PrintLabelBottomSheet extends BottomSheetDialogFragment {
         adapter = printerAdapter;
         views.recyclerPrinters.setAdapter(printerAdapter);
         views.buttonPrintSearchAgain.setOnClickListener(v -> viewModel.onSearchAgainClicked());
-        views.buttonPrintCancel.setOnClickListener(v -> dismiss());
+        views.buttonPrintCancel.setOnClickListener(v -> {
+            Timber.i("[ACCION] Cancelar impresión de etiqueta");
+            dismiss();
+        });
 
         getChildFragmentManager().setFragmentResultListener(PermissionSettingsBottomSheet.RESULT_KEY,
                 getViewLifecycleOwner(), (key, result) -> {

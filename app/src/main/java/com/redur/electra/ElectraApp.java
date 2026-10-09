@@ -2,6 +2,7 @@ package com.redur.electra;
 
 import android.app.Application;
 
+import com.redur.electra.core.log.ActivityLifecycleLogger;
 import com.redur.electra.core.log.LoggingInitializer;
 
 import javax.inject.Inject;
@@ -18,5 +19,6 @@ public class ElectraApp extends Application {
     public void onCreate() {
         super.onCreate();
         loggingInitializer.init();
+        registerActivityLifecycleCallbacks(new ActivityLifecycleLogger());
     }
 }

@@ -29,6 +29,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import timber.log.Timber;
 
 /**
  * Lectura en modo Volumen (sin peso): se lee el CB del bulto y después alto, ancho y profundo,
@@ -63,7 +64,10 @@ public class BultoVolumeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         FragmentBultoVolumeBinding views = requireBinding();
 
-        View.OnClickListener unavailable = v -> showToast(R.string.feature_unavailable);
+        View.OnClickListener unavailable = v -> {
+            Timber.i("[ACCION] Botón sin función disponible: %s", getResources().getResourceEntryName(v.getId()));
+            showToast(R.string.feature_unavailable);
+        };
         views.buttonBultoVolumePs.setOnClickListener(unavailable);
         views.buttonBultoVolumeTb.setOnClickListener(unavailable);
         views.buttonBultoVolumeKg.setOnClickListener(unavailable);

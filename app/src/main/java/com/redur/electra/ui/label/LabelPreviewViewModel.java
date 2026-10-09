@@ -84,6 +84,7 @@ public class LabelPreviewViewModel extends ViewModel {
     @MainThread
     public void onRetryClicked() {
         if (state.getValue() instanceof LabelPreviewState.Failed) {
+            Timber.i("[ACCION] Reintentar vista previa de etiqueta");
             generate();
         }
     }
@@ -120,6 +121,9 @@ public class LabelPreviewViewModel extends ViewModel {
             mainExecutor.execute(() -> {
                 if (cleared) {
                     return;
+                }
+                if (pages != null) {
+                    Timber.i("[ESTADO] Vista previa de etiqueta con %d páginas", pages.size());
                 }
                 state.setValue(pages != null
                         ? new LabelPreviewState.Ready(pages)

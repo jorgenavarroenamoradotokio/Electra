@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import timber.log.Timber;
 
 /**
  * Peso y medidas del bulto. Calcula el volumen a medida que se teclean las medidas, valida al
@@ -49,6 +50,7 @@ public class BultoWeightViewModel extends ViewModel {
         BultoWeightArgs args = BultoWeightArgs.from(savedState);
         this.origin = args.origin();
         this.initialMeasures = initialMeasuresFor(args);
+        Timber.i("[ESTADO] Peso y medidas desde %s (con datos iniciales: %b)", origin, initialMeasures != null);
         if (initialMeasures != null) {
             volume.setValue(initialMeasures.volumeM3());
         }
@@ -124,12 +126,16 @@ public class BultoWeightViewModel extends ViewModel {
         BultoWeightFormState validated = new BultoWeightFormState(weightError, volumeError);
         formState.setValue(validated);
         if (!validated.isValid()) {
+            Timber.i("[ACCION] Aceptar peso rechazado (peso válido: %b, medidas válidas: %b)",
+                    weightError == null, volumeError == null);
             return null;
         }
 
         BultoMeasures measures = allMeasures
                 ? new BultoMeasures(Objects.requireNonNull(weightKg), h, w, d, volumeM3)
                 : BultoMeasures.weightOnly(Objects.requireNonNull(weightKg));
+        Timber.i("[ACCION] Peso aceptado: %s kg, medidas %s, volumen %s m3 (origen %s)", weightKg,
+                allMeasures ? h + "x" + w + "x" + d + " cm" : "sin medidas", volumeM3, origin);
         return new BultoWeightResult.Saved(measures, origin.marksFullExpedition());
     }
 
@@ -144,6 +150,7 @@ public class BultoWeightViewModel extends ViewModel {
 
     @NonNull
     public BultoWeightResult.Canceled onCancelClicked() {
+        Timber.i("[ACCION] Cancelar peso (origen %s, efecto %s)", origin, origin.cancelEffect());
         return new BultoWeightResult.Canceled(origin.cancelEffect());
     }
 

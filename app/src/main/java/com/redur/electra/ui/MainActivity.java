@@ -1,6 +1,8 @@
 package com.redur.electra.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -123,13 +125,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Indicamos la accion que tendra cuando se haga click sobre el btn de perfil
         if (id == R.id.action_profile) {
-            Timber.i("Navegamos al layout de perfil");
+            Timber.i("[TOOLBAR] Perfil pulsado");
             startActivity(new Intent(this, ProfileActivity.class));
             return true;
         }
 
         // Indicamos la accion que trendra cuando se haga click sobre el btn de settings
         if (id == R.id.action_settings) {
+            Timber.i("[TOOLBAR] Ajustes pulsado (no disponible)");
             // Pantalla aún no implementada: se avisa en lugar de ignorar el toque
             showUnavailable();
             return true;
@@ -157,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Obtenemos todos los menus, los mandamos al adaptador y los observamos para controlar los eventos de click
         viewModel.getMenuRows().observe(this, adapter::submitList);
-        navController.addOnDestinationChangedListener((controller, destination, args) -> markActiveMenu(destination));
+        navController.addOnDestinationChangedListener((controller, destination, args) -> onDestinationChanged(destination));
         binding.drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
@@ -172,7 +175,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Indicamos el comportamiento de la opcion de menu fija que es cerrar sesion
-        binding.buttonDrawerLogout.setOnClickListener(v ->  closeDrawerThen(() -> LogoutBottomSheet.showIfNotShown(getSupportFragmentManager())));
+        binding.buttonDrawerLogout.setOnClickListener(v -> {
+            Timber.i("[MENU] Cerrar sesión pulsado");
+            closeDrawerThen(() -> LogoutBottomSheet.showIfNotShown(getSupportFragmentManager()));
+        });
     }
 
     /**
@@ -202,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void onMenuRowClicked(@NonNull DrawerMenuRow row) {
         if (row.group()) {
+            Timber.i("[MENU] Grupo %d %s", row.menuId(), row.expanded() ? "plegado" : "desplegado");
             viewModel.onGroupToggled(row.menuId());
         } else {
             onMenuSelected(row.menuId());
@@ -212,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
      * Abre el destino del menú pasándole sus permisos, leídos de la sesión en este momento.
      */
     private void onMenuSelected(int menuId) {
+        Timber.i("[MENU] Opción %d pulsada", menuId);
         closeDrawerThen(() -> openMenu(menuId));
     }
 
@@ -223,10 +231,32 @@ public class MainActivity extends AppCompatActivity {
         MenuAction action = MenuActionRegistry.getAction(menuId);
         MenuArgs args = viewModel.getMenuArgs(menuId);
         if (action == null || args == null) {
+            Timber.i("[MENU] Opción %d sin pantalla disponible (registrada: %b, en sesión: %b)",
+                    menuId, action != null, args != null);
             showUnavailable();
             return;
         }
         action.navigate(navController, args.toBundle());
+    }
+
+    /**
+     * Punto único del rastro de navegación: cada pantalla, hoja o diálogo del grafo que se
+     * muestra, venga del menú, de otra pantalla o del botón atrás.
+     */
+
+    private void onDestinationChanged(@NonNull NavDestination destination) {
+        Timber.i("[NAV] Destino: %s", destinationName(destination));
+        markActiveMenu(destination);
+    }
+
+    /** Nombre del id en el grafo (p. ej. {@code nav_bulto_weight}); los diálogos no tienen label. */
+    @NonNull
+    private String destinationName(@NonNull NavDestination destination) {
+        try {
+            return getResources().getResourceEntryName(destination.getId());
+        } catch (Resources.NotFoundException e) {
+            return "0x" + Integer.toHexString(destination.getId());
+        }
     }
 
     /** Las hojas y diálogos no cambian la opción activa: la pantalla de debajo sigue visible. */

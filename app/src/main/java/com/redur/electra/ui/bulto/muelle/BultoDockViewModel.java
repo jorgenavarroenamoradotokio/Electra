@@ -21,6 +21,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import timber.log.Timber;
 
 /**
  * Puerta de salida: por cada bulto leído con el escáner se busca su muelle, que queda a la vista
@@ -46,6 +47,7 @@ public class BultoDockViewModel extends ViewModel {
         this.repository = repository;
         String barcode = savedState.get(KEY_BARCODE);
         if (barcode != null) {
+            Timber.i("[ESTADO] Se recupera la consulta de muelle del bulto %s", barcode);
             loadDock(barcode);
         }
     }
@@ -65,8 +67,10 @@ public class BultoDockViewModel extends ViewModel {
         }
         String code = barcode.trim();
         if (state.getValue() instanceof BultoDockState.Loading loading && loading.barcode().equals(code)) {
+            Timber.d("[ACCION] Lectura repetida del bulto %s ya en consulta", code);
             return;
         }
+        Timber.i("[ACCION] Bulto leído en puerta de salida: %s", code);
         loadDock(code);
     }
 
@@ -74,6 +78,7 @@ public class BultoDockViewModel extends ViewModel {
     @MainThread
     public void onRetryClicked() {
         if (state.getValue() instanceof BultoDockState.Failed failed) {
+            Timber.i("[ACCION] Reintentar muelle del bulto %s", failed.barcode());
             loadDock(failed.barcode());
         }
     }
@@ -81,6 +86,7 @@ public class BultoDockViewModel extends ViewModel {
     /** Descarta la lectura en curso: se espera el bulto siguiente. */
     @MainThread
     public void onCancelClicked() {
+        Timber.i("[ACCION] Cancelar lectura de muelle");
         reset();
     }
 
@@ -111,6 +117,11 @@ public class BultoDockViewModel extends ViewModel {
             @Override
             public void onSuccess(@NonNull Optional<BultoDock> dock) {
                 pendingLoad = null;
+                if (dock.isPresent()) {
+                    Timber.i("[ESTADO] Muelle del bulto %s: %s", barcode, dock.get().code());
+                } else {
+                    Timber.i("[ESTADO] Bulto %s sin muelle asignado", barcode);
+                }
                 state.setValue(dock.<BultoDockState>map(found -> new BultoDockState.Found(barcode, found))
                         .orElseGet(() -> new BultoDockState.NotFound(barcode)));
             }

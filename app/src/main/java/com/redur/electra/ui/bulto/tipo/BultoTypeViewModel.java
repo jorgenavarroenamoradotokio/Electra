@@ -19,6 +19,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import timber.log.Timber;
 
 /**
  * Selección del tipo de bulto. Carga los tipos al crearse y conserva el elegido y la opción de
@@ -64,6 +65,7 @@ public class BultoTypeViewModel extends ViewModel {
     @MainThread
     public void onTypeSelected(@NonNull BultoType type) {
         if (state.getValue() instanceof BultoTypeState.Ready) {
+            Timber.i("[ACCION] Tipo de bulto elegido: %s", type.code());
             selectedType.setValue(type);
         }
     }
@@ -71,6 +73,7 @@ public class BultoTypeViewModel extends ViewModel {
     @MainThread
     public void onFixedChanged(boolean fixed) {
         if (!Boolean.valueOf(fixed).equals(fixedForNextReadings.getValue())) {
+            Timber.i("[ACCION] Fijar tipo para los siguientes bultos: %b", fixed);
             fixedForNextReadings.setValue(fixed);
         }
     }
@@ -80,6 +83,7 @@ public class BultoTypeViewModel extends ViewModel {
     public void onRetryClicked() {
         BultoTypeState current = state.getValue();
         if (current instanceof BultoTypeState.Failed || current instanceof BultoTypeState.Empty) {
+            Timber.i("[ACCION] Reintentar carga de tipos de bulto");
             loadTypes();
         }
     }
@@ -99,6 +103,9 @@ public class BultoTypeViewModel extends ViewModel {
             @Override
             public void onSuccess(@NonNull List<BultoType> types) {
                 pendingLoad = null;
+                if (types.isEmpty()) {
+                    Timber.i("[ESTADO] Sin tipos de bulto que mostrar");
+                }
                 state.setValue(types.isEmpty() ? new BultoTypeState.Empty() : new BultoTypeState.Ready(types));
             }
 

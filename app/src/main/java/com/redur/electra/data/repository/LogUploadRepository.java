@@ -139,7 +139,7 @@ public class LogUploadRepository extends BaseRepository {
                 if (call.isCanceled()) {
                     return;
                 }
-                callback.onError(toAppError(t));
+                callback.onError(toAppError(call, t));
             }
         });
     }

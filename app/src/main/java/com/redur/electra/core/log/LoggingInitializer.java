@@ -1,6 +1,7 @@
 package com.redur.electra.core.log;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Process;
 
 import androidx.annotation.NonNull;
@@ -58,7 +59,11 @@ public final class LoggingInitializer {
             installCrashHandler(fileTree);
         }
 
-        Timber.i("Arranque %s %s [%s]",  BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME, BuildConfig.ENVIRONMENT);
+        // Primera línea de cada arranque: identifica versión y terminal al leer un log recibido
+        Timber.i("Arranque %s %s (%d) [%s] en %s %s, Android %s (API %d)",
+                BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE,
+                BuildConfig.ENVIRONMENT, Build.MANUFACTURER, Build.MODEL,
+                Build.VERSION.RELEASE, Build.VERSION.SDK_INT);
     }
 
     /** Carpeta de logs para una futura opción de "Exportar logs". Null si no se escribe a fichero. */

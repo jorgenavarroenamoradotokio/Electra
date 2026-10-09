@@ -17,6 +17,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.redur.electra.R;
 import com.redur.electra.databinding.SheetLabelOptionsBinding;
 
+import timber.log.Timber;
+
 /**
  * Qué hacer con la etiqueta, como hoja inferior: previsualizarla o enviarla a la impresora.
  * Previsualizar abre la pantalla de vista previa e imprimir la hoja de impresión Bluetooth; las
@@ -45,9 +47,18 @@ public class LabelOptionsBottomSheet extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         SheetLabelOptionsBinding views = requireBinding();
-        views.buttonLabelPreview.setOnClickListener(v -> openFromSheet(R.id.nav_label_preview));
-        views.buttonLabelPrint.setOnClickListener(v -> openFromSheet(R.id.nav_label_print));
-        views.buttonLabelCancel.setOnClickListener(v -> dismiss());
+        views.buttonLabelPreview.setOnClickListener(v -> {
+            Timber.i("[ACCION] Etiqueta: vista previa");
+            openFromSheet(R.id.nav_label_preview);
+        });
+        views.buttonLabelPrint.setOnClickListener(v -> {
+            Timber.i("[ACCION] Etiqueta: imprimir");
+            openFromSheet(R.id.nav_label_print);
+        });
+        views.buttonLabelCancel.setOnClickListener(v -> {
+            Timber.i("[ACCION] Etiqueta: cancelar");
+            dismiss();
+        });
     }
 
     /**

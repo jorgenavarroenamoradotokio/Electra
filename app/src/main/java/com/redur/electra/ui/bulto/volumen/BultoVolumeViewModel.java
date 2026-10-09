@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import timber.log.Timber;
 
 /**
  * Modo Volumen (sin peso) de la lectura: por cada bulto se lee su CB y sus tres medidas, se
@@ -64,6 +65,7 @@ public class BultoVolumeViewModel extends ViewModel {
     @MainThread
     public void onVolumeModeChanged(boolean enabled) {
         if (enabled != isVolumeMode()) {
+            Timber.i("[ACCION] Modo volumen (sin peso): %b", enabled);
             volumeMode.setValue(enabled);
         }
     }
@@ -104,6 +106,7 @@ public class BultoVolumeViewModel extends ViewModel {
     public BultoVolumeReading onConfirmClicked(@Nullable String barcode, @Nullable String height,
                                                @Nullable String width, @Nullable String depth) {
         if (!isVolumeMode()) {
+            Timber.i("[ACCION] Aceptar lectura con el modo volumen desactivado: no se graba nada");
             return null;
         }
         Integer barcodeError = Validations.isBlank(barcode) ? R.string.bulto_volume_error_barcode : null;
@@ -125,15 +128,19 @@ public class BultoVolumeViewModel extends ViewModel {
         BultoVolumeFormState validated = new BultoVolumeFormState(barcodeError, volumeError);
         formState.setValue(validated);
         if (!validated.isValid()) {
+            Timber.i("[ACCION] Lectura de volumen rechazada (CB válido: %b, medidas válidas: %b)",
+                    barcodeError == null, volumeError == null);
             return null;
         }
-        return new BultoVolumeReading(Objects.requireNonNull(barcode).trim(), h, w, d,
-                Objects.requireNonNull(volumeM3));
+        String code = Objects.requireNonNull(barcode).trim();
+        Timber.i("[ACCION] Lectura de volumen aceptada: bulto %s, %dx%dx%d cm, %s m3", code, h, w, d, volumeM3);
+        return new BultoVolumeReading(code, h, w, d, Objects.requireNonNull(volumeM3));
     }
 
     /** Descarta la lectura en curso: la pantalla vuelve a esperar el CB de un bulto. */
     @MainThread
     public void onCancelClicked() {
+        Timber.i("[ACCION] Lectura de volumen cancelada");
         formState.setValue(BultoVolumeFormState.EMPTY);
         volume.setValue(null);
     }

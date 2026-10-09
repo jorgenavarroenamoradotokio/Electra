@@ -17,6 +17,7 @@ import com.redur.electra.data.model.bulto.BultoType;
 import com.redur.electra.databinding.FragmentBultoTypeBinding;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import timber.log.Timber;
 
 /**
  * Tipo de bulto: el usuario elige uno de la lista y puede fijarlo para las lecturas siguientes.
@@ -57,11 +58,15 @@ public class BultoTypeFragment extends Fragment {
         views.checkBultoTypeFixed.setOnCheckedChangeListener(
                 (button, checked) -> viewModel.onFixedChanged(checked));
         views.buttonBultoTypeConfirm.setOnClickListener(v -> {
+            Timber.i("[ACCION] Aceptar tipo de bulto (con tipo elegido: %b)", viewModel.canConfirm());
             if (viewModel.canConfirm()) {
                 showToast(R.string.bulto_type_confirmed);
             }
         });
-        views.buttonBultoTypeCancel.setOnClickListener(v -> showToast(R.string.bulto_type_canceled));
+        views.buttonBultoTypeCancel.setOnClickListener(v -> {
+            Timber.i("[ACCION] Cancelar tipo de bulto");
+            showToast(R.string.bulto_type_canceled);
+        });
 
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
         viewModel.getSelectedType().observe(getViewLifecycleOwner(), this::renderSelection);

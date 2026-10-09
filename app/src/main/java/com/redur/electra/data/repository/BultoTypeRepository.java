@@ -85,7 +85,7 @@ public class BultoTypeRepository extends BaseRepository {
                 if (call.isCanceled()) {
                     return;
                 }
-                callback.onError(toAppError(t));
+                callback.onError(toAppError(call, t));
             }
         });
         return call::cancel;

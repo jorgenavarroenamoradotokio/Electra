@@ -70,11 +70,10 @@ public class LoginRepository extends BaseRepository {
 
             @Override
             public void onFailure(@NonNull Call<ApiResponseDTO<UserDTO>> call, @NonNull Throwable t) {
-                Timber.e(t);
                 if (call.isCanceled()) {
                     return;
                 }
-                callback.onError(toAppError(t));
+                callback.onError(toAppError(call, t));
             }
         });
         return call::cancel;
@@ -98,9 +97,11 @@ public class LoginRepository extends BaseRepository {
         }
 
         // Guardamos la respuesta en la sesion de la aplicacion
-        Timber.i("Usuario conectado correctamente %s", data);
         User user = mapper.toUser(data);
         session.start(user, credentials);
+        // Sin nombre completo ni detalle de menús: basta para situar el resto del log
+        Timber.i("[SESION] Usuario %s conectado (plaza %s, %d menús, %d permisos)",
+                user.username(), user.plazaId(), user.menu().size(), user.permission().size());
         callback.onSuccess(user);
     }
 
@@ -108,7 +109,8 @@ public class LoginRepository extends BaseRepository {
      * Cierra la sesión local: los datos del usuario dejan de estar disponibles para la app.
      */
     public void logout() {
-        Timber.i("Sesion de usuario cerrada");
+        User user = session.getUser();
+        Timber.i("[SESION] Sesión de usuario %s cerrada", user != null ? user.username() : "-");
         session.clear();
     }
 }

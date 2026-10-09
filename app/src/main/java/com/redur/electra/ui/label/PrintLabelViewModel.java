@@ -26,6 +26,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import timber.log.Timber;
 
 /**
  * Imprimir la etiqueta por Bluetooth: pide el permiso, comprueba que el Bluetooth está activo,
@@ -70,6 +71,7 @@ public class PrintLabelViewModel extends ViewModel {
 
     @MainThread
     public void onPermissionResult(@NonNull PermissionStatus status) {
+        Timber.i("[ESTADO] Permiso de Bluetooth para imprimir: %s", status);
         switch (status) {
             case GRANTED -> checkBluetooth();
             case DENIED -> state.setValue(new PrintLabelState.PermissionDenied());
@@ -81,6 +83,7 @@ public class PrintLabelViewModel extends ViewModel {
     @MainThread
     public void onAllowClicked() {
         if (state.getValue() instanceof PrintLabelState.PermissionDenied) {
+            Timber.i("[ACCION] Permitir acceso al Bluetooth tras denegarlo");
             state.setValue(new PrintLabelState.RequestPermission());
         }
     }
@@ -95,12 +98,14 @@ public class PrintLabelViewModel extends ViewModel {
 
     @MainThread
     public void onSettingsOpened() {
+        Timber.i("[ACCION] Ir a ajustes para conceder el permiso de Bluetooth");
         state.setValue(new PrintLabelState.WaitingForSettings());
     }
 
     /** "Ahora no": se explica por qué no se puede imprimir y se deja volver a intentarlo. */
     @MainThread
     public void onSettingsDeclined() {
+        Timber.i("[ACCION] No ir a ajustes para conceder el permiso de Bluetooth");
         state.setValue(new PrintLabelState.PermissionDenied());
     }
 
@@ -110,6 +115,7 @@ public class PrintLabelViewModel extends ViewModel {
         if (!(state.getValue() instanceof PrintLabelState.WaitingForSettings)) {
             return;
         }
+        Timber.i("[ESTADO] Vuelta de ajustes (permiso de Bluetooth concedido: %b)", granted);
         if (granted) {
             checkBluetooth();
         } else {
@@ -120,6 +126,7 @@ public class PrintLabelViewModel extends ViewModel {
     @MainThread
     public void onEnableBluetoothClicked() {
         if (state.getValue() instanceof PrintLabelState.BluetoothOff) {
+            Timber.i("[ACCION] Activar Bluetooth");
             state.setValue(new PrintLabelState.EnableBluetooth());
         }
     }
@@ -144,6 +151,7 @@ public class PrintLabelViewModel extends ViewModel {
     @MainThread
     public void onSearchAgainClicked() {
         if (state.getValue() instanceof PrintLabelState.Choosing && !searching) {
+            Timber.i("[ACCION] Buscar impresoras de nuevo");
             startDiscovery();
         }
     }
@@ -152,8 +160,11 @@ public class PrintLabelViewModel extends ViewModel {
     @MainThread
     public void onPrinterSelected(@NonNull Printer printer) {
         if (!(state.getValue() instanceof PrintLabelState.Choosing)) {
+            Timber.d("[ACCION] Impresora %s pulsada mientras ya se imprime: se ignora", printer.address());
             return;
         }
+        Timber.i("[ACCION] Impresora elegida: %s (%s, emparejada: %b)",
+                printer.name(), printer.address(), printer.paired());
         stopDiscovery();
         state.setValue(new PrintLabelState.Printing(printer, false));
         pendingRequest = labelRepository.createZplLabel(new ResultCallback<>() {
@@ -180,18 +191,22 @@ public class PrintLabelViewModel extends ViewModel {
 
     private void checkBluetooth() {
         if (!printerRepository.isBluetoothSupported()) {
+            Timber.w("[ESTADO] El terminal no tiene Bluetooth: no se puede imprimir");
             state.setValue(new PrintLabelState.BluetoothUnsupported());
         } else if (!printerRepository.isBluetoothEnabled()) {
+            Timber.i("[ESTADO] Bluetooth desactivado");
             state.setValue(new PrintLabelState.BluetoothOff());
         } else {
             printers.clear();
             printers.addAll(printerRepository.getPairedPrinters());
+            Timber.i("[ESTADO] Impresoras emparejadas: %d", printers.size());
             startDiscovery();
         }
     }
 
     private void startDiscovery() {
         if (!printerRepository.canDiscoverPrinters()) {
+            Timber.i("[ESTADO] Sin ubicación activa: no se buscan impresoras cercanas");
             showChoosing(new UiText.Res(R.string.print_location_off));
             return;
         }
@@ -207,6 +222,7 @@ public class PrintLabelViewModel extends ViewModel {
 
             @Override
             public void onDiscoveryFinished() {
+                Timber.i("[ESTADO] Búsqueda de impresoras terminada: %d en la lista", printers.size());
                 searching = false;
                 discovery = null;
                 if (state.getValue() instanceof PrintLabelState.Choosing choosing) {
@@ -254,6 +270,7 @@ public class PrintLabelViewModel extends ViewModel {
 
     /** Se vuelve a la lista con el motivo: tocar la impresora de nuevo reintenta. */
     private void onPrintFailed(@NonNull AppError error) {
+        Timber.i("[ESTADO] Impresión fallida (%s): se vuelve a la lista de impresoras", error);
         pendingRequest = null;
         showChoosing(ErrorUiMapper.toUiText(error));
     }

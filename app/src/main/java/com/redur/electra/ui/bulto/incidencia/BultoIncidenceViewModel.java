@@ -22,6 +22,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import timber.log.Timber;
 
 /**
  * Incidencia del último bulto leído: carga las incidencias del tipo de operación, conserva la
@@ -52,6 +53,7 @@ public class BultoIncidenceViewModel extends ViewModel {
         this.savedState = savedState;
         this.repository = repository;
         this.args = BultoIncidenceArgs.from(savedState);
+        Timber.i("[ESTADO] Incidencias del bulto %s (operación %s)", args.barcode(), args.operationType());
         loadIncidences();
     }
 
@@ -93,6 +95,8 @@ public class BultoIncidenceViewModel extends ViewModel {
         if (!(state.getValue() instanceof BultoIncidenceState.Ready)) {
             return;
         }
+        Timber.i("[ACCION] Incidencia elegida: %s (exige foto: %b, exige observaciones: %b)",
+                incidence.code(), incidence.photoRequired(), incidence.observationsRequired());
         savedState.set(KEY_SELECTED_CODE, incidence.code());
         selectedIncidence.setValue(incidence);
         // Lo que faltaba se refería a la incidencia anterior
@@ -111,6 +115,7 @@ public class BultoIncidenceViewModel extends ViewModel {
     /** Foto hecha o elegida y ya enviada desde la hoja de foto. */
     @MainThread
     public void onPhotoAttached(@NonNull String photoUri) {
+        Timber.i("[ACCION] Foto adjuntada a la incidencia");
         savedState.set(KEY_PHOTO_URI, photoUri);
         BultoIncidenceFormState current = formState.getValue();
         if (current != null && current.photoError() != null) {
@@ -130,6 +135,7 @@ public class BultoIncidenceViewModel extends ViewModel {
     public BultoIncidenceEntry onConfirmClicked(@NonNull String observations) {
         BultoIncidence incidence = selectedIncidence.getValue();
         if (!canConfirm() || incidence == null) {
+            Timber.i("[ACCION] Aceptar incidencia sin incidencia elegida");
             return null;
         }
         String photoUri = savedState.get(KEY_PHOTO_URI);
@@ -139,8 +145,13 @@ public class BultoIncidenceViewModel extends ViewModel {
                 incidence.photoRequired() && photoUri == null ? R.string.bulto_incidence_error_photo : null);
         formState.setValue(form);
         if (!form.isValid()) {
+            Timber.i("[ACCION] Incidencia %s rechazada (observaciones válidas: %b, foto: %b)",
+                    incidence.code(), form.observationsError() == null, form.photoError() == null);
             return null;
         }
+        // Las observaciones son texto libre: solo se registra su longitud
+        Timber.i("[ACCION] Incidencia %s aceptada para el bulto %s (observaciones: %d caracteres, foto: %b)",
+                incidence.code(), args.barcode(), text.length(), photoUri != null);
         BultoIncidenceEntry entry = new BultoIncidenceEntry(args.barcode(), incidence, text, photoUri);
         reset();
         return entry;
@@ -149,6 +160,7 @@ public class BultoIncidenceViewModel extends ViewModel {
     /** Descarta la incidencia elegida, las observaciones y la foto. */
     @MainThread
     public void onCancelClicked() {
+        Timber.i("[ACCION] Incidencia cancelada");
         reset();
     }
 
@@ -157,6 +169,7 @@ public class BultoIncidenceViewModel extends ViewModel {
     public void onRetryClicked() {
         BultoIncidenceState current = state.getValue();
         if (current instanceof BultoIncidenceState.Failed || current instanceof BultoIncidenceState.Empty) {
+            Timber.i("[ACCION] Reintentar carga de incidencias");
             loadIncidences();
         }
     }
@@ -198,6 +211,7 @@ public class BultoIncidenceViewModel extends ViewModel {
             public void onSuccess(@NonNull List<BultoIncidence> incidences) {
                 pendingLoad = null;
                 if (incidences.isEmpty()) {
+                    Timber.i("[ESTADO] Sin incidencias para la operación %s", args.operationType());
                     state.setValue(new BultoIncidenceState.Empty());
                     return;
                 }
@@ -227,6 +241,7 @@ public class BultoIncidenceViewModel extends ViewModel {
             }
         }
         if (restored == null) {
+            Timber.i("[ESTADO] La incidencia %s elegida antes ya no está en la lista", code);
             savedState.remove(KEY_SELECTED_CODE);
         }
         selectedIncidence.setValue(restored);

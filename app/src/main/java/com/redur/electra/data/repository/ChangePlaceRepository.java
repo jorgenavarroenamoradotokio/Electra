@@ -119,7 +119,7 @@ public class ChangePlaceRepository extends BaseRepository {
                 if (call.isCanceled()) {
                     return;
                 }
-                callback.onError(toAppError(t));
+                callback.onError(toAppError(call, t));
             }
         });
         return () -> {
@@ -163,7 +163,7 @@ public class ChangePlaceRepository extends BaseRepository {
                 if (call.isCanceled()) {
                     return;
                 }
-                callback.onError(toAppError(t));
+                callback.onError(toAppError(call, t));
             }
         });
         return call::cancel;
@@ -181,7 +181,7 @@ public class ChangePlaceRepository extends BaseRepository {
             callback.onError(new AppError.Api(null, null));
             return;
         }
-        Timber.i("Plaza del usuario cambiada a %s", plzsId);
+        Timber.i("[SESION] Plaza del usuario cambiada a %s", plzsId);
         session.updatePlaza(plzsId);
         callback.onSuccess(Boolean.TRUE);
     }

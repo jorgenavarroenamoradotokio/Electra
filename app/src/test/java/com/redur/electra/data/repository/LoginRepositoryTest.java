@@ -39,6 +39,8 @@ import java.util.List;
 
 import retrofit2.Response;
 
+import timber.log.Timber;
+
 public class LoginRepositoryTest {
 
     @Rule
@@ -64,6 +66,17 @@ public class LoginRepositoryTest {
     }
 
     /** La API no devuelve la contraseña: la sesión guarda la que se envió en el login. */
+    @Test
+    public void loginCorrecto_registraUsuarioYPlazaSinDatosPersonales() {
+        api.willReturn(FakeCall.success(LoginResponses.ok(LoginResponses.user())));
+
+        repository.login("jperez", "secreta", callback);
+
+        assertTrue(timber.contains(Log.INFO, "[SESION] Usuario jperez conectado (plaza P01, 2 menús, 1 permisos)"));
+        assertTrue(timber.entries().stream().noneMatch(
+                e -> e.message().contains("Juan Pérez") || e.message().contains("secreta")));
+    }
+
     @Test
     public void loginCorrecto_guardaLasCredencialesEnviadas() {
         api.willReturn(FakeCall.success(LoginResponses.ok(LoginResponses.user())));
@@ -138,32 +151,35 @@ public class LoginRepositoryTest {
     }
 
     @Test
-    public void errorHttp_seIdentificaPorSuCodigo() {
+    public void errorHttp_seIdentificaPorSuCodigoYSeRegistraConSuEndpoint() {
         api.willReturn(FakeCall.success(LoginResponses.httpError(503)));
 
         repository.login("jperez", "secreta", callback);
 
         assertEquals(new AppError.Api("HTTP_503", null), callback.error);
+        assertTrue(timber.contains(Log.ERROR, "HTTP_503 en GET /"));
     }
 
     // ---------- Fallos de red ----------
 
     @Test
-    public void timeout_esErrorDeRedTimeout() {
+    public void timeout_esErrorDeRedTimeoutYSeRegistra() {
         api.willReturn(FakeCall.failure(new SocketTimeoutException("timeout")));
 
         repository.login("jperez", "secreta", callback);
 
         assertEquals(new AppError.Network(NetworkType.TIMEOUT), callback.error);
+        assertTrue(timber.contains(Log.WARN, "[RED] Timeout en GET /"));
     }
 
     @Test
-    public void hostDesconocido_esErrorDeRedSinConexion() {
+    public void hostDesconocido_esErrorDeRedSinConexionYSeRegistra() {
         api.willReturn(FakeCall.failure(new UnknownHostException("host")));
 
         repository.login("jperez", "secreta", callback);
 
         assertEquals(new AppError.Network(NetworkType.NO_CONNECTION), callback.error);
+        assertTrue(timber.contains(Log.WARN, "[RED] Sin conexión con el backend en GET /"));
     }
 
     @Test
@@ -194,7 +210,7 @@ public class LoginRepositoryTest {
     }
 
     @Test
-    public void cancelar_ignoraElFalloQueRetrofitEntregaAlCancelar() {
+    public void cancelar_ignoraElFalloQueRetrofitEntregaAlCancelarSinRegistrarlo() {
         FakeCall<ApiResponseDTO<UserDTO>> call =
                 FakeCall.<ApiResponseDTO<UserDTO>>failure(new IOException("Canceled")).deferred();
         api.willReturn(call);
@@ -203,6 +219,7 @@ public class LoginRepositoryTest {
         call.complete();
 
         assertEquals(0, callback.invocations);
+        assertTrue(timber.entries().stream().noneMatch(e -> e.priority() >= Log.WARN));
     }
 
     private static final class RecordingCallback implements ResultCallback<User> {
