@@ -24,9 +24,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import timber.log.Timber;
 
 /**
- * Puerta de salida: por cada bulto leído con el escáner se busca su muelle, que queda a la vista
- * hasta leer el bulto siguiente o cancelar. El CB leído se guarda en {@link SavedStateHandle} para
- * volver a buscar su muelle si el sistema mata el proceso.
+ * Puerta de salida: de cada bulto pedido con {@link #getMuelleBulto(String)} se busca su muelle,
+ * que queda a la vista hasta pedir el bulto siguiente o cancelar. Quien decide qué bulto se
+ * consulta es la pantalla (al abrirse o al leer con el escáner); el ViewModel solo guarda el CB
+ * en {@link SavedStateHandle} para volver a buscar su muelle si el sistema mata el proceso.
  */
 @HiltViewModel
 public class BultoDockViewModel extends ViewModel {
@@ -57,20 +58,20 @@ public class BultoDockViewModel extends ViewModel {
     }
 
     /**
-     * Bulto leído con el escáner. Una lectura nueva sustituye a la anterior aunque su muelle
-     * siga a la vista; repetir la que se está consultando no lanza otra consulta.
+     * Busca el muelle del bulto. Un bulto nuevo sustituye al anterior aunque su muelle siga a la
+     * vista; pedir el que ya se está consultando no lanza otra consulta. Un CB vacío se ignora.
      */
     @MainThread
-    public void onBarcodeScanned(@Nullable String barcode) {
+    public void getMuelleBulto(@Nullable String barcode) {
         if (Validations.isBlank(barcode)) {
             return;
         }
         String code = barcode.trim();
         if (state.getValue() instanceof BultoDockState.Loading loading && loading.barcode().equals(code)) {
-            Timber.d("[ACCION] Lectura repetida del bulto %s ya en consulta", code);
+            Timber.d("[ACCION] Bulto %s ya en consulta", code);
             return;
         }
-        Timber.i("[ACCION] Bulto leído en puerta de salida: %s", code);
+        Timber.i("[ACCION] Consultar muelle del bulto %s", code);
         loadDock(code);
     }
 
@@ -87,18 +88,14 @@ public class BultoDockViewModel extends ViewModel {
     @MainThread
     public void onCancelClicked() {
         Timber.i("[ACCION] Cancelar lectura de muelle");
-        reset();
+        cancelPendingLoad();
+        savedState.remove(KEY_BARCODE);
+        state.setValue(new BultoDockState.Waiting());
     }
 
     @Override
     protected void onCleared() {
         cancelPendingLoad();
-    }
-
-    private void reset() {
-        cancelPendingLoad();
-        savedState.remove(KEY_BARCODE);
-        state.setValue(new BultoDockState.Waiting());
     }
 
     private void cancelPendingLoad() {
@@ -129,6 +126,7 @@ public class BultoDockViewModel extends ViewModel {
             @Override
             public void onError(@NonNull AppError error) {
                 pendingLoad = null;
+                Timber.w("[ESTADO] No se pudo consultar el muelle del bulto %s", barcode);
                 state.setValue(new BultoDockState.Failed(barcode, ErrorUiMapper.toUiText(error)));
             }
         });

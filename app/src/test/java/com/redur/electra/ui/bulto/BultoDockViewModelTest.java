@@ -35,7 +35,7 @@ public class BultoDockViewModelTest {
     private final ManualRepository repository = new ManualRepository();
 
     @Test
-    public void alAbrir_esperaUnBultoSinConsultar() {
+    public void alCrear_noConsultaHastaQueSePideUnBulto() {
         BultoDockViewModel viewModel = newViewModel();
 
         assertTrue(viewModel.getState().getValue() instanceof BultoDockState.Waiting);
@@ -46,7 +46,7 @@ public class BultoDockViewModelTest {
     public void bultoLeido_buscaYMuestraSuMuelle() {
         BultoDockViewModel viewModel = newViewModel();
 
-        viewModel.onBarcodeScanned("  " + BARCODE + " ");
+        viewModel.getMuelleBulto("  " + BARCODE + " ");
         assertTrue(viewModel.getState().getValue() instanceof BultoDockState.Loading);
         repository.respond(0, Optional.of(Z14));
 
@@ -58,8 +58,8 @@ public class BultoDockViewModelTest {
     public void lecturaVacia_seIgnora() {
         BultoDockViewModel viewModel = newViewModel();
 
-        viewModel.onBarcodeScanned("   ");
-        viewModel.onBarcodeScanned(null);
+        viewModel.getMuelleBulto("   ");
+        viewModel.getMuelleBulto(null);
 
         assertTrue(viewModel.getState().getValue() instanceof BultoDockState.Waiting);
         assertTrue(repository.requests.isEmpty());
@@ -69,8 +69,8 @@ public class BultoDockViewModelTest {
     public void mismaLecturaMientrasSeConsulta_noRepiteLaPeticion() {
         BultoDockViewModel viewModel = newViewModel();
 
-        viewModel.onBarcodeScanned(BARCODE);
-        viewModel.onBarcodeScanned(BARCODE);
+        viewModel.getMuelleBulto(BARCODE);
+        viewModel.getMuelleBulto(BARCODE);
 
         assertEquals(1, repository.requests.size());
     }
@@ -78,9 +78,9 @@ public class BultoDockViewModelTest {
     @Test
     public void lecturaNuevaMientrasSeConsulta_descartaLaAnterior() {
         BultoDockViewModel viewModel = newViewModel();
-        viewModel.onBarcodeScanned(BARCODE);
+        viewModel.getMuelleBulto(BARCODE);
 
-        viewModel.onBarcodeScanned(OTHER_BARCODE);
+        viewModel.getMuelleBulto(OTHER_BARCODE);
         repository.respond(1, Optional.of(Z15));
 
         assertTrue(repository.requests.get(0).canceled);
@@ -91,7 +91,7 @@ public class BultoDockViewModelTest {
     public void bultoSinMuelle_loIndica() {
         BultoDockViewModel viewModel = newViewModel();
 
-        viewModel.onBarcodeScanned(BARCODE);
+        viewModel.getMuelleBulto(BARCODE);
         repository.respond(0, Optional.empty());
 
         assertEquals(new BultoDockState.NotFound(BARCODE), viewModel.getState().getValue());
@@ -100,7 +100,7 @@ public class BultoDockViewModelTest {
     @Test
     public void fallo_reintentarVuelveAConsultarElMismoBulto() {
         BultoDockViewModel viewModel = newViewModel();
-        viewModel.onBarcodeScanned(BARCODE);
+        viewModel.getMuelleBulto(BARCODE);
         repository.fail(0);
         assertTrue(viewModel.getState().getValue() instanceof BultoDockState.Failed);
 
@@ -114,7 +114,7 @@ public class BultoDockViewModelTest {
     @Test
     public void reintentarSinFallo_noConsulta() {
         BultoDockViewModel viewModel = newViewModel();
-        viewModel.onBarcodeScanned(BARCODE);
+        viewModel.getMuelleBulto(BARCODE);
 
         viewModel.onRetryClicked();
 
@@ -124,10 +124,10 @@ public class BultoDockViewModelTest {
     @Test
     public void muelleALaVista_otraLecturaBuscaElDelBultoSiguiente() {
         BultoDockViewModel viewModel = newViewModel();
-        viewModel.onBarcodeScanned(BARCODE);
+        viewModel.getMuelleBulto(BARCODE);
         repository.respond(0, Optional.of(Z14));
 
-        viewModel.onBarcodeScanned(OTHER_BARCODE);
+        viewModel.getMuelleBulto(OTHER_BARCODE);
         repository.respond(1, Optional.of(Z15));
 
         assertEquals(new BultoDockState.Found(OTHER_BARCODE, Z15), viewModel.getState().getValue());
@@ -136,7 +136,7 @@ public class BultoDockViewModelTest {
     @Test
     public void cancelarConMuelleALaVista_esperaElSiguienteBulto() {
         BultoDockViewModel viewModel = newViewModel();
-        viewModel.onBarcodeScanned(BARCODE);
+        viewModel.getMuelleBulto(BARCODE);
         repository.respond(0, Optional.of(Z14));
 
         viewModel.onCancelClicked();
@@ -147,7 +147,7 @@ public class BultoDockViewModelTest {
     @Test
     public void cancelarDuranteLaConsulta_descartaLaRespuesta() {
         BultoDockViewModel viewModel = newViewModel();
-        viewModel.onBarcodeScanned(BARCODE);
+        viewModel.getMuelleBulto(BARCODE);
 
         viewModel.onCancelClicked();
 
@@ -159,7 +159,7 @@ public class BultoDockViewModelTest {
     public void procesoRecreado_vuelveABuscarElMuelleDelBultoLeido() {
         SavedStateHandle savedState = new SavedStateHandle();
         BultoDockViewModel viewModel = new BultoDockViewModel(savedState, repository);
-        viewModel.onBarcodeScanned(BARCODE);
+        viewModel.getMuelleBulto(BARCODE);
         repository.respond(0, Optional.of(Z14));
 
         BultoDockViewModel recreated = new BultoDockViewModel(copyOf(savedState), repository);
@@ -172,7 +172,7 @@ public class BultoDockViewModelTest {
     public void procesoRecreadoTrasCancelar_esperaUnBulto() {
         SavedStateHandle savedState = new SavedStateHandle();
         BultoDockViewModel viewModel = new BultoDockViewModel(savedState, repository);
-        viewModel.onBarcodeScanned(BARCODE);
+        viewModel.getMuelleBulto(BARCODE);
         repository.respond(0, Optional.of(Z14));
         viewModel.onCancelClicked();
 

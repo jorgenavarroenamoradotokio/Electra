@@ -28,6 +28,9 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class BultoDockFragment extends Fragment {
 
+    /** Provisional: bulto cuyo muelle se muestra al abrir la pantalla, sin esperar a una lectura. */
+    private static final String FIXED_BARCODE = "13020000062081000447204320001";
+
     @Nullable
     private FragmentBultoDockBinding binding;
     private BultoDockViewModel viewModel;
@@ -39,6 +42,10 @@ public class BultoDockFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(BultoDockViewModel.class);
+        // Solo en la primera creación: tras matar el proceso el ViewModel recupera el último bulto
+        if (savedInstanceState == null) {
+            viewModel.getMuelleBulto(FIXED_BARCODE);
+        }
     }
 
     @NonNull
@@ -70,7 +77,7 @@ public class BultoDockFragment extends Fragment {
     private void onBarcodeScanned() {
         FragmentBultoDockBinding views = requireBinding();
         CharSequence text = views.inputBultoDockBarcode.getText();
-        viewModel.onBarcodeScanned(text != null ? text.toString() : null);
+        viewModel.getMuelleBulto(text != null ? text.toString() : null);
         // El CB queda a la vista; la lectura siguiente del escáner lo sustituye en lugar de añadirse
         views.inputBultoDockBarcode.selectAll();
     }
@@ -147,15 +154,17 @@ public class BultoDockFragment extends Fragment {
      * @return si se ha consumido el evento
      */
     private static boolean onEditorAction(int actionId, @Nullable KeyEvent event, @NonNull Runnable action) {
-        boolean imeAction = actionId == EditorInfo.IME_ACTION_SEARCH;
-        boolean enterKey = actionId == EditorInfo.IME_ACTION_UNSPECIFIED
-                && event != null
-                && event.getKeyCode() == KeyEvent.KEYCODE_ENTER;
-        if (!imeAction && !enterKey) {
+        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+            action.run();
+            return true;
+        }
+        if (actionId != EditorInfo.IME_ACTION_UNSPECIFIED
+                || event == null
+                || event.getKeyCode() != KeyEvent.KEYCODE_ENTER) {
             return false;
         }
         // De Intro llegan pulsación y suelta: se actúa una sola vez
-        if (imeAction || event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
             action.run();
         }
         return true;
