@@ -20,7 +20,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class BultoDockViewModelTest {
 
@@ -48,7 +47,7 @@ public class BultoDockViewModelTest {
 
         viewModel.getMuelleBulto("  " + BARCODE + " ");
         assertTrue(viewModel.getState().getValue() instanceof BultoDockState.Loading);
-        repository.respond(0, Optional.of(Z14));
+        repository.respond(0, Z14);
 
         assertEquals(new BultoDockState.Found(BARCODE, Z14), viewModel.getState().getValue());
         assertEquals(BARCODE, repository.requests.get(0).barcode);
@@ -81,20 +80,10 @@ public class BultoDockViewModelTest {
         viewModel.getMuelleBulto(BARCODE);
 
         viewModel.getMuelleBulto(OTHER_BARCODE);
-        repository.respond(1, Optional.of(Z15));
+        repository.respond(1, Z15);
 
         assertTrue(repository.requests.get(0).canceled);
         assertEquals(new BultoDockState.Found(OTHER_BARCODE, Z15), viewModel.getState().getValue());
-    }
-
-    @Test
-    public void bultoSinMuelle_loIndica() {
-        BultoDockViewModel viewModel = newViewModel();
-
-        viewModel.getMuelleBulto(BARCODE);
-        repository.respond(0, Optional.empty());
-
-        assertEquals(new BultoDockState.NotFound(BARCODE), viewModel.getState().getValue());
     }
 
     @Test
@@ -105,7 +94,7 @@ public class BultoDockViewModelTest {
         assertTrue(viewModel.getState().getValue() instanceof BultoDockState.Failed);
 
         viewModel.onRetryClicked();
-        repository.respond(1, Optional.of(Z14));
+        repository.respond(1, Z14);
 
         assertEquals(BARCODE, repository.requests.get(1).barcode);
         assertEquals(new BultoDockState.Found(BARCODE, Z14), viewModel.getState().getValue());
@@ -125,10 +114,10 @@ public class BultoDockViewModelTest {
     public void muelleALaVista_otraLecturaBuscaElDelBultoSiguiente() {
         BultoDockViewModel viewModel = newViewModel();
         viewModel.getMuelleBulto(BARCODE);
-        repository.respond(0, Optional.of(Z14));
+        repository.respond(0, Z14);
 
         viewModel.getMuelleBulto(OTHER_BARCODE);
-        repository.respond(1, Optional.of(Z15));
+        repository.respond(1, Z15);
 
         assertEquals(new BultoDockState.Found(OTHER_BARCODE, Z15), viewModel.getState().getValue());
     }
@@ -137,7 +126,7 @@ public class BultoDockViewModelTest {
     public void cancelarConMuelleALaVista_esperaElSiguienteBulto() {
         BultoDockViewModel viewModel = newViewModel();
         viewModel.getMuelleBulto(BARCODE);
-        repository.respond(0, Optional.of(Z14));
+        repository.respond(0, Z14);
 
         viewModel.onCancelClicked();
 
@@ -160,10 +149,10 @@ public class BultoDockViewModelTest {
         SavedStateHandle savedState = new SavedStateHandle();
         BultoDockViewModel viewModel = new BultoDockViewModel(savedState, repository);
         viewModel.getMuelleBulto(BARCODE);
-        repository.respond(0, Optional.of(Z14));
+        repository.respond(0, Z14);
 
         BultoDockViewModel recreated = new BultoDockViewModel(copyOf(savedState), repository);
-        repository.respond(1, Optional.of(Z14));
+        repository.respond(1, Z14);
 
         assertEquals(new BultoDockState.Found(BARCODE, Z14), recreated.getState().getValue());
     }
@@ -173,7 +162,7 @@ public class BultoDockViewModelTest {
         SavedStateHandle savedState = new SavedStateHandle();
         BultoDockViewModel viewModel = new BultoDockViewModel(savedState, repository);
         viewModel.getMuelleBulto(BARCODE);
-        repository.respond(0, Optional.of(Z14));
+        repository.respond(0, Z14);
         viewModel.onCancelClicked();
 
         BultoDockViewModel recreated = new BultoDockViewModel(copyOf(savedState), repository);
@@ -201,7 +190,12 @@ public class BultoDockViewModelTest {
 
         final List<Request> requests = new ArrayList<>();
 
-        void respond(int index, @NonNull Optional<BultoDock> dock) {
+        ManualRepository() {
+            // getDock se sustituye: ni la API ni la sesión llegan a usarse
+            super(null, null);
+        }
+
+        void respond(int index, @NonNull BultoDock dock) {
             Request request = requests.get(index);
             if (!request.canceled) {
                 request.callback.onSuccess(dock);
@@ -218,7 +212,7 @@ public class BultoDockViewModelTest {
         @NonNull
         @Override
         public Cancellable getDock(@NonNull String barcode,
-                                   @NonNull ResultCallback<Optional<BultoDock>> callback) {
+                                   @NonNull ResultCallback<BultoDock> callback) {
             Request request = new Request(barcode, callback);
             requests.add(request);
             return () -> request.canceled = true;
@@ -228,10 +222,10 @@ public class BultoDockViewModelTest {
     private static final class Request {
 
         final String barcode;
-        final ResultCallback<Optional<BultoDock>> callback;
+        final ResultCallback<BultoDock> callback;
         boolean canceled;
 
-        Request(@NonNull String barcode, @NonNull ResultCallback<Optional<BultoDock>> callback) {
+        Request(@NonNull String barcode, @NonNull ResultCallback<BultoDock> callback) {
             this.barcode = barcode;
             this.callback = callback;
         }

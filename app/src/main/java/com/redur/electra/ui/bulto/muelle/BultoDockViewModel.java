@@ -16,18 +16,15 @@ import com.redur.electra.core.util.Validations;
 import com.redur.electra.data.model.bulto.BultoDock;
 import com.redur.electra.data.repository.BultoDockRepository;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import timber.log.Timber;
 
 /**
- * Puerta de salida: de cada bulto pedido con {@link #getMuelleBulto(String)} se busca su muelle,
- * que queda a la vista hasta pedir el bulto siguiente o cancelar. Quien decide qué bulto se
- * consulta es la pantalla (al abrirse o al leer con el escáner); el ViewModel solo guarda el CB
- * en {@link SavedStateHandle} para volver a buscar su muelle si el sistema mata el proceso.
+ * Puerta de salida: por cada bulto leído con el escáner se busca su muelle, que queda a la vista
+ * hasta leer el bulto siguiente o cancelar. El CB leído se guarda en {@link SavedStateHandle} para
+ * volver a buscar su muelle si el sistema mata el proceso.
  */
 @HiltViewModel
 public class BultoDockViewModel extends ViewModel {
@@ -112,15 +109,9 @@ public class BultoDockViewModel extends ViewModel {
         state.setValue(new BultoDockState.Loading(barcode));
         pendingLoad = repository.getDock(barcode, new ResultCallback<>() {
             @Override
-            public void onSuccess(@NonNull Optional<BultoDock> dock) {
+            public void onSuccess(@NonNull BultoDock result) {
                 pendingLoad = null;
-                if (dock.isPresent()) {
-                    Timber.i("[ESTADO] Muelle del bulto %s: %s", barcode, dock.get().code());
-                } else {
-                    Timber.i("[ESTADO] Bulto %s sin muelle asignado", barcode);
-                }
-                state.setValue(dock.<BultoDockState>map(found -> new BultoDockState.Found(barcode, found))
-                        .orElseGet(() -> new BultoDockState.NotFound(barcode)));
+                state.setValue(new BultoDockState.Found(barcode, result));
             }
 
             @Override

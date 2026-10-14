@@ -18,6 +18,8 @@ import com.redur.electra.R;
 import com.redur.electra.data.model.bulto.BultoDock;
 import com.redur.electra.databinding.FragmentBultoDockBinding;
 
+import java.util.Locale;
+
 import dagger.hilt.android.AndroidEntryPoint;
 
 /**
@@ -37,6 +39,9 @@ public class BultoDockFragment extends Fragment {
     /** Para animar solo la llegada de un muelle nuevo, no cada re-renderizado. */
     @Nullable
     private BultoDockState renderedState;
+    /** CB que aún hay que escribir en el campo; solo la primera vez que se crea la vista. */
+    @Nullable
+    private String initialBarcode;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,6 +49,7 @@ public class BultoDockFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(BultoDockViewModel.class);
         // Solo en la primera creación: tras matar el proceso el ViewModel recupera el último bulto
         if (savedInstanceState == null) {
+            initialBarcode = FIXED_BARCODE;
             viewModel.getMuelleBulto(FIXED_BARCODE);
         }
     }
@@ -71,6 +77,12 @@ public class BultoDockFragment extends Fragment {
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
         if (savedInstanceState == null) {
             views.inputBultoDockBarcode.requestFocus();
+        }
+        if (initialBarcode != null) {
+            // Igual que tras una lectura: el CB queda a la vista y la siguiente lo sustituye
+            views.inputBultoDockBarcode.setText(initialBarcode);
+            views.inputBultoDockBarcode.selectAll();
+            initialBarcode = null;
         }
     }
 
@@ -101,7 +113,7 @@ public class BultoDockFragment extends Fragment {
                 state instanceof BultoDockState.Waiting ? View.VISIBLE : View.GONE);
         views.layoutBultoDockLoading.setVisibility(
                 state instanceof BultoDockState.Loading ? View.VISIBLE : View.GONE);
-        views.cardBultoDock.setVisibility(
+        views.layoutBultoDockFound.setVisibility(
                 state instanceof BultoDockState.Found ? View.VISIBLE : View.GONE);
         views.layoutBultoDockError.setVisibility(
                 state instanceof BultoDockState.NotFound || state instanceof BultoDockState.Failed
@@ -124,23 +136,36 @@ public class BultoDockFragment extends Fragment {
     private void renderDock(@NonNull BultoDock dock, boolean isNew) {
         FragmentBultoDockBinding views = requireBinding();
         views.textBultoDockCode.setText(dock.code());
+        // El destino va en minúsculas, salvo la inicial del país
+        Locale locale = getResources().getConfiguration().getLocales().get(0);
         views.textBultoDockDestination.setText(getString(R.string.bulto_dock_destination,
-                dock.place(), dock.postalCode(), dock.country()));
-        views.cardBultoDock.setContentDescription(getString(R.string.bulto_dock_description,
+                dock.place(), dock.postalCode().toLowerCase(locale),
+                capitalize(dock.country(), locale)));
+        views.layoutBultoDockFound.setContentDescription(getString(R.string.bulto_dock_description,
                 dock.code(), dock.place(), dock.postalCode(), dock.country()));
         if (isNew) {
-            animateArrival(views.cardBultoDock);
+            animateArrival(views.layoutBultoDockFound);
         }
     }
 
+    /** "ESPAÑA" o "españa" → "España". */
+    @NonNull
+    private static String capitalize(@NonNull String text, @NonNull Locale locale) {
+        String lower = text.trim().toLowerCase(locale);
+        if (lower.isEmpty()) {
+            return lower;
+        }
+        return lower.substring(0, 1).toUpperCase(locale) + lower.substring(1);
+    }
+
     /** Llegada breve y sutil: confirma que el muelle es de la lectura que se acaba de hacer. */
-    private void animateArrival(@NonNull View card) {
+    private void animateArrival(@NonNull View dockView) {
         float startScale = getResources().getFloat(R.dimen.press_scale);
-        card.animate().cancel();
-        card.setAlpha(0f);
-        card.setScaleX(startScale);
-        card.setScaleY(startScale);
-        card.animate()
+        dockView.animate().cancel();
+        dockView.setAlpha(0f);
+        dockView.setScaleX(startScale);
+        dockView.setScaleY(startScale);
+        dockView.animate()
                 .alpha(1f)
                 .scaleX(1f)
                 .scaleY(1f)
@@ -182,7 +207,7 @@ public class BultoDockFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (binding != null) {
-            binding.cardBultoDock.animate().cancel();
+            binding.layoutBultoDockFound.animate().cancel();
         }
         renderedState = null;
         binding = null;

@@ -180,7 +180,7 @@
     <string name="bulto_dock_barcode_hint">Read package</string>
     <string name="bulto_dock_barcode_helper">Read it with the scanner</string>
     <string name="bulto_dock_label">Dock</string>
-    <string name="bulto_dock_destination">Hub %1$s · Postcode %2$s · %3$s</string>
+    <string name="bulto_dock_destination">hub %1$s · postcode %2$s · %3$s</string>
     <string name="bulto_dock_description">Dock %1$s. Hub %2$s, postcode %3$s, %4$s</string>
     <string name="bulto_dock_waiting_title">Read a package</string>
     <string name="bulto_dock_waiting">Its exit dock will appear here</string>

@@ -176,7 +176,7 @@
     <string name="bulto_dock_barcode_hint">Leer bulto</string>
     <string name="bulto_dock_barcode_helper">Léelo con el escáner</string>
     <string name="bulto_dock_label">Muelle</string>
-    <string name="bulto_dock_destination">Plaza %1$s · CP %2$s · %3$s</string>
+    <string name="bulto_dock_destination">plaza %1$s · cp %2$s · %3$s</string>
     <string name="bulto_dock_description">Muelle %1$s. Plaza %2$s, código postal %3$s, %4$s</string>
     <string name="bulto_dock_waiting_title">Lee un bulto</string>
     <string name="bulto_dock_waiting">Aquí verás el muelle por el que sale</string>

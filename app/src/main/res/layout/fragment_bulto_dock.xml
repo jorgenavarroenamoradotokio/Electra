@@ -62,64 +62,78 @@
                 android:layout_marginTop="@dimen/spacing_l"
                 android:accessibilityLiveRegion="polite">
 
-                <!-- Muelle encontrado: el dato principal de la pantalla, en letra muy grande -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_bulto_dock"
+                <!--
+                    Muelle encontrado: la tarjeta solo lleva el muelle, el dato que se lee a
+                    distancia; el destino va debajo como dato secundario. TalkBack lee el grupo
+                    entero con la descripción que pone el fragment.
+                -->
+                <LinearLayout
+                    android:id="@+id/layout_bulto_dock_found"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="true"
+                    android:orientation="vertical"
                     android:visibility="gone"
-                    app:cardBackgroundColor="@color/msg_info_bg"
-                    app:cardCornerRadius="@dimen/corner_radius_m"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/msg_info_icon"
-                    app:strokeWidth="@dimen/selection_stroke_width"
                     tools:visibility="visible">
 
-                    <LinearLayout
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_bulto_dock"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical"
-                        android:padding="@dimen/spacing_l">
+                        android:importantForAccessibility="noHideDescendants"
+                        app:cardBackgroundColor="@color/msg_info_bg"
+                        app:cardCornerRadius="@dimen/corner_radius_m"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/msg_info_icon"
+                        app:strokeWidth="@dimen/selection_stroke_width">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:importantForAccessibility="no"
-                            android:text="@string/bulto_dock_label"
-                            android:textAllCaps="true"
-                            android:textAppearance="?attr/textAppearanceTitleMedium"
-                            android:textColor="@color/msg_info_text" />
-
-                        <!-- Se reduce solo si el código no cabe en una línea -->
-                        <TextView
-                            android:id="@+id/text_bulto_dock_code"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/bulto_dock_code_height"
-                            android:gravity="center"
-                            android:importantForAccessibility="no"
-                            android:maxLines="1"
-                            android:textColor="@color/msg_info_text"
-                            android:textStyle="bold"
-                            app:autoSizeMaxTextSize="@dimen/bulto_dock_code_text_max"
-                            app:autoSizeMinTextSize="@dimen/bulto_dock_code_text_min"
-                            app:autoSizeTextType="uniform"
-                            tools:text="Z14" />
-
-                        <TextView
-                            android:id="@+id/text_bulto_dock_destination"
-                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:importantForAccessibility="no"
-                            android:textAppearance="?attr/textAppearanceBodyLarge"
-                            android:textColor="@color/msg_info_text"
-                            tools:text="Plaza ZAR · CP 50237 · España" />
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            android:padding="@dimen/spacing_l">
 
-                    </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:importantForAccessibility="no"
+                                android:text="@string/bulto_dock_label"
+                                android:textAllCaps="true"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textColor="@color/msg_info_text" />
 
-                </com.google.android.material.card.MaterialCardView>
+                            <!-- Se reduce solo si el código no cabe en una línea -->
+                            <TextView
+                                android:id="@+id/text_bulto_dock_code"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/bulto_dock_code_height"
+                                android:gravity="center"
+                                android:importantForAccessibility="no"
+                                android:maxLines="1"
+                                android:textColor="@color/msg_info_text"
+                                android:textStyle="bold"
+                                app:autoSizeMaxTextSize="@dimen/bulto_dock_code_text_max"
+                                app:autoSizeMinTextSize="@dimen/bulto_dock_code_text_min"
+                                app:autoSizeTextType="uniform"
+                                tools:text="Z14" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:id="@+id/text_bulto_dock_destination"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:gravity="center"
+                        android:importantForAccessibility="no"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        tools:text="plaza zar · cp 50237 · España" />
+
+                </LinearLayout>
 
                 <!-- A la espera de un bulto -->
                 <LinearLayout
