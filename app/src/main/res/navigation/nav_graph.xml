@@ -46,6 +46,13 @@
         android:label="@string/menu_7"
         tools:layout="@layout/fragment_bulto_type" />
 
+    <!-- La misma pantalla abierta como selector desde otra (BultoTypePicker): no es del menú, muestra "atrás" -->
+    <fragment
+        android:id="@+id/nav_bulto_type_picker"
+        android:name="com.redur.electra.ui.bulto.tipo.BultoTypeFragment"
+        android:label="@string/menu_7"
+        tools:layout="@layout/fragment_bulto_type" />
+
     <!-- Peso y medidas (menú 9, dentro de Prototipos): desde el menú se abre como el botón KG de un bulto sin datos -->
     <fragment
         android:id="@+id/nav_bulto_weight"
@@ -73,5 +80,12 @@
         android:name="com.redur.electra.ui.bulto.muelle.BultoDockFragment"
         android:label="@string/menu_12"
         tools:layout="@layout/fragment_bulto_dock" />
+
+    <!-- Carga INT (menú 13): precinto y lecturas de bultos con el tipo de bulto fijado -->
+    <fragment
+        android:id="@+id/nav_direct_load"
+        android:name="com.redur.electra.ui.carga.directa.DirectLoadFragment"
+        android:label="@string/menu_13"
+        tools:layout="@layout/fragment_direct_load" />
 
 </navigation>

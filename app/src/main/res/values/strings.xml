@@ -70,6 +70,7 @@
     <string name="menu_10">Volume</string>
     <string name="menu_11">Incidents</string>
     <string name="menu_12">Exit gate</string>
+    <string name="menu_13">INT loading</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Add a photo</string>
@@ -189,6 +190,37 @@
     <string name="bulto_dock_error_title">The dock could not be looked up</string>
     <string name="bulto_dock_retry">Try again</string>
     <string name="bulto_dock_cancel">Cancel</string>
+
+    <!-- Carga con precinto -->
+    <string name="direct_load_seal_title">Read the seal</string>
+    <string name="direct_load_seal_subtitle">Scan its barcode or type its number to start loading</string>
+    <string name="direct_load_seal_hint">Seal number</string>
+    <string name="direct_load_seal_helper">8 digits</string>
+    <string name="direct_load_start">Start loading</string>
+    <string name="direct_load_seal_label">Seal</string>
+    <string name="direct_load_seal_description">Seal %1$s</string>
+    <string name="direct_load_type_label">Package type</string>
+    <string name="direct_load_type_none">None</string>
+    <string name="direct_load_type_none_hint">Tap to choose</string>
+    <string name="direct_load_type_description">Package type %1$s, %2$s. Applied to every package you read. Tap to change it</string>
+    <string name="direct_load_type_description_none">No package type. Packages are read without a type. Tap to choose one</string>
+    <string name="direct_load_type_clear">Remove package type</string>
+    <string name="direct_load_type_choose">Set package type</string>
+    <string name="direct_load_type_change">Change package type</string>
+    <string name="direct_load_barcode_hint">Read package</string>
+    <string name="direct_load_barcode_helper">Read it with the scanner</string>
+    <string name="direct_load_feedback_added">Package read with type %1$s</string>
+    <string name="direct_load_feedback_added_no_type">Package read without type</string>
+    <string name="direct_load_feedback_duplicate">This package was already read. Read the next one</string>
+    <plurals name="direct_load_count">
+        <item quantity="one">%1$d package read</item>
+        <item quantity="other">%1$d packages read</item>
+    </plurals>
+    <string name="direct_load_empty_title">Read the first package</string>
+    <string name="direct_load_empty">Each package you read appears here with its type</string>
+    <string name="direct_load_reading_no_type">No type</string>
+    <string name="direct_load_reading_description">%1$d. Package %2$s, type %3$s</string>
+    <string name="direct_load_reading_description_no_type">%1$d. Package %2$s, no type</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Open settings</string>

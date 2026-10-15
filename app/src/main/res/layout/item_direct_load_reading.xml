@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Bulto leído: nº de orden (cuántos van), CB y el tipo con el que se leyó. El tipo va en una
+    etiqueta tonal; sin tipo se dice con texto, no solo con la ausencia de la etiqueta. TalkBack lee
+    la fila entera con la descripción que pone el adapter.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/touch_target_min"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/spacing_s"
+    android:paddingVertical="@dimen/spacing_s">
+
+    <TextView
+        android:id="@+id/text_direct_load_reading_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no"
+        android:minEms="2"
+        android:textAppearance="?attr/textAppearanceLabelMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="12" />
+
+    <TextView
+        android:id="@+id/text_direct_load_reading_barcode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_s"
+        android:layout_weight="1"
+        android:importantForAccessibility="no"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="13020000062081000447204320001" />
+
+    <TextView
+        android:id="@+id/text_direct_load_reading_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_s"
+        android:importantForAccessibility="no"
+        android:paddingHorizontal="@dimen/spacing_s"
+        android:paddingVertical="@dimen/spacing_xs"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        tools:background="@drawable/bg_direct_load_type_badge"
+        tools:text="C+"
+        tools:textColor="?attr/colorPrimary" />
+
+</LinearLayout>

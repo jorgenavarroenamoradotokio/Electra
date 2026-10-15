@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.redur.electra.core.async.Cancellable;
@@ -15,6 +16,7 @@ import com.redur.electra.data.model.bulto.BultoType;
 import com.redur.electra.data.repository.BultoTypeRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -23,7 +25,8 @@ import timber.log.Timber;
 
 /**
  * Selección del tipo de bulto. Carga los tipos al crearse y conserva el elegido y la opción de
- * fijarlo durante los cambios de configuración.
+ * fijarlo durante los cambios de configuración. Abierta como selector ({@link BultoTypePicker}),
+ * marca el tipo que ya estaba fijado en cuanto llega la lista.
  */
 @HiltViewModel
 public class BultoTypeViewModel extends ViewModel {
@@ -33,14 +36,25 @@ public class BultoTypeViewModel extends ViewModel {
     private final MutableLiveData<Boolean> fixedForNextReadings = new MutableLiveData<>(false);
 
     private final BultoTypeRepository repository;
+    private final boolean picker;
+    /** Tipo que se marca al recibir la lista; solo la primera vez, luego decide el usuario. */
+    @Nullable
+    private String preselectedCode;
 
     @Nullable
     private Cancellable pendingLoad;
 
     @Inject
-    public BultoTypeViewModel(BultoTypeRepository repository) {
+    public BultoTypeViewModel(SavedStateHandle savedState, BultoTypeRepository repository) {
         this.repository = repository;
+        this.picker = BultoTypePicker.isPicker(savedState);
+        this.preselectedCode = BultoTypePicker.preselectedCode(savedState);
         loadTypes();
+    }
+
+    /** Si se abrió como selector desde otra pantalla, que recibe el tipo elegido. */
+    public boolean isPicker() {
+        return picker;
     }
 
     public LiveData<BultoTypeState> getState() {
@@ -97,6 +111,19 @@ public class BultoTypeViewModel extends ViewModel {
         }
     }
 
+    private void preselect(@NonNull List<BultoType> types) {
+        if (preselectedCode == null || selectedType.getValue() != null) {
+            return;
+        }
+        for (BultoType type : types) {
+            if (Objects.equals(type.code(), preselectedCode)) {
+                selectedType.setValue(type);
+                break;
+            }
+        }
+        preselectedCode = null;
+    }
+
     private void loadTypes() {
         state.setValue(new BultoTypeState.Loading());
         pendingLoad = repository.getBultoTypes(new ResultCallback<>() {
@@ -107,6 +134,7 @@ public class BultoTypeViewModel extends ViewModel {
                     Timber.i("[ESTADO] Sin tipos de bulto que mostrar");
                 }
                 state.setValue(types.isEmpty() ? new BultoTypeState.Empty() : new BultoTypeState.Ready(types));
+                preselect(types);
             }
 
             @Override

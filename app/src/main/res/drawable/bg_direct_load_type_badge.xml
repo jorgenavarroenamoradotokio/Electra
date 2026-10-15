@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Etiqueta del tipo de bulto de una lectura: tinte tonal del color principal, como la fila elegida -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/icon_badge_background" />
+    <corners android:radius="@dimen/corner_radius_s" />
+</shape>

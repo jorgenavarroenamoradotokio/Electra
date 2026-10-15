@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.SavedStateHandle;
 
 import com.redur.electra.data.model.bulto.BultoType;
 import com.redur.electra.data.model.user.User;
@@ -28,6 +29,7 @@ import org.junit.Test;
 
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class BultoTypeViewModelTest {
@@ -125,7 +127,54 @@ public class BultoTypeViewModelTest {
         assertEquals(Boolean.TRUE, viewModel.getFixedForNextReadings().getValue());
     }
 
+    @Test
+    public void desdeElMenu_noEsSelector() {
+        api.willReturnTypes(FakeCall.success(BultoResponses.types(BultoResponses.BU)));
+
+        assertFalse(newViewModel().isPicker());
+    }
+
+    @Test
+    public void comoSelector_marcaElTipoYaFijado() {
+        api.willReturnTypes(FakeCall.success(BultoResponses.types(BultoResponses.BU, BultoResponses.PL)));
+
+        BultoTypeViewModel viewModel = newPicker("020");
+
+        assertTrue(viewModel.isPicker());
+        assertEquals(PL, viewModel.getSelectedType().getValue());
+        assertTrue(viewModel.canConfirm());
+    }
+
+    @Test
+    public void comoSelector_tipoFijadoQueYaNoExiste_sinElegir() {
+        api.willReturnTypes(FakeCall.success(BultoResponses.types(BultoResponses.BU)));
+
+        BultoTypeViewModel viewModel = newPicker("020");
+
+        assertNull(viewModel.getSelectedType().getValue());
+        assertFalse(viewModel.canConfirm());
+    }
+
+    @Test
+    public void comoSelector_trasReintentar_respetaLoElegido() {
+        api.willReturnTypes(FakeCall.<ApiResponseDTO<List<BultoTypeDTO>>>failure(new UnknownHostException()));
+        BultoTypeViewModel viewModel = newPicker("020");
+
+        api.willReturnTypes(FakeCall.success(BultoResponses.types(BultoResponses.BU, BultoResponses.PL)));
+        viewModel.onRetryClicked();
+
+        assertEquals(PL, viewModel.getSelectedType().getValue());
+    }
+
+    /** Claves de {@code BultoTypePicker.args}; en tests JVM el Bundle no guarda valores. */
+    private BultoTypeViewModel newPicker(String preselectedCode) {
+        SavedStateHandle handle = new SavedStateHandle(Map.of(
+                "bultoTypePicker.picker", true,
+                "bultoTypePicker.preselectedCode", preselectedCode));
+        return new BultoTypeViewModel(handle, new BultoTypeRepository(api, session, new BultoTypeMapper()));
+    }
+
     private BultoTypeViewModel newViewModel() {
-        return new BultoTypeViewModel(new BultoTypeRepository(api, session, new BultoTypeMapper()));
+        return new BultoTypeViewModel(new SavedStateHandle(), new BultoTypeRepository(api, session, new BultoTypeMapper()));
     }
 }

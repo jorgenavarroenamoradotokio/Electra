@@ -3,4 +3,6 @@
     <!-- Peso y medidas: hasta 99999,9 kg y medidas de 3 dígitos en cm -->
     <integer name="bulto_weight_max_length">7</integer>
     <integer name="bulto_measure_max_length">3</integer>
+    <!-- Carga con precinto: debe coincidir con DirectLoadViewModel.SEAL_LENGTH -->
+    <integer name="direct_load_seal_length">8</integer>
 </resources>

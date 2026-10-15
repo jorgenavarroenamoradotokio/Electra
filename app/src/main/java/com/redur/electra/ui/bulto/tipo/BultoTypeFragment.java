@@ -11,6 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.redur.electra.R;
 import com.redur.electra.data.model.bulto.BultoType;
@@ -22,7 +25,9 @@ import timber.log.Timber;
 /**
  * Tipo de bulto: el usuario elige uno de la lista y puede fijarlo para las lecturas siguientes.
  * Mientras se cargan los tipos lo indica; si fallan o no hay ninguno lo explica y permite reintentar.
- * De momento asignar y cancelar solo confirman la acción con un aviso.
+ * Desde el menú, asignar y cancelar de momento solo confirman la acción con un aviso. Abierta como
+ * selector ({@link BultoTypePicker}) devuelve el tipo elegido a quien la abrió y vuelve atrás; ahí
+ * el tipo ya queda fijado por definición, así que no se ofrece la opción de fijarlo.
  */
 @AndroidEntryPoint
 public class BultoTypeFragment extends Fragment {
@@ -55,23 +60,43 @@ public class BultoTypeFragment extends Fragment {
         views.recyclerBultoTypes.setAdapter(adapter);
 
         views.buttonBultoTypesRetry.setOnClickListener(v -> viewModel.onRetryClicked());
+        views.checkBultoTypeFixed.setVisibility(viewModel.isPicker() ? View.GONE : View.VISIBLE);
         views.checkBultoTypeFixed.setOnCheckedChangeListener(
                 (button, checked) -> viewModel.onFixedChanged(checked));
-        views.buttonBultoTypeConfirm.setOnClickListener(v -> {
-            Timber.i("[ACCION] Aceptar tipo de bulto (con tipo elegido: %b)", viewModel.canConfirm());
-            if (viewModel.canConfirm()) {
-                showToast(R.string.bulto_type_confirmed);
-            }
-        });
-        views.buttonBultoTypeCancel.setOnClickListener(v -> {
-            Timber.i("[ACCION] Cancelar tipo de bulto");
-            showToast(R.string.bulto_type_canceled);
-        });
+        views.buttonBultoTypeConfirm.setOnClickListener(v -> confirm());
+        views.buttonBultoTypeCancel.setOnClickListener(v -> cancel());
 
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
         viewModel.getSelectedType().observe(getViewLifecycleOwner(), this::renderSelection);
         viewModel.getFixedForNextReadings().observe(getViewLifecycleOwner(),
                 fixed -> requireBinding().checkBultoTypeFixed.setChecked(Boolean.TRUE.equals(fixed)));
+    }
+
+    private void confirm() {
+        Timber.i("[ACCION] Aceptar tipo de bulto (con tipo elegido: %b)", viewModel.canConfirm());
+        BultoType selected = viewModel.getSelectedType().getValue();
+        if (!viewModel.canConfirm() || selected == null) {
+            return;
+        }
+        if (!viewModel.isPicker()) {
+            showToast(R.string.bulto_type_confirmed);
+            return;
+        }
+        NavController navController = NavHostFragment.findNavController(this);
+        NavBackStackEntry previous = navController.getPreviousBackStackEntry();
+        if (previous != null) {
+            previous.getSavedStateHandle().set(BultoTypePicker.RESULT_KEY, BultoTypePicker.toBundle(selected));
+        }
+        navController.popBackStack();
+    }
+
+    private void cancel() {
+        Timber.i("[ACCION] Cancelar tipo de bulto");
+        if (viewModel.isPicker()) {
+            NavHostFragment.findNavController(this).popBackStack();
+        } else {
+            showToast(R.string.bulto_type_canceled);
+        }
     }
 
     private void render(@NonNull BultoTypeState state) {

@@ -17,4 +17,8 @@
     <string name="bulto_incidence_error_observations">Write the observations this incident requires</string>
     <string name="bulto_incidence_error_observations_length">Observations can be up to 40 characters long</string>
     <string name="bulto_incidence_error_photo">This incident requires a photo. Tap Take photo</string>
+
+    <!-- Carga con precinto -->
+    <string name="direct_load_error_seal_required">Read or type the seal number</string>
+    <string name="direct_load_error_seal_format">The seal must have exactly 8 digits</string>
 </resources>

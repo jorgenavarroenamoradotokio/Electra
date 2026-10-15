@@ -70,6 +70,7 @@
     <string name="menu_10">Volumen</string>
     <string name="menu_11">Incidencias</string>
     <string name="menu_12">Puerta de salida</string>
+    <string name="menu_13">Carga INT</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Añadir foto</string>
@@ -185,6 +186,38 @@
     <string name="bulto_dock_error_title">No se ha podido consultar el muelle</string>
     <string name="bulto_dock_retry">Reintentar</string>
     <string name="bulto_dock_cancel">Cancelar</string>
+
+    <!-- Carga con precinto -->
+    <string name="direct_load_seal_title">Lee el precinto</string>
+    <string name="direct_load_seal_subtitle">Escanea su código de barras o escribe su número para empezar la carga</string>
+    <string name="direct_load_seal_hint">Nº de precinto</string>
+    <string name="direct_load_seal_helper">8 dígitos</string>
+    <string name="direct_load_start">Empezar carga</string>
+    <string name="direct_load_seal_label">Precinto</string>
+    <string name="direct_load_seal_description">Precinto %1$s</string>
+    <string name="direct_load_type_label">Tipo de bulto</string>
+    <string name="direct_load_type_none">Ninguno</string>
+    <string name="direct_load_type_none_hint">Toca para elegir</string>
+    <string name="direct_load_type_description">Tipo de bulto %1$s, %2$s. Se asigna a cada bulto que leas. Toca para cambiarlo</string>
+    <string name="direct_load_type_description_none">Sin tipo de bulto. Los bultos se leen sin tipo. Toca para elegir uno</string>
+    <string name="direct_load_type_clear">Quitar tipo de bulto</string>
+    <string name="direct_load_type_choose">Fijar tipo de bulto</string>
+    <string name="direct_load_type_change">Cambiar tipo de bulto</string>
+    <string name="direct_load_barcode_hint">Leer bulto</string>
+    <string name="direct_load_barcode_helper">Léelo con el escáner</string>
+    <string name="direct_load_feedback_added">Bulto leído con tipo %1$s</string>
+    <string name="direct_load_feedback_added_no_type">Bulto leído sin tipo</string>
+    <string name="direct_load_feedback_duplicate">Este bulto ya estaba leído. Lee el siguiente</string>
+    <plurals name="direct_load_count">
+        <item quantity="one">%1$d bulto leído</item>
+        <item quantity="many">%1$d bultos leídos</item>
+        <item quantity="other">%1$d bultos leídos</item>
+    </plurals>
+    <string name="direct_load_empty_title">Lee el primer bulto</string>
+    <string name="direct_load_empty">Cada bulto que leas aparecerá aquí con su tipo</string>
+    <string name="direct_load_reading_no_type">Sin tipo</string>
+    <string name="direct_load_reading_description">%1$d. Bulto %2$s, tipo %3$s</string>
+    <string name="direct_load_reading_description_no_type">%1$d. Bulto %2$s, sin tipo</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Abrir ajustes</string>
