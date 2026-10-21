@@ -30,6 +30,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.redur.electra.BuildConfig;
 import com.redur.electra.R;
+import com.redur.electra.core.ui.SystemBarInsets;
 import com.redur.electra.data.model.user.User;
 import com.redur.electra.databinding.ActivityProfileBinding;
 import com.redur.electra.ui.MainActivity;
@@ -88,8 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private void applyWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (root, windowInsets) -> {
-            Insets bars = windowInsets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            Insets bars = SystemBarInsets.of(windowInsets);
             binding.appBar.getRoot().setPadding(bars.left, bars.top, bars.right, 0);
             root.setPadding(bars.left, 0, bars.right, bars.bottom);
             return WindowInsetsCompat.CONSUMED;

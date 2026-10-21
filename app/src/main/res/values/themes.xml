@@ -6,5 +6,6 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/green_redur</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Electra.BottomSheetDialog</item>
     </style>
 </resources>

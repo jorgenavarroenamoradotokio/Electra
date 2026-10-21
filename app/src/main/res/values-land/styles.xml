@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        En horizontal la hoja se abre entera y sin estado plegado: plegada solo asomaría el
+        tirador. Si no cabe, su contenido se desplaza (cada hoja va dentro de un NestedScrollView).
+    -->
+    <style name="Widget.Electra.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="behavior_peekHeight">@dimen/bottom_sheet_peek_height</item>
+        <item name="behavior_skipCollapsed">true</item>
+    </style>
+</resources>

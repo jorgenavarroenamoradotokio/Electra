@@ -196,9 +196,14 @@ dependencies {
     implementation(libs.okhhtp3)
     implementation(libs.okhttp3.logging)
 
+    // Escaneo de códigos de barras con la cámara (terminales sin escáner hardware)
+    implementation(libs.zxing.android.embedded)
+
     // Test
     testImplementation(libs.junit)
     testImplementation(libs.arch.core.testing)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }

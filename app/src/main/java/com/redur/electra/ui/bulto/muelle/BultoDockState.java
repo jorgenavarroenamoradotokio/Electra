@@ -1,6 +1,7 @@
 package com.redur.electra.ui.bulto.muelle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.redur.electra.core.ui.UiText;
 import com.redur.electra.data.model.bulto.BultoDock;
@@ -14,6 +15,12 @@ public sealed interface BultoDockState permits
         BultoDockState.Found,
         BultoDockState.NotFound,
         BultoDockState.Failed {
+
+    /** CB del bulto leído; null mientras se espera la lectura. Lo implementan los records con CB. */
+    @Nullable
+    default String barcode() {
+        return null;
+    }
 
     /** Aún no se ha leído ningún bulto, o la lectura anterior ya se grabó o se canceló. */
     record Waiting() implements BultoDockState {

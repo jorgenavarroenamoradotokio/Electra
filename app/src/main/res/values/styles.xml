@@ -72,4 +72,43 @@
         <item name="chipEndPadding">@dimen/spacing_xs</item>
         <item name="rippleColor">@android:color/transparent</item>
     </style>
+
+    <!--
+        Acción flotante principal: mismo lenguaje que los botones principales de la app (verde
+        corporativo, radio M, 56dp, LabelLarge) y cede al pulsarla como ellos. Sombra fija: el
+        animador de pulsación sustituye al de elevación del FAB.
+    -->
+    <style name="Widget.Electra.ExtendedFab.Primary" parent="Widget.Material3.ExtendedFloatingActionButton.Icon.Primary">
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
+        <item name="android:textColor">@color/fab_primary_content</item>
+        <item name="iconTint">@color/fab_primary_content</item>
+        <item name="backgroundTint">@color/fab_primary_background</item>
+        <item name="rippleColor">@color/fab_primary_ripple</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Electra.Corner.M</item>
+        <item name="android:stateListAnimator">@animator/scale_on_press</item>
+        <item name="android:elevation">@dimen/fab_elevation</item>
+    </style>
+
+    <style name="ShapeAppearance.Electra.Corner.M" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_radius_m</item>
+    </style>
+
+    <!--
+        Separador vertical entre el panel lateral y el contenido (layout-land). MaterialDivider solo
+        dibuja en horizontal; mismo grosor y color que él.
+    -->
+    <style name="Widget.Electra.Divider.Vertical" parent="">
+        <item name="android:layout_width">@dimen/divider_thickness</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">?attr/colorOutlineVariant</item>
+    </style>
+
+    <!-- Hojas inferiores de la app: el comportamiento en horizontal se ajusta en values-land -->
+    <style name="ThemeOverlay.Electra.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.Electra.BottomSheet.Modal</item>
+    </style>
+
+    <style name="Widget.Electra.BottomSheet.Modal" parent="Widget.Material3.BottomSheet.Modal" />
 </resources>

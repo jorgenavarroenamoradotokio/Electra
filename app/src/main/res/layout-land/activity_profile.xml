@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Perfil en horizontal: la misma composición que el login en horizontal. Bajo la toolbar, la
+    identidad del usuario sobre la franja de marca a la izquierda y el panel con los datos y las
+    acciones apoyado sobre ella desde la derecha, desplazable si no cabe. Mismos ids que en vertical.
+    Los insets del sistema se aplican desde ProfileActivity.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.profile.ProfileActivity">
+
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/view_app_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/green_redur"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <!-- Identidad sobre la franja de marca, centrada en la altura -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/spacing_l"
+            android:paddingVertical="@dimen/spacing_m">
+
+            <!-- Mismo avatar que la cabecera del menú lateral, a mayor escala -->
+            <TextView
+                android:id="@+id/text_avatar"
+                android:layout_width="@dimen/profile_avatar_size"
+                android:layout_height="@dimen/profile_avatar_size"
+                android:background="@drawable/bg_drawer_avatar"
+                android:gravity="center"
+                android:importantForAccessibility="no"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/white"
+                tools:text="J" />
+
+            <TextView
+                android:id="@+id/text_display_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:accessibilityHeading="true"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/white"
+                tools:text="Juan Pérez" />
+
+            <TextView
+                android:id="@+id/text_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/toolbar_subtitle"
+                tools:text="jperez" />
+
+        </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:fillViewport="true">
+
+            <!-- Panel: ocupa como mínimo toda la altura para que el pie quede abajo -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_login_panel"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/spacing_m"
+                android:paddingBottom="@dimen/spacing_m">
+
+                <!-- Plaza: dato principal de la sesión de trabajo, con su acción al lado -->
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/spacing_l"
+                    app:cardCornerRadius="@dimen/corner_radius_m">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            android:layout_width="@dimen/icon_badge_size_s"
+                            android:layout_height="@dimen/icon_badge_size_s"
+                            android:background="@drawable/bg_icon_badge"
+                            android:importantForAccessibility="no"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_warehouse_24"
+                            app:tint="?attr/colorPrimary" />
+
+                        <!-- Se lee con TalkBack como una unidad: "Plaza, P01" -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/spacing_m"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:screenReaderFocusable="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/profile_plaza_label"
+                                android:textAppearance="?attr/textAppearanceLabelMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+
+                            <TextView
+                                android:id="@+id/text_plaza"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_xs"
+                                android:textAppearance="?attr/textAppearanceTitleLarge"
+                                android:textColor="?attr/colorOnSurface"
+                                tools:text="P01" />
+
+                        </LinearLayout>
+
+                        <!-- Texto corto a la vista; TalkBack anuncia la acción completa -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_change_plaza"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/profile_change_plaza"
+                            android:minHeight="@dimen/touch_target_min"
+                            android:text="@string/profile_change_plaza_action"
+                            app:cornerRadius="@dimen/corner_radius_s" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_l"
+                    android:layout_marginBottom="@dimen/spacing_xs"
+                    android:accessibilityHeading="true"
+                    android:paddingHorizontal="@dimen/spacing_l"
+                    android:text="@string/profile_support_section"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <!--
+                    El progreso del envío se superpone al pie de la propia fila: aparece donde se pulsó
+                    y no desplaza el resto de la pantalla. Arranca alineado con el texto, no con el icono.
+                    El margen estrecho, sumado al padding de la fila, alinea el icono con el contenido.
+                -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/spacing_s">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_send_log"
+                        style="@style/Widget.Electra.Button.ListAction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_send_log"
+                        app:icon="@drawable/ic_upload_24" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progress_send_log"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginStart="@dimen/list_action_text_inset"
+                        android:layout_marginEnd="@dimen/spacing_m"
+                        android:layout_marginBottom="@dimen/spacing_s"
+                        android:contentDescription="@string/profile_log_progress_description"
+                        android:max="100"
+                        android:visibility="invisible"
+                        app:hideAnimationBehavior="inward"
+                        app:showAnimationBehavior="outward"
+                        app:trackCornerRadius="@dimen/progress_indicator_thickness"
+                        app:trackThickness="@dimen/progress_indicator_thickness" />
+
+                </FrameLayout>
+
+                <!--
+                    ID del terminal: soporte lo pide para darlo de alta. Se lee como una unidad
+                    ("ID del terminal, 1A2B…") y al pulsar se copia. Icono y texto alineados con la fila de envío.
+                -->
+                <LinearLayout
+                    android:id="@+id/row_terminal_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/spacing_s"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/button_height"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/spacing_m"
+                    android:paddingVertical="@dimen/spacing_s">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_smartphone_24"
+                        app:tint="@color/list_action_icon" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_terminal_id_label"
+                            android:textAppearance="?attr/textAppearanceLabelMedium"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+
+                        <TextView
+                            android:id="@+id/text_terminal_id"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="monospace"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:textColor="?attr/colorOnSurface"
+                            tools:text="1A2B3C4D5E6F7A8B" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Ocupa el espacio libre: empuja el pie al final de la pantalla si el contenido es corto -->
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!-- Pie -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_logout"
+                    style="@style/Widget.Electra.Button.ListAction.Destructive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/spacing_l"
+                    android:text="@string/logout_confirm"
+                    app:icon="@drawable/ic_logout_24" />
+
+                <TextView
+                    android:id="@+id/text_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="Versión 1.0.0-pre (1)" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>

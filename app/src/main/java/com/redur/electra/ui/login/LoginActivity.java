@@ -31,6 +31,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.redur.electra.BuildConfig;
 import com.redur.electra.R;
+import com.redur.electra.core.ui.SystemBarInsets;
 import com.redur.electra.core.ui.UiState;
 import com.redur.electra.core.ui.UiText;
 import com.redur.electra.databinding.ActivityLoginBinding;
@@ -84,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
         int formPaddingBottom = binding.containerForm.getPaddingBottom();
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (root, windowInsets) -> {
-            Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            Insets bars = SystemBarInsets.of(windowInsets);
             Insets ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) root.getLayoutParams();
             boolean imeOpened = ime.bottom > 0 && params.bottomMargin == 0;
@@ -98,6 +99,10 @@ public class LoginActivity extends AppCompatActivity {
                     headerPaddingTop + bars.top,
                     binding.header.getPaddingRight(),
                     binding.header.getPaddingBottom());
+            // En horizontal el panel no queda bajo la franja: también se aparta de la status bar
+            if (binding.scrollLoginForm != null) {
+                binding.scrollLoginForm.setPadding(0, bars.top, 0, 0);
+            }
 
             // Con el teclado abierto, su inset ya cubre la barra de navegación
             binding.containerForm.setPadding(

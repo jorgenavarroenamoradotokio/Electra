@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Carga de camión en horizontal: la lista de expediciones ocupa toda la altura a la derecha (con
+    cargando y error/vacío en su lugar). El panel lateral reúne, de arriba abajo, la barra de la
+    lista, el progreso de la carga (solo con la carga a la vista: layout_truck_load_progress) y el
+    pie con ver carga y finalizar, la principal arriba. Mismos ids que la versión vertical.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    tools:context=".ui.carga.camion.TruckLoadFragment">
+
+    <LinearLayout
+        android:layout_width="@dimen/side_pane_width"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Barra de la lista: iconos con descripción y tooltip, 48dp de área táctil -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="@dimen/button_height"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/spacing_s">
+
+            <ImageButton
+                android:id="@+id/button_truck_load_sort"
+                android:layout_width="@dimen/touch_target_min"
+                android:layout_height="@dimen/touch_target_min"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/truck_load_sort"
+                android:enabled="false"
+                android:src="@drawable/ic_sort_24"
+                android:tooltipText="@string/truck_load_sort"
+                app:tint="@color/list_action_icon" />
+
+            <ImageButton
+                android:id="@+id/button_truck_load_filter"
+                android:layout_width="@dimen/touch_target_min"
+                android:layout_height="@dimen/touch_target_min"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/truck_load_filter_trip"
+                android:enabled="false"
+                android:src="@drawable/ic_local_shipping_24"
+                android:tooltipText="@string/truck_load_filter_trip"
+                app:tint="@color/list_action_icon" />
+
+            <ImageButton
+                android:id="@+id/button_truck_load_summary"
+                android:layout_width="@dimen/touch_target_min"
+                android:layout_height="@dimen/touch_target_min"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/truck_load_summary_title"
+                android:enabled="false"
+                android:src="@drawable/ic_summarize_24"
+                android:tooltipText="@string/truck_load_summary_title"
+                app:tint="@color/list_action_icon" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/button_truck_load_incidence"
+                android:layout_width="@dimen/touch_target_min"
+                android:layout_height="@dimen/touch_target_min"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/truck_load_incidence"
+                android:enabled="false"
+                android:src="@drawable/ic_report_problem_24"
+                android:tooltipText="@string/truck_load_incidence"
+                app:tint="@color/list_action_icon" />
+
+            <ImageButton
+                android:id="@+id/button_truck_load_info"
+                android:layout_width="@dimen/touch_target_min"
+                android:layout_height="@dimen/touch_target_min"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/truck_load_info"
+                android:enabled="false"
+                android:src="@drawable/ic_info_24"
+                android:tooltipText="@string/truck_load_info"
+                app:tint="@color/list_action_icon" />
+
+        </LinearLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <!-- Progreso de la carga: el texto es la fuente, la barra solo lo acompaña -->
+            <LinearLayout
+                android:id="@+id/layout_truck_load_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_m"
+                android:paddingVertical="@dimen/spacing_s"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/text_truck_load_summary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:accessibilityHeading="true"
+                    android:accessibilityLiveRegion="polite"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:text="2 de 6 expediciones completas" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/progress_truck_load_complete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:importantForAccessibility="no"
+                    android:max="100"
+                    app:trackCornerRadius="@dimen/truck_load_progress_thickness"
+                    app:trackThickness="@dimen/truck_load_progress_thickness"
+                    tools:progress="33" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_truck_load_filter"
+                    style="@style/Widget.Material3.Chip.Input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:checkable="false"
+                    android:visibility="gone"
+                    app:chipIcon="@drawable/ic_local_shipping_24"
+                    app:chipIconTint="?attr/colorPrimary"
+                    app:chipIconVisible="true"
+                    app:closeIconVisible="true"
+                    tools:text="Vuelta 2"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/layout_truck_load_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_m">
+
+            <!-- Finalizar deshabilitado no explica por sí solo qué falta -->
+            <TextView
+                android:id="@+id/text_truck_load_finish_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_s"
+                android:text="@string/truck_load_finish_hint"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_truck_load_finish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:minHeight="@dimen/button_height"
+                android:stateListAnimator="@animator/scale_on_press"
+                android:text="@string/truck_load_finish"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                app:cornerRadius="@dimen/corner_radius_m"
+                app:icon="@drawable/ic_check_24"
+                app:iconGravity="textStart" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_truck_load_view"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_s"
+                android:enabled="false"
+                android:minHeight="@dimen/button_height"
+                android:text="@string/truck_load_view"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                app:cornerRadius="@dimen/corner_radius_m"
+                app:icon="@drawable/ic_visibility_24"
+                app:iconGravity="textStart" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View style="@style/Widget.Electra.Divider.Vertical" />
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <FrameLayout
+            android:id="@+id/layout_truck_load_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_truck_load_expeditions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingHorizontal="@dimen/spacing_m"
+                android:paddingVertical="@dimen/spacing_s"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_truck_load_expedition" />
+
+            <!-- Refresco con la lista a la vista: la lista no se vacía mientras llega la nueva -->
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress_truck_load_refresh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                app:hideAnimationBehavior="outward"
+                app:showAnimationBehavior="inward" />
+
+        </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_truck_load_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:accessibilityLiveRegion="polite"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
+            android:indeterminate="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:gravity="center"
+            android:text="@string/truck_load_loading"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+    </LinearLayout>
+
+    <!-- Error y carga vacía comparten anatomía: qué ha pasado y cómo seguir -->
+    <LinearLayout
+        android:id="@+id/layout_truck_load_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:accessibilityLiveRegion="polite"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/spacing_l"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/image_truck_load_message"
+            android:layout_width="@dimen/icon_badge_size"
+            android:layout_height="@dimen/icon_badge_size"
+            android:background="@drawable/bg_icon_badge"
+            android:importantForAccessibility="no"
+            android:scaleType="center"
+            tools:src="@drawable/ic_local_shipping_24"
+            tools:tint="?attr/colorPrimary" />
+
+        <TextView
+            android:id="@+id/text_truck_load_message_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m"
+            android:accessibilityHeading="true"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface"
+            tools:text="@string/truck_load_empty_title" />
+
+        <TextView
+            android:id="@+id/text_truck_load_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="@string/truck_load_empty" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_truck_load_message_action"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l"
+            android:minHeight="@dimen/button_height"
+            app:cornerRadius="@dimen/corner_radius_m"
+            app:icon="@drawable/ic_refresh_24"
+            tools:text="@string/truck_load_refresh" />
+
+    </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Carga con precinto, fase 1, en horizontal: el panel lateral explica qué se pide y lleva la
+    acción de empezar; el campo del precinto queda centrado a la derecha. Mismos ids que la
+    versión vertical.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    tools:context=".ui.carga.directa.DirectLoadFragment">
+
+    <LinearLayout
+        android:layout_width="@dimen/side_pane_width"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_l"
+                android:paddingVertical="@dimen/spacing_m">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_badge_size"
+                    android:layout_height="@dimen/icon_badge_size"
+                    android:background="@drawable/bg_icon_badge"
+                    android:importantForAccessibility="no"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_lock_24"
+                    app:tint="?attr/colorPrimary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:accessibilityHeading="true"
+                    android:gravity="center"
+                    android:text="@string/direct_load_seal_title"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:textColor="?attr/colorOnSurface" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:gravity="center"
+                    android:text="@string/direct_load_seal_subtitle"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- TalkBack recorre el campo antes que la acción, como en vertical -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_m">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_direct_load_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:accessibilityTraversalAfter="@id/layout_direct_load_seal_input"
+                android:minHeight="@dimen/button_height"
+                android:stateListAnimator="@animator/scale_on_press"
+                android:text="@string/direct_load_start"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                app:cornerRadius="@dimen/corner_radius_m"
+                app:icon="@drawable/ic_check_24"
+                app:iconGravity="textStart" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <View style="@style/Widget.Electra.Divider.Vertical" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/spacing_l"
+            android:paddingVertical="@dimen/spacing_m">
+
+            <!-- El contador da progreso de lo tecleado sin esperar a validar -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_direct_load_seal_input"
+                style="?attr/textInputOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:hint="@string/direct_load_seal_hint"
+                app:boxCornerRadiusBottomEnd="@dimen/corner_radius_m"
+                app:boxCornerRadiusBottomStart="@dimen/corner_radius_m"
+                app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
+                app:boxCornerRadiusTopStart="@dimen/corner_radius_m"
+                app:counterEnabled="true"
+                app:counterMaxLength="@integer/direct_load_seal_length"
+                app:helperText="@string/direct_load_seal_helper"
+                app:startIconContentDescription="@null"
+                app:startIconDrawable="@drawable/ic_lock_24">
+
+                <!--
+                    Escáner o teclado: el escáner teclea el CB y termina con Intro, que
+                    acepta el precinto igual que la acción del teclado. Sin límite de
+                    longitud: un CB más largo se rechaza en lugar de recortarse en silencio.
+                -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_direct_load_seal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionGo"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    tools:text="12345678" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </FrameLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

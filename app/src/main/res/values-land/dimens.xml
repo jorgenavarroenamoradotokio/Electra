@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- En horizontal lo escaso es la altura: menos aire vertical, mismas áreas táctiles -->
+    <dimen name="screen_padding_vertical">16dp</dimen>
+    <!-- Puerta de salida: el muelle sigue leyéndose a distancia sin obligar a desplazar -->
+    <dimen name="bulto_dock_code_height">88dp</dimen>
+    <dimen name="bulto_dock_code_text_max">72sp</dimen>
+    <!-- El botón de cámara va en el pie, no flota: no hace falta hueco extra bajo el contenido -->
+    <dimen name="bulto_dock_fab_clearance">@dimen/spacing_m</dimen>
+</resources>

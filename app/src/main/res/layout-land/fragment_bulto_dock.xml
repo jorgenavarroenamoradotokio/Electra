@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Puerta de salida en horizontal: el CB leído y el muelle van lado a lado, centrados en la
+    altura, para que el muelle se lea a distancia sin desplazar. Sin lectura, el estado ocupa
+    todo el ancho. El pie lleva cancelar al inicio y, sin escáner hardware, el botón de cámara al
+    final. Mismos ids y estados que la versión vertical.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.bulto.muelle.BultoDockFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/layout_bulto_dock_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/spacing_l"
+            android:paddingTop="@dimen/spacing_m"
+            android:paddingBottom="@dimen/spacing_m">
+
+            <!--
+                Captura del escáner que teclea el CB y termina con Intro: no se ve ni lo lee
+                TalkBack, solo mantiene el foco. El fragment desactiva el teclado en pantalla.
+            -->
+            <EditText
+                android:id="@+id/input_bulto_dock_barcode"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:alpha="0"
+                android:background="@null"
+                android:cursorVisible="false"
+                android:imeOptions="actionSearch"
+                android:importantForAccessibility="no"
+                android:importantForAutofill="no"
+                android:inputType="textNoSuggestions|textCapCharacters"
+                android:maxLines="1"
+                tools:ignore="LabelFor" />
+
+            <!--
+                CB del bulto leído: solo con una lectura en curso o su muelle a la vista. Oculto,
+                el estado ocupa todo el ancho.
+            -->
+            <LinearLayout
+                android:id="@+id/layout_bulto_dock_barcode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_l"
+                android:layout_weight="1"
+                android:focusable="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bulto_dock_barcode_label"
+                    android:textAllCaps="true"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <!-- Monoespaciada: un CB largo se compara mejor dígito a dígito -->
+                <TextView
+                    android:id="@+id/text_bulto_dock_barcode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:fontFamily="monospace"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:text="14600400072459116400016247001" />
+
+            </LinearLayout>
+
+            <!-- TalkBack anuncia cada cambio de estado: el operario no tiene que mirar la pantalla -->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:accessibilityLiveRegion="polite">
+
+                <!--
+                    Muelle encontrado: la tarjeta solo lleva el muelle, el dato que se lee a
+                    distancia; el destino va debajo como dato secundario. TalkBack lee el grupo
+                    entero con la descripción que pone el fragment.
+                -->
+                <LinearLayout
+                    android:id="@+id/layout_bulto_dock_found"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_bulto_dock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:importantForAccessibility="noHideDescendants"
+                        app:cardBackgroundColor="@color/msg_info_bg"
+                        app:cardCornerRadius="@dimen/corner_radius_m"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/msg_info_icon"
+                        app:strokeWidth="@dimen/selection_stroke_width">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            android:padding="@dimen/spacing_l">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:importantForAccessibility="no"
+                                android:text="@string/bulto_dock_label"
+                                android:textAllCaps="true"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textColor="@color/msg_info_text" />
+
+                            <!-- Se reduce solo si el código no cabe en una línea -->
+                            <TextView
+                                android:id="@+id/text_bulto_dock_code"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/bulto_dock_code_height"
+                                android:gravity="center"
+                                android:importantForAccessibility="no"
+                                android:maxLines="1"
+                                android:textColor="@color/msg_info_text"
+                                android:textStyle="bold"
+                                app:autoSizeMaxTextSize="@dimen/bulto_dock_code_text_max"
+                                app:autoSizeMinTextSize="@dimen/bulto_dock_code_text_min"
+                                app:autoSizeTextType="uniform"
+                                tools:text="Z14" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:id="@+id/text_bulto_dock_destination"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:gravity="center"
+                        android:importantForAccessibility="no"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        tools:text="plaza zar · cp 50237 · España" />
+
+                </LinearLayout>
+
+                <!-- A la espera de un bulto -->
+                <LinearLayout
+                    android:id="@+id/layout_bulto_dock_waiting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingVertical="@dimen/spacing_l"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_badge_size"
+                        android:layout_height="@dimen/icon_badge_size"
+                        android:background="@drawable/bg_icon_badge"
+                        android:importantForAccessibility="no"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_warehouse_24"
+                        app:tint="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:gravity="center"
+                        android:text="@string/bulto_dock_waiting_title"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:gravity="center"
+                        android:text="@string/bulto_dock_waiting"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_bulto_dock_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingVertical="@dimen/spacing_l"
+                    android:visibility="gone">
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:importantForAccessibility="no"
+                        android:indeterminate="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:gravity="center"
+                        android:text="@string/bulto_dock_loading"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+
+                </LinearLayout>
+
+                <!-- Sin muelle y error comparten anatomía: qué ha pasado y cómo seguir -->
+                <LinearLayout
+                    android:id="@+id/layout_bulto_dock_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingVertical="@dimen/spacing_l"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_badge_size"
+                        android:layout_height="@dimen/icon_badge_size"
+                        android:background="@drawable/bg_icon_badge"
+                        android:importantForAccessibility="no"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_error_24"
+                        app:tint="@color/msg_error_icon" />
+
+                    <TextView
+                        android:id="@+id/text_bulto_dock_error_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:gravity="center"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
+                        tools:text="@string/bulto_dock_not_found_title" />
+
+                    <TextView
+                        android:id="@+id/text_bulto_dock_error"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:gravity="center"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        tools:text="@string/bulto_dock_not_found" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_bulto_dock_retry"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_l"
+                        android:minHeight="@dimen/button_height"
+                        android:text="@string/bulto_dock_retry"
+                        app:cornerRadius="@dimen/corner_radius_m"
+                        app:icon="@drawable/ic_refresh_24" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!--
+        Pie: cancelar al inicio y, solo en terminales sin escáner hardware, leer el CB con la
+        cámara al final. En horizontal no flota: taparía el muelle, que va a la derecha.
+    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_m"
+        android:paddingVertical="@dimen/spacing_s">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_bulto_dock_cancel"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="@dimen/side_pane_width"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/button_height"
+            android:text="@string/bulto_dock_cancel"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            app:cornerRadius="@dimen/corner_radius_m"
+            app:icon="@drawable/ic_close_24"
+            app:iconGravity="textStart" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fab_bulto_dock_scan_camera"
+            style="@style/Widget.Electra.ExtendedFab.Primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_s"
+            android:contentDescription="@string/bulto_dock_scan_camera_description"
+            android:text="@string/bulto_dock_scan_camera"
+            android:visibility="gone"
+            app:icon="@drawable/ic_photo_camera_24"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+</LinearLayout>
