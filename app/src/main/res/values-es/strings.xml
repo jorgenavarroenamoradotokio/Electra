@@ -179,8 +179,11 @@
     <string name="bulto_incidence_cancel">Cancelar</string>
 
     <!-- Puerta de salida -->
-    <string name="bulto_dock_barcode_hint">Leer bulto</string>
-    <string name="bulto_dock_barcode_helper">Léelo con el escáner</string>
+    <string name="bulto_dock_barcode_label">Bulto</string>
+    <string name="bulto_dock_scan_camera">Escanear</string>
+    <string name="bulto_dock_scan_camera_description">Escanear el bulto con la cámara</string>
+    <string name="bulto_dock_scan_prompt">Encuadra el código de barras del bulto</string>
+    <string name="bulto_dock_camera_denied">Permite el acceso a la cámara para escanear el bulto</string>
     <string name="bulto_dock_label">Muelle</string>
     <string name="bulto_dock_destination">plaza %1$s · cp %2$s · %3$s</string>
     <string name="bulto_dock_description">Muelle %1$s. Plaza %2$s, código postal %3$s, %4$s</string>

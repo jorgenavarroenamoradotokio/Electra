@@ -183,8 +183,11 @@
     <string name="bulto_incidence_cancel">Cancel</string>
 
     <!-- Puerta de salida -->
-    <string name="bulto_dock_barcode_hint">Read package</string>
-    <string name="bulto_dock_barcode_helper">Read it with the scanner</string>
+    <string name="bulto_dock_barcode_label">Package</string>
+    <string name="bulto_dock_scan_camera">Scan</string>
+    <string name="bulto_dock_scan_camera_description">Scan the package with the camera</string>
+    <string name="bulto_dock_scan_prompt">Fit the package barcode inside the frame</string>
+    <string name="bulto_dock_camera_denied">Allow camera access to scan the package</string>
     <string name="bulto_dock_label">Dock</string>
     <string name="bulto_dock_destination">hub %1$s · postcode %2$s · %3$s</string>
     <string name="bulto_dock_description">Dock %1$s. Hub %2$s, postcode %3$s, %4$s</string>

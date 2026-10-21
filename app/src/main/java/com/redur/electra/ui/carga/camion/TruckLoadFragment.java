@@ -191,6 +191,10 @@ public class TruckLoadFragment extends Fragment {
         FragmentTruckLoadBinding views = requireBinding();
         boolean ready = state instanceof TruckLoadState.Ready;
         views.layoutTruckLoadContent.setVisibility(ready ? View.VISIBLE : View.GONE);
+        // En horizontal el progreso va en el panel lateral, fuera del contenido de la lista
+        if (views.layoutTruckLoadProgress != null) {
+            views.layoutTruckLoadProgress.setVisibility(ready ? View.VISIBLE : View.GONE);
+        }
         views.layoutTruckLoadLoading.setVisibility(
                 state instanceof TruckLoadState.Loading ? View.VISIBLE : View.GONE);
         views.layoutTruckLoadMessage.setVisibility(

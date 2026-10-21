@@ -70,6 +70,13 @@
             android:name=".ui.profile.ProfileActivity"
             android:exported="false"
             android:parentActivityName=".ui.MainActivity" />
+        <!--
+            Visor de escaneo por cámara (zxing-android-embedded). La librería lo fija en apaisado;
+            se quita para que siga la orientación del terminal y pueda sujetarse en vertical.
+        -->
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            tools:remove="android:screenOrientation" />
 
         <!-- Comparte logs (correo, mensajería) y el destino de las fotos (cámara) sin exponer rutas -->
         <provider

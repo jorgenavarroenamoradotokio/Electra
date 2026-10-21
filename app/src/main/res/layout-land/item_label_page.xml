@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Página de la etiqueta en horizontal: ocupa la altura disponible y el ancho sale de su proporción,
+    así se ve entera. Fondo blanco en ambos temas, como en vertical: representa el papel.
+-->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="?attr/materialCardViewOutlinedStyle"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="@dimen/spacing_s"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/corner_radius_m">
+
+    <ImageView
+        android:id="@+id/image_label_page"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:padding="@dimen/spacing_s"
+        android:scaleType="fitCenter" />
+
+</com.google.android.material.card.MaterialCardView>

@@ -24,10 +24,13 @@
     <!-- Borde que marca el elemento elegido de una lista de selección -->
     <dimen name="selection_stroke_width">2dp</dimen>
     <dimen name="icon_inline_size">16dp</dimen>
+    <dimen name="fab_elevation">6dp</dimen>
     <!-- Puerta de salida: el muelle se lee a distancia -->
     <dimen name="bulto_dock_code_height">112dp</dimen>
     <dimen name="bulto_dock_code_text_max">88sp</dimen>
     <dimen name="bulto_dock_code_text_min">32sp</dimen>
+    <!-- Hueco bajo el contenido para que el botón de cámara no tape el último elemento: alto + márgenes -->
+    <dimen name="bulto_dock_fab_clearance">88dp</dimen>
     <!-- Carga con precinto: fichas de precinto y tipo de bulto de la cabecera -->
     <dimen name="direct_load_header_min_height">72dp</dimen>
     <!-- Carga de camión: etiquetas compactas de la expedición y barra de progreso de la carga -->
@@ -35,6 +38,18 @@
     <dimen name="truck_load_progress_thickness">6dp</dimen>
     <!-- Del borde de una fila ListAction al inicio de su texto: padding + icono + separación -->
     <dimen name="list_action_text_inset">56dp</dimen>
+    <!--
+        Horizontal (layout-land): panel lateral con el contexto y las acciones de la pantalla; la
+        lista o el formulario ocupan el resto y toda la altura, que es lo que escasea.
+    -->
+    <dimen name="side_pane_width">300dp</dimen>
+    <dimen name="divider_thickness">1dp</dimen>
+    <!--
+        Solo en horizontal (values-land/styles.xml). Más alta que cualquier pantalla: la hoja inferior
+        se abre entera; con la altura automática Material la deja casi plegada (reserva el alto de
+        una proporción 16:9).
+    -->
+    <dimen name="bottom_sheet_peek_height">2000dp</dimen>
 
     <!-- Menú lateral -->
     <dimen name="drawer_width">304dp</dimen>

@@ -29,6 +29,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 import com.redur.electra.R;
+import com.redur.electra.core.ui.SystemBarInsets;
 import com.redur.electra.databinding.ActivityMainBinding;
 import com.redur.electra.ui.label.PrintLabelBottomSheet;
 import com.redur.electra.ui.logout.LogoutBottomSheet;
@@ -86,18 +87,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * La toolbar y la cabecera del menú se extienden bajo la status bar;
+     * La toolbar y la cabecera del menú se extienden bajo la status bar; el contenido se aparta
+     * de la botonera de navegación (abajo o en un lateral en horizontal), no de la de gestos.
      */
     private void applyWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (root, windowInsets) -> {
-            Insets bars = windowInsets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            Insets bars = SystemBarInsets.of(windowInsets);
             binding.appBar.getRoot().setPadding(bars.left, bars.top, bars.right, 0);
+            binding.navHost.setPadding(bars.left, 0, bars.right, 0);
             // Con edge-to-edge adjustResize no encoge la ventana: el contenido deja sitio al teclado
             // para que los campos y las acciones del pie no queden debajo
             Insets ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
             binding.content.setPadding(0, 0, 0, Math.max(bars.bottom, ime.bottom));
             binding.drawerHeader.getRoot().setPadding(bars.left, bars.top, 0, 0);
+            binding.recyclerDrawerMenu.setPadding(bars.left, binding.recyclerDrawerMenu.getPaddingTop(),
+                    0, binding.recyclerDrawerMenu.getPaddingBottom());
             binding.drawerPanel.setPadding(0, 0, 0, bars.bottom);
             return WindowInsetsCompat.CONSUMED;
         });

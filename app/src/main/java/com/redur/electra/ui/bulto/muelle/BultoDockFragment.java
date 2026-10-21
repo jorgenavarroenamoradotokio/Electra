@@ -1,5 +1,6 @@
 package com.redur.electra.ui.bulto.muelle;
 
+import android.content.ActivityNotFoundException;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -9,29 +10,56 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
+import com.journeyapps.barcodescanner.ScanOptions;
 import com.redur.electra.R;
+import com.redur.electra.core.permission.AppPermission;
+import com.redur.electra.core.permission.PermissionRequester;
+import com.redur.electra.core.permission.PermissionStatus;
+import com.redur.electra.core.scanner.HardwareScannerManager;
+import com.redur.electra.core.scanner.ScannerManagerFactory;
 import com.redur.electra.data.model.bulto.BultoDock;
 import com.redur.electra.databinding.FragmentBultoDockBinding;
+import com.redur.electra.ui.permission.PermissionSettingsBottomSheet;
 
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 import dagger.hilt.android.AndroidEntryPoint;
+import timber.log.Timber;
 
 /**
  * Puerta de salida: el operario lee el CB del bulto con el escáner y ve en grande el muelle por
  * el que sale. El muelle queda a la vista hasta leer el bulto siguiente; cancelar lo descarta y
  * vacía el campo.
+ * <p>
+ * El escáner hardware entrega el CB por broadcast (Honeywell, Datalogic) o tecleándolo en el campo
+ * con Intro al final. Si el terminal no tiene escáner compatible, un botón flotante abre la cámara.
  */
 @AndroidEntryPoint
 public class BultoDockFragment extends Fragment {
 
     /** Provisional: bulto cuyo muelle se muestra al abrir la pantalla, sin esperar a una lectura. */
     private static final String FIXED_BARCODE = "13020000062081000447204320001";
+
+    @Inject
+    ScannerManagerFactory scannerManagerFactory;
+
+    // Se registran al construir el Fragment: así el resultado llega aunque se recree mientras
+    // está abierto el diálogo de permisos o la cámara
+    private final PermissionRequester cameraPermissionRequester =
+            new PermissionRequester(this, this::onCameraPermissionResult);
+    private final ActivityResultLauncher<ScanOptions> cameraScan =
+            registerForActivityResult(new ScanContract(), this::onCameraScanResult);
 
     @Nullable
     private FragmentBultoDockBinding binding;
@@ -67,31 +95,118 @@ public class BultoDockFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         FragmentBultoDockBinding views = requireBinding();
 
-        // El CB solo se lee con el escáner: el campo recibe el foco sin abrir el teclado en pantalla
+        // Campo oculto que recibe el CB del escáner por teclado: tiene el foco sin abrir el teclado en pantalla
         views.inputBultoDockBarcode.setShowSoftInputOnFocus(false);
         views.inputBultoDockBarcode.setOnEditorActionListener((v, actionId, event) ->
                 onEditorAction(actionId, event, this::onBarcodeScanned));
         views.buttonBultoDockRetry.setOnClickListener(v -> viewModel.onRetryClicked());
         views.buttonBultoDockCancel.setOnClickListener(v -> cancel());
 
+        // Solo entrega lecturas con la vista en RESUMED; el lifecycle de la vista lo libera
+        HardwareScannerManager scanner = scannerManagerFactory.create(this::onBarcodeRead);
+        getViewLifecycleOwner().getLifecycle().addObserver(scanner);
+        if (!scanner.isAvailable()) {
+            // Solo se anuncia al abrir la pantalla, no al recrearla
+            showCameraScan(savedInstanceState == null);
+        }
+
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
         if (savedInstanceState == null) {
             views.inputBultoDockBarcode.requestFocus();
         }
         if (initialBarcode != null) {
-            // Igual que tras una lectura: el CB queda a la vista y la siguiente lo sustituye
+            // Igual que tras una lectura: la siguiente sustituye al CB en lugar de añadirse
             views.inputBultoDockBarcode.setText(initialBarcode);
             views.inputBultoDockBarcode.selectAll();
             initialBarcode = null;
         }
     }
 
+    /** Lectura que no llega tecleada en el campo (broadcast del escáner o cámara). */
+    private void onBarcodeRead(@NonNull String barcode) {
+        requireBinding().inputBultoDockBarcode.setText(barcode);
+        onBarcodeScanned();
+    }
+
     private void onBarcodeScanned() {
         FragmentBultoDockBinding views = requireBinding();
         CharSequence text = views.inputBultoDockBarcode.getText();
         viewModel.getMuelleBulto(text != null ? text.toString() : null);
-        // El CB queda a la vista; la lectura siguiente del escáner lo sustituye en lugar de añadirse
+        // La lectura siguiente del escáner sustituye al CB en lugar de añadirse
         views.inputBultoDockBarcode.selectAll();
+    }
+
+    /** Sin escáner hardware: la cámara es la forma de leer el CB. */
+    private void showCameraScan(boolean animate) {
+        FragmentBultoDockBinding views = requireBinding();
+        View fab = views.fabBultoDockScanCamera;
+        fab.setVisibility(View.VISIBLE);
+        fab.setOnClickListener(v -> onScanCameraClicked());
+        // Hueco al final del contenido para que el botón no tape el último elemento al desplazar
+        View content = views.layoutBultoDockContent;
+        content.setPaddingRelative(content.getPaddingStart(), content.getPaddingTop(), content.getPaddingEnd(),
+                getResources().getDimensionPixelSize(R.dimen.bulto_dock_fab_clearance));
+        if (animate) {
+            animateFabEnter(fab);
+        }
+    }
+
+    /** Entra subiendo un poco desde su sitio: se percibe como parte de la pantalla, no como un aviso. */
+    private void animateFabEnter(@NonNull View fab) {
+        fab.setAlpha(0f);
+        fab.setTranslationY(getResources().getDimension(R.dimen.spacing_m));
+        fab.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(getResources().getInteger(R.integer.motion_duration_enter))
+                .setInterpolator(new DecelerateInterpolator());
+    }
+
+    /** Se desactiva hasta cerrar la cámara o resolver el permiso: evita abrirla dos veces. */
+    private void onScanCameraClicked() {
+        requireBinding().fabBultoDockScanCamera.setEnabled(false);
+        cameraPermissionRequester.request(AppPermission.CAMERA);
+    }
+
+    private void onCameraPermissionResult(@NonNull PermissionStatus status) {
+        if (status == PermissionStatus.GRANTED) {
+            launchCameraScan();
+            return;
+        }
+        FragmentBultoDockBinding views = requireBinding();
+        views.fabBultoDockScanCamera.setEnabled(true);
+        if (status == PermissionStatus.PERMANENTLY_DENIED) {
+            PermissionSettingsBottomSheet.showIfNotShown(getChildFragmentManager(), AppPermission.CAMERA);
+        } else {
+            Snackbar.make(views.getRoot(), R.string.bulto_dock_camera_denied, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void launchCameraScan() {
+        ScanOptions options = new ScanOptions()
+                .setPrompt(getString(R.string.bulto_dock_scan_prompt))
+                .setBeepEnabled(true)
+                // El visor sigue la orientación del terminal (ver CaptureActivity en el manifest)
+                .setOrientationLocked(false);
+        try {
+            Timber.i("Abrimos la cámara para escanear el bulto");
+            cameraScan.launch(options);
+        } catch (ActivityNotFoundException e) {
+            Timber.e(e, "No se puede abrir el visor de escaneo por cámara");
+            requireBinding().fabBultoDockScanCamera.setEnabled(true);
+        }
+    }
+
+    /** Sin contenido es que el operario cerró la cámara sin leer nada. */
+    private void onCameraScanResult(@NonNull ScanIntentResult result) {
+        FragmentBultoDockBinding views = requireBinding();
+        views.fabBultoDockScanCamera.setEnabled(true);
+        String barcode = result.getContents();
+        if (barcode == null || barcode.isEmpty()) {
+            Timber.d("Escaneo por cámara cancelado");
+            return;
+        }
+        onBarcodeRead(barcode);
     }
 
     private void cancel() {
@@ -119,6 +234,8 @@ public class BultoDockFragment extends Fragment {
                 state instanceof BultoDockState.NotFound || state instanceof BultoDockState.Failed
                         ? View.VISIBLE : View.GONE);
 
+        renderBarcode(state.barcode());
+
         if (state instanceof BultoDockState.Found foundState) {
             renderDock(foundState.dock(), !state.equals(renderedState));
         } else if (state instanceof BultoDockState.NotFound) {
@@ -131,6 +248,28 @@ public class BultoDockFragment extends Fragment {
             views.buttonBultoDockRetry.setVisibility(View.VISIBLE);
         }
         renderedState = state;
+    }
+
+    /** El CB leído solo se muestra con una lectura en curso o su muelle a la vista. */
+    private void renderBarcode(@Nullable String barcode) {
+        FragmentBultoDockBinding views = requireBinding();
+        View barcodeView = views.layoutBultoDockBarcode;
+        if (barcode == null) {
+            barcodeView.animate().cancel();
+            barcodeView.setVisibility(View.GONE);
+            return;
+        }
+        views.textBultoDockBarcode.setText(barcode);
+        // Fundido solo al aparecer tras una lectura; al recrear la vista ya estaba a la vista
+        boolean appearing = barcodeView.getVisibility() != View.VISIBLE && renderedState != null;
+        barcodeView.setVisibility(View.VISIBLE);
+        if (appearing) {
+            barcodeView.setAlpha(0f);
+            barcodeView.animate()
+                    .alpha(1f)
+                    .setDuration(getResources().getInteger(R.integer.motion_duration_layout))
+                    .setInterpolator(new DecelerateInterpolator());
+        }
     }
 
     private void renderDock(@NonNull BultoDock dock, boolean isNew) {
@@ -208,6 +347,8 @@ public class BultoDockFragment extends Fragment {
         super.onDestroyView();
         if (binding != null) {
             binding.layoutBultoDockFound.animate().cancel();
+            binding.layoutBultoDockBarcode.animate().cancel();
+            binding.fabBultoDockScanCamera.animate().cancel();
         }
         renderedState = null;
         binding = null;

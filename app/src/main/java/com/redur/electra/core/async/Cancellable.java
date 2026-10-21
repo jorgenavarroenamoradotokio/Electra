@@ -6,10 +6,5 @@ package com.redur.electra.core.async;
  */
 @FunctionalInterface
 public interface Cancellable {
-
-
-    
-
-
     void cancel();
 }
