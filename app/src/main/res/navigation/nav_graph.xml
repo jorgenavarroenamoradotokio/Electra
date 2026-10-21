@@ -88,4 +88,12 @@
         android:label="@string/menu_13"
         tools:layout="@layout/fragment_direct_load" />
 
+
+    <!-- Carga de camión (menú 14): expediciones de la carga con sus escaneos; refrescar en la toolbar -->
+    <fragment
+        android:id="@+id/nav_truck_load"
+        android:name="com.redur.electra.ui.carga.camion.TruckLoadFragment"
+        android:label="@string/menu_14"
+        tools:layout="@layout/fragment_truck_load" />
+
 </navigation>

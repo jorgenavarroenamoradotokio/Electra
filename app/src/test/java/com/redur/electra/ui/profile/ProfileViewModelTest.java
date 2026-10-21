@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
 import com.redur.electra.R;
+import com.redur.electra.core.device.TerminalIdProvider;
 import com.redur.electra.core.error.AppError;
 import com.redur.electra.core.error.NetworkType;
 import com.redur.electra.core.ui.ErrorUiMapper;
@@ -67,6 +68,12 @@ public class ProfileViewModelTest {
         };
         return new ProfileViewModel(session, logRepository,
                 new LogUploadRepository(api, session, Runnable::run, Runnable::run),
+                new TerminalIdProvider(null) {
+                    @Override
+                    public String getTerminalId() {
+                        return "1A2B3C4D5E6F7A8B";
+                    }
+                },
                 ioExecutor, Runnable::run);
     }
 

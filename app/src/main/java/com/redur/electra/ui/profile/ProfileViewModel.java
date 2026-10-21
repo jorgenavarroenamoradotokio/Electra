@@ -12,6 +12,7 @@ import com.redur.electra.core.async.Cancellable;
 import com.redur.electra.core.async.ResultCallback;
 import com.redur.electra.core.concurrency.MainExecutor;
 import com.redur.electra.core.concurrency.IoExecutor;
+import com.redur.electra.core.device.TerminalIdProvider;
 import com.redur.electra.core.error.AppError;
 import com.redur.electra.core.ui.ErrorUiMapper;
 import com.redur.electra.core.ui.UiText;
@@ -45,6 +46,7 @@ public class ProfileViewModel extends ViewModel {
     private final UserSession session;
     private final LogRepository logRepository;
     private final LogUploadRepository logUploadRepository;
+    private final TerminalIdProvider terminalIdProvider;
     private final Executor ioExecutor;
     private final Executor mainExecutor;
 
@@ -58,11 +60,12 @@ public class ProfileViewModel extends ViewModel {
 
     @Inject
     public ProfileViewModel(UserSession session, LogRepository logRepository,
-                            LogUploadRepository logUploadRepository,
+                            LogUploadRepository logUploadRepository, TerminalIdProvider terminalIdProvider,
                             @IoExecutor Executor ioExecutor, @MainExecutor Executor mainExecutor) {
         this.session = session;
         this.logRepository = logRepository;
         this.logUploadRepository = logUploadRepository;
+        this.terminalIdProvider = terminalIdProvider;
         this.ioExecutor = ioExecutor;
         this.mainExecutor = mainExecutor;
     }
@@ -71,6 +74,12 @@ public class ProfileViewModel extends ViewModel {
     @Nullable
     public User getUser() {
         return session.getUser();
+    }
+
+    /** Identificador con el que se registra el terminal. Null si el sistema no lo facilita. */
+    @Nullable
+    public String getTerminalId() {
+        return terminalIdProvider.getTerminalId();
     }
 
     /** Ver {@link LogSendState}. Tras atender un estado de un solo uso, llamar a {@link #onLogSendHandled()}. */
