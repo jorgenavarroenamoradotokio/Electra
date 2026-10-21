@@ -27,6 +27,8 @@ import com.google.android.material.divider.MaterialDividerItemDecoration;
 import com.redur.electra.R;
 import com.redur.electra.data.model.bulto.BultoType;
 import com.redur.electra.databinding.FragmentDirectLoadBinding;
+import com.redur.electra.databinding.ViewDirectLoadReadingBinding;
+import com.redur.electra.databinding.ViewDirectLoadSealBinding;
 import com.redur.electra.ui.bulto.tipo.BultoTypePicker;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -72,12 +74,13 @@ public class DirectLoadFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FragmentDirectLoadBinding views = requireBinding();
+        ViewDirectLoadSealBinding seal = requireBinding().layoutDirectLoadSeal;
+        ViewDirectLoadReadingBinding reading = requireBinding().layoutDirectLoadReading;
 
         // Precinto: escáner o teclado
-        views.inputDirectLoadSeal.setOnEditorActionListener((v, actionId, event) ->
+        seal.inputDirectLoadSeal.setOnEditorActionListener((v, actionId, event) ->
                 onEditorAction(actionId, event, EditorInfo.IME_ACTION_GO, this::submitSeal));
-        views.inputDirectLoadSeal.addTextChangedListener(new TextWatcher() {
+        seal.inputDirectLoadSeal.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -91,26 +94,26 @@ public class DirectLoadFragment extends Fragment {
                 viewModel.onSealEdited();
             }
         });
-        views.buttonDirectLoadStart.setOnClickListener(v -> submitSeal());
+        seal.buttonDirectLoadStart.setOnClickListener(v -> submitSeal());
 
         // Bultos: solo con el escáner, el campo recibe el foco sin abrir el teclado en pantalla
-        views.inputDirectLoadBarcode.setShowSoftInputOnFocus(false);
-        views.inputDirectLoadBarcode.setOnEditorActionListener((v, actionId, event) ->
+        reading.inputDirectLoadBarcode.setShowSoftInputOnFocus(false);
+        reading.inputDirectLoadBarcode.setOnEditorActionListener((v, actionId, event) ->
                 onEditorAction(actionId, event, EditorInfo.IME_ACTION_SEARCH, this::onBarcodeScanned));
 
         adapter = new DirectLoadReadingAdapter();
-        views.recyclerDirectLoadReadings.setAdapter(adapter);
+        reading.recyclerDirectLoadReadings.setAdapter(adapter);
         MaterialDividerItemDecoration divider = new MaterialDividerItemDecoration(requireContext(),
                 MaterialDividerItemDecoration.VERTICAL);
         divider.setLastItemDecorated(false);
-        views.recyclerDirectLoadReadings.addItemDecoration(divider);
+        reading.recyclerDirectLoadReadings.addItemDecoration(divider);
 
-        emptyTypeStroke = views.cardDirectLoadType.getStrokeColorStateList();
-        emptyTypeBackground = views.cardDirectLoadType.getCardBackgroundColor();
-        emptyTypeStrokeWidth = views.cardDirectLoadType.getStrokeWidth();
-        views.cardDirectLoadType.setOnClickListener(v -> openTypePicker());
-        views.buttonDirectLoadType.setOnClickListener(v -> openTypePicker());
-        views.buttonDirectLoadTypeClear.setOnClickListener(v -> viewModel.onBultoTypeCleared());
+        emptyTypeStroke = reading.cardDirectLoadType.getStrokeColorStateList();
+        emptyTypeBackground = reading.cardDirectLoadType.getCardBackgroundColor();
+        emptyTypeStrokeWidth = reading.cardDirectLoadType.getStrokeWidth();
+        reading.cardDirectLoadType.setOnClickListener(v -> openTypePicker());
+        reading.buttonDirectLoadType.setOnClickListener(v -> openTypePicker());
+        reading.buttonDirectLoadTypeClear.setOnClickListener(v -> viewModel.onBultoTypeCleared());
 
         observeTypePickerResult();
         viewModel.getState().observe(getViewLifecycleOwner(), this::render);
@@ -136,12 +139,12 @@ public class DirectLoadFragment extends Fragment {
     }
 
     private void submitSeal() {
-        CharSequence text = requireBinding().inputDirectLoadSeal.getText();
+        CharSequence text = requireBinding().layoutDirectLoadSeal.inputDirectLoadSeal.getText();
         viewModel.onSealEntered(text != null ? text.toString() : null);
     }
 
     private void onBarcodeScanned() {
-        FragmentDirectLoadBinding views = requireBinding();
+        ViewDirectLoadReadingBinding views = requireBinding().layoutDirectLoadReading;
         CharSequence text = views.inputDirectLoadBarcode.getText();
         viewModel.onBarcodeScanned(text != null ? text.toString() : null);
         // El CB queda a la vista; la lectura siguiente del escáner lo sustituye en lugar de añadirse
@@ -151,22 +154,22 @@ public class DirectLoadFragment extends Fragment {
     private void render(@NonNull DirectLoadState state) {
         FragmentDirectLoadBinding views = requireBinding();
         boolean phaseChanged = renderedPhase != state.getClass();
-        views.layoutDirectLoadSeal.setVisibility(
+        views.layoutDirectLoadSeal.getRoot().setVisibility(
                 state instanceof DirectLoadState.SealEntry ? View.VISIBLE : View.GONE);
-        views.layoutDirectLoadReading.setVisibility(
+        views.layoutDirectLoadReading.getRoot().setVisibility(
                 state instanceof DirectLoadState.Reading ? View.VISIBLE : View.GONE);
 
         if (state instanceof DirectLoadState.SealEntry entry) {
-            views.layoutDirectLoadSealInput.setError(
+            views.layoutDirectLoadSeal.layoutDirectLoadSealInput.setError(
                     entry.sealError() != null ? getString(entry.sealError()) : null);
             if (phaseChanged) {
-                views.inputDirectLoadSeal.requestFocus();
+                views.layoutDirectLoadSeal.inputDirectLoadSeal.requestFocus();
             }
         } else if (state instanceof DirectLoadState.Reading reading) {
             if (phaseChanged) {
                 // Del teclado del precinto se pasa al escáner: el teclado ya no hace falta
-                hideKeyboard(views.inputDirectLoadSeal);
-                views.inputDirectLoadBarcode.requestFocus();
+                hideKeyboard(views.layoutDirectLoadSeal.inputDirectLoadSeal);
+                views.layoutDirectLoadReading.inputDirectLoadBarcode.requestFocus();
             }
             renderHeader(reading);
             renderFeedback(reading.feedback());
@@ -176,7 +179,7 @@ public class DirectLoadFragment extends Fragment {
     }
 
     private void renderHeader(@NonNull DirectLoadState.Reading reading) {
-        FragmentDirectLoadBinding views = requireBinding();
+        ViewDirectLoadReadingBinding views = requireBinding().layoutDirectLoadReading;
         views.textDirectLoadSeal.setText(reading.seal());
         views.cardDirectLoadSeal.setContentDescription(
                 getString(R.string.direct_load_seal_description, reading.seal()));
@@ -212,7 +215,7 @@ public class DirectLoadFragment extends Fragment {
     }
 
     private void renderFeedback(@Nullable DirectLoadState.Feedback feedback) {
-        FragmentDirectLoadBinding views = requireBinding();
+        ViewDirectLoadReadingBinding views = requireBinding().layoutDirectLoadReading;
         views.cardDirectLoadFeedback.setVisibility(feedback != null ? View.VISIBLE : View.GONE);
         if (feedback instanceof DirectLoadState.Feedback.Added added) {
             BultoType type = added.reading().type();
@@ -228,7 +231,7 @@ public class DirectLoadFragment extends Fragment {
 
     private void showFeedback(@DrawableRes int icon, @ColorRes int background, @ColorRes int iconColor,
                               @ColorRes int textColor, @NonNull String message) {
-        FragmentDirectLoadBinding views = requireBinding();
+        ViewDirectLoadReadingBinding views = requireBinding().layoutDirectLoadReading;
         views.cardDirectLoadFeedback.setCardBackgroundColor(ContextCompat.getColor(requireContext(), background));
         views.imageDirectLoadFeedback.setImageResource(icon);
         views.imageDirectLoadFeedback.setImageTintList(ContextCompat.getColorStateList(requireContext(), iconColor));
@@ -237,7 +240,7 @@ public class DirectLoadFragment extends Fragment {
     }
 
     private void renderReadings(@NonNull DirectLoadState.Reading reading) {
-        FragmentDirectLoadBinding views = requireBinding();
+        ViewDirectLoadReadingBinding views = requireBinding().layoutDirectLoadReading;
         int count = reading.readings().size();
         views.textDirectLoadCount.setText(
                 getResources().getQuantityString(R.plurals.direct_load_count, count, count));
@@ -248,7 +251,7 @@ public class DirectLoadFragment extends Fragment {
             boolean added = count > adapter.getItemCount();
             adapter.submitList(reading.readings(), () -> {
                 if (added && binding != null) {
-                    binding.recyclerDirectLoadReadings.scrollToPosition(0);
+                    binding.layoutDirectLoadReading.recyclerDirectLoadReadings.scrollToPosition(0);
                 }
             });
         }
@@ -296,7 +299,7 @@ public class DirectLoadFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (binding != null) {
-            binding.recyclerDirectLoadReadings.setAdapter(null);
+            binding.layoutDirectLoadReading.recyclerDirectLoadReadings.setAdapter(null);
         }
         adapter = null;
         renderedPhase = null;

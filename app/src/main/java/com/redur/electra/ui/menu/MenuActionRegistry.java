@@ -62,6 +62,7 @@ public final class MenuActionRegistry {
         screen(11, R.string.menu_11, R.drawable.ic_report_problem_24, R.id.nav_bulto_incidence);
         screen(12, R.string.menu_12, R.drawable.ic_warehouse_24, R.id.nav_bulto_dock);
         screen(13, R.string.menu_13, R.drawable.ic_lock_24, R.id.nav_direct_load);
+        screen(14, R.string.menu_14, R.drawable.ic_local_shipping_24, R.id.nav_truck_load);
     }
 
     private MenuActionRegistry() {

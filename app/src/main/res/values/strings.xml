@@ -30,6 +30,10 @@
     <string name="profile_change_plaza_action">Change</string>
     <string name="profile_support_section">Support</string>
     <string name="profile_send_log">Send activity log</string>
+    <string name="profile_terminal_id_label">Device ID</string>
+    <string name="profile_terminal_id_unavailable">Not available</string>
+    <string name="profile_terminal_id_copy_action">copy</string>
+    <string name="profile_terminal_id_copied">Device ID copied</string>
     <string name="profile_log_chooser">Send log with</string>
     <string name="profile_log_subject">%1$s log · %2$s · %3$s</string>
     <string name="profile_log_sending">Sending log… %1$s</string>
@@ -71,6 +75,7 @@
     <string name="menu_11">Incidents</string>
     <string name="menu_12">Exit gate</string>
     <string name="menu_13">INT loading</string>
+    <string name="menu_14">Truck loading</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Add a photo</string>
@@ -221,6 +226,70 @@
     <string name="direct_load_reading_no_type">No type</string>
     <string name="direct_load_reading_description">%1$d. Package %2$s, type %3$s</string>
     <string name="direct_load_reading_description_no_type">%1$d. Package %2$s, no type</string>
+
+    <!-- Carga de camión -->
+    <string name="truck_load_refresh">Refresh</string>
+    <string name="truck_load_sort">Sort list</string>
+    <string name="truck_load_sort_load_order">By load order</string>
+    <string name="truck_load_sort_number">By expedition number</string>
+    <string name="truck_load_sort_zone">By loading zone</string>
+    <string name="truck_load_sort_delivery_note">By delivery note</string>
+    <string name="truck_load_sort_sender">By sender</string>
+    <string name="truck_load_sort_consignee">By consignee</string>
+    <string name="truck_load_sort_postal_code">By consignee postcode</string>
+    <string name="truck_load_sort_town">By town</string>
+    <string name="truck_load_summary_title">Load summary</string>
+    <string name="truck_load_summary_expeditions">Expeditions</string>
+    <string name="truck_load_summary_stops">Stops</string>
+    <string name="truck_load_summary_bultos">Packages</string>
+    <string name="truck_load_summary_weight">Chargeable weight</string>
+    <string name="truck_load_summary_weight_value">%1$s kg</string>
+    <string name="truck_load_summary_close">OK</string>
+    <string name="truck_load_expedition_sender">Delivery note %2$s · %1$s</string>
+    <string name="truck_load_expedition_address">%1$s · %2$s %3$s</string>
+    <string name="truck_load_filter_trip">Filter by trip</string>
+    <string name="truck_load_filter_all">All trips</string>
+    <string name="truck_load_filter_clear">Show all trips</string>
+    <string name="truck_load_incidence">Report incident</string>
+    <string name="truck_load_info">Expedition details</string>
+    <plurals name="truck_load_summary">
+        <item quantity="one">%1$d of %2$d expedition complete</item>
+        <item quantity="other">%1$d of %2$d expeditions complete</item>
+    </plurals>
+    <string name="truck_load_loading">Loading the truck load…</string>
+    <string name="truck_load_error_title">Couldn’t load the truck load</string>
+    <string name="truck_load_retry">Try again</string>
+    <string name="truck_load_empty_title">No expeditions in this load</string>
+    <string name="truck_load_empty">Refresh once the load has been assigned</string>
+    <string name="truck_load_view">View load</string>
+    <string name="truck_load_finish">Finish loading</string>
+    <string name="truck_load_finish_hint">You can finish when every expedition is complete</string>
+    <string name="truck_load_expedition_number">Exp. %1$s</string>
+    <string name="truck_load_metric_documented">Docs</string>
+    <string name="truck_load_metric_destination">At dest.</string>
+    <string name="truck_load_metric_scanned">Scanned</string>
+    <string name="truck_load_metric_zone">Zone</string>
+    <string name="truck_load_metric_order">Order</string>
+    <string name="truck_load_order_value">%1$d/%2$d</string>
+    <string name="truck_load_status_complete">Complete</string>
+    <string name="truck_load_status_missing">%1$d missing</string>
+    <string name="truck_load_status_extra">%1$d extra</string>
+    <string name="truck_load_tag_trip">Trip %1$d</string>
+    <string name="truck_load_tag_package">Packages</string>
+    <string name="truck_load_tag_irregular">Irregular</string>
+    <string name="truck_load_tag_pallet">Pallet</string>
+    <string name="truck_load_tag_cash_on_delivery">Cash on delivery</string>
+    <string name="truck_load_tag_pickup_point">PUDO</string>
+    <string name="truck_load_tag_complete_delivery">Complete delivery</string>
+    <string name="truck_load_tag_time_window">Time slot</string>
+    <string name="truck_load_tag_alert">Alert</string>
+    <string name="truck_load_tag_incidence">Incident</string>
+    <string name="truck_load_tag_urgent">Urgent</string>
+    <string name="truck_load_tag_attempts">Attempts: %1$d</string>
+    <string name="truck_load_tag_pharma">Pharma</string>
+    <string name="truck_load_tag_product">Product %1$s</string>
+    <string name="truck_load_expedition_description">Expedition %1$s, delivery note %2$s, from %3$s, for %4$s, %5$s, %6$s %7$s. %8$s. %9$d documented, %10$d at destination, %11$d scanned. Zone %12$s, load order %13$d of %14$d.</string>
+    <string name="truck_load_tags_description">%1$s.</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Open settings</string>

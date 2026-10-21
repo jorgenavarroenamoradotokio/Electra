@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Acción propia de la carga de camión: se añade a la toolbar común solo mientras se ve la pantalla -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_truck_load_refresh"
+        android:icon="@drawable/ic_refresh_24"
+        android:title="@string/truck_load_refresh"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -30,6 +30,10 @@
     <string name="profile_change_plaza_action">Cambiar</string>
     <string name="profile_support_section">Soporte</string>
     <string name="profile_send_log">Enviar registro de actividad</string>
+    <string name="profile_terminal_id_label">ID del terminal</string>
+    <string name="profile_terminal_id_unavailable">No disponible</string>
+    <string name="profile_terminal_id_copy_action">copiar</string>
+    <string name="profile_terminal_id_copied">ID del terminal copiado</string>
     <string name="profile_log_chooser">Enviar registro con</string>
     <string name="profile_log_subject">Registro de %1$s · %2$s · %3$s</string>
     <string name="profile_log_sending">Enviando registro… %1$s</string>
@@ -71,6 +75,7 @@
     <string name="menu_11">Incidencias</string>
     <string name="menu_12">Puerta de salida</string>
     <string name="menu_13">Carga INT</string>
+    <string name="menu_14">Carga de camión</string>
 
     <!-- Toma de foto -->
     <string name="photo_source_title">Añadir foto</string>
@@ -218,6 +223,70 @@
     <string name="direct_load_reading_no_type">Sin tipo</string>
     <string name="direct_load_reading_description">%1$d. Bulto %2$s, tipo %3$s</string>
     <string name="direct_load_reading_description_no_type">%1$d. Bulto %2$s, sin tipo</string>
+
+    <!-- Carga de camión -->
+    <string name="truck_load_refresh">Refrescar</string>
+    <string name="truck_load_sort">Ordenar listado</string>
+    <string name="truck_load_sort_load_order">Por orden de carga</string>
+    <string name="truck_load_sort_number">Por nº de expedición</string>
+    <string name="truck_load_sort_zone">Por zona de carga</string>
+    <string name="truck_load_sort_delivery_note">Por albarán</string>
+    <string name="truck_load_sort_sender">Por cliente remitente</string>
+    <string name="truck_load_sort_consignee">Por consignatario</string>
+    <string name="truck_load_sort_postal_code">Por CP del destinatario</string>
+    <string name="truck_load_sort_town">Por población</string>
+    <string name="truck_load_summary_title">Resumen de carga</string>
+    <string name="truck_load_summary_expeditions">Expediciones</string>
+    <string name="truck_load_summary_stops">Paradas</string>
+    <string name="truck_load_summary_bultos">Bultos</string>
+    <string name="truck_load_summary_weight">Peso tasado</string>
+    <string name="truck_load_summary_weight_value">%1$s kg</string>
+    <string name="truck_load_summary_close">Aceptar</string>
+    <string name="truck_load_expedition_sender">Alb. %2$s · %1$s</string>
+    <string name="truck_load_expedition_address">%1$s · %2$s %3$s</string>
+    <string name="truck_load_filter_trip">Filtrar por vuelta</string>
+    <string name="truck_load_filter_all">Todas las vueltas</string>
+    <string name="truck_load_filter_clear">Ver todas las vueltas</string>
+    <string name="truck_load_incidence">Generar incidencia</string>
+    <string name="truck_load_info">Información de la expedición</string>
+    <plurals name="truck_load_summary">
+        <item quantity="one">%1$d de %2$d expedición completa</item>
+        <item quantity="other">%1$d de %2$d expediciones completas</item>
+    </plurals>
+    <string name="truck_load_loading">Cargando la carga del camión…</string>
+    <string name="truck_load_error_title">No se ha podido obtener la carga</string>
+    <string name="truck_load_retry">Reintentar</string>
+    <string name="truck_load_empty_title">Esta carga no tiene expediciones</string>
+    <string name="truck_load_empty">Refresca cuando la carga esté asignada</string>
+    <string name="truck_load_view">Ver carga</string>
+    <string name="truck_load_finish">Finalizar carga</string>
+    <string name="truck_load_finish_hint">Podrás finalizar cuando todas las expediciones estén completas</string>
+    <string name="truck_load_expedition_number">Exp. %1$s</string>
+    <string name="truck_load_metric_documented">Doc.</string>
+    <string name="truck_load_metric_destination">Destino</string>
+    <string name="truck_load_metric_scanned">Escan.</string>
+    <string name="truck_load_metric_zone">Zona</string>
+    <string name="truck_load_metric_order">Orden</string>
+    <string name="truck_load_order_value">%1$d/%2$d</string>
+    <string name="truck_load_status_complete">Completa</string>
+    <string name="truck_load_status_missing">Faltan %1$d</string>
+    <string name="truck_load_status_extra">Sobran %1$d</string>
+    <string name="truck_load_tag_trip">Vuelta %1$d</string>
+    <string name="truck_load_tag_package">Paquetes</string>
+    <string name="truck_load_tag_irregular">Irregular</string>
+    <string name="truck_load_tag_pallet">Palet</string>
+    <string name="truck_load_tag_cash_on_delivery">Cobro</string>
+    <string name="truck_load_tag_pickup_point">PUDO</string>
+    <string name="truck_load_tag_complete_delivery">Entrega completa</string>
+    <string name="truck_load_tag_time_window">Con horario</string>
+    <string name="truck_load_tag_alert">Alerta</string>
+    <string name="truck_load_tag_incidence">Incidencia</string>
+    <string name="truck_load_tag_urgent">Urgente</string>
+    <string name="truck_load_tag_attempts">Intentos: %1$d</string>
+    <string name="truck_load_tag_pharma">Farma</string>
+    <string name="truck_load_tag_product">Producto %1$s</string>
+    <string name="truck_load_expedition_description">Expedición %1$s, albarán %2$s, de %3$s, para %4$s, %5$s, %6$s %7$s. %8$s. %9$d bultos documentados, %10$d en destino, %11$d escaneados. Zona %12$s, orden de carga %13$d de %14$d.</string>
+    <string name="truck_load_tags_description">%1$s.</string>
 
     <!-- Permisos denegados para siempre -->
     <string name="permission_open_settings">Abrir ajustes</string>

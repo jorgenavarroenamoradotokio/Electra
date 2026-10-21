@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.redur.electra.BuildConfig;
+import com.redur.electra.core.device.TerminalIdProvider;
 
 import java.io.File;
 
@@ -28,13 +29,15 @@ public final class LoggingInitializer {
 
     private static final String LOGCAT_TAG_PREFIX = "Electra.";
     private final Context context;
+    private final TerminalIdProvider terminalIdProvider;
     @Nullable
     private FileLoggingTree fileTree;
     private boolean initialized;
 
     @Inject
-    LoggingInitializer(@ApplicationContext Context context) {
+    LoggingInitializer(@ApplicationContext Context context, TerminalIdProvider terminalIdProvider) {
         this.context = context;
+        this.terminalIdProvider = terminalIdProvider;
     }
 
     public synchronized void init() {
@@ -60,10 +63,10 @@ public final class LoggingInitializer {
         }
 
         // Primera línea de cada arranque: identifica versión y terminal al leer un log recibido
-        Timber.i("Arranque %s %s (%d) [%s] en %s %s, Android %s (API %d)",
+        Timber.i("Arranque %s %s (%d) [%s] en %s %s, terminal %s, Android %s (API %d)",
                 BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE,
                 BuildConfig.ENVIRONMENT, Build.MANUFACTURER, Build.MODEL,
-                Build.VERSION.RELEASE, Build.VERSION.SDK_INT);
+                terminalIdProvider.getTerminalId(), Build.VERSION.RELEASE, Build.VERSION.SDK_INT);
     }
 
     /** Carpeta de logs para una futura opción de "Exportar logs". Null si no se escribe a fichero. */

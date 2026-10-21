@@ -204,6 +204,56 @@
 
                 </FrameLayout>
 
+                <!--
+                    ID del terminal: soporte lo pide para darlo de alta. Se lee como una unidad
+                    ("ID del terminal, 1A2B…") y al pulsar se copia. Icono y texto alineados con la fila de envío.
+                -->
+                <LinearLayout
+                    android:id="@+id/row_terminal_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/spacing_s"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/button_height"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/spacing_m"
+                    android:paddingVertical="@dimen/spacing_s">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_smartphone_24"
+                        app:tint="@color/list_action_icon" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_terminal_id_label"
+                            android:textAppearance="?attr/textAppearanceLabelMedium"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+
+                        <TextView
+                            android:id="@+id/text_terminal_id"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="monospace"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:textColor="?attr/colorOnSurface"
+                            tools:text="1A2B3C4D5E6F7A8B" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
                 <!-- Ocupa el espacio libre: empuja el pie al final de la pantalla si el contenido es corto -->
                 <Space
                     android:layout_width="match_parent"

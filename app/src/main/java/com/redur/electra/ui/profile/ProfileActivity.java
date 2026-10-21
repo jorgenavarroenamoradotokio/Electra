@@ -2,9 +2,11 @@ package com.redur.electra.ui.profile;
 
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -19,6 +21,7 @@ import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -133,8 +136,37 @@ public class ProfileActivity extends AppCompatActivity {
                         : com.google.android.material.R.attr.colorOnSurfaceVariant));
 
         binding.textVersion.setText(getString(R.string.login_version, BuildConfig.VERSION_NAME));
+        renderTerminalId(viewModel.getTerminalId());
         // Visualizamos o no el btn para la plaza
         binding.buttonChangePlaza.setVisibility(viewModel.canChangePlaza() ? View.VISIBLE : View.GONE);
+    }
+
+    /** Pulsar la fila copia el ID; sin ID no hay nada que copiar y la fila solo informa. */
+    private void renderTerminalId(@Nullable String terminalId) {
+        View row = binding.rowTerminalId;
+        if (terminalId == null) {
+            binding.textTerminalId.setText(R.string.profile_terminal_id_unavailable);
+            row.setOnClickListener(null);
+            row.setClickable(false);
+            return;
+        }
+        binding.textTerminalId.setText(terminalId);
+        row.setOnClickListener(v -> copyTerminalId(terminalId));
+        // TalkBack anuncia "doble toque para copiar" en lugar de "para activar"
+        ViewCompat.replaceAccessibilityAction(row, AccessibilityActionCompat.ACTION_CLICK,
+                getString(R.string.profile_terminal_id_copy_action), null);
+    }
+
+    private void copyTerminalId(@NonNull String terminalId) {
+        ClipboardManager clipboard = getSystemService(ClipboardManager.class);
+        if (clipboard == null) {
+            return;
+        }
+        clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.profile_terminal_id_label), terminalId));
+        // Desde Android 13 el sistema ya confirma la copia: un aviso propio la duplicaría
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            showMessage(R.string.profile_terminal_id_copied);
+        }
     }
 
     /**

@@ -49,4 +49,27 @@
         <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
         <item name="cornerRadius">@dimen/corner_radius_s</item>
     </style>
+
+    <!--
+        Etiqueta informativa de una expedición (vuelta, tipo, instrucciones, avisos): no se pulsa,
+        así que no reserva área táctil. Tinte tonal del color principal, como la etiqueta de tipo
+        de bulto; los avisos cambian a los colores de warning desde el adapter.
+    -->
+    <style name="Widget.Electra.Chip.Tag" parent="Widget.Material3.Chip.Assist">
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:importantForAccessibility">no</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelMedium</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="ensureMinTouchTargetSize">false</item>
+        <item name="chipMinHeight">@dimen/tag_min_height</item>
+        <item name="chipBackgroundColor">@color/icon_badge_background</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="chipCornerRadius">@dimen/corner_radius_s</item>
+        <item name="chipIconSize">@dimen/icon_inline_size</item>
+        <item name="chipIconTint">?attr/colorPrimary</item>
+        <item name="chipStartPadding">@dimen/spacing_xs</item>
+        <item name="chipEndPadding">@dimen/spacing_xs</item>
+        <item name="rippleColor">@android:color/transparent</item>
+    </style>
 </resources>
