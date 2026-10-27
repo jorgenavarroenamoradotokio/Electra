@@ -14,9 +14,9 @@ import com.redur.electra.R;
 import com.redur.electra.core.async.Cancellable;
 import com.redur.electra.core.async.ResultCallback;
 import com.redur.electra.core.error.AppError;
-import com.redur.electra.data.model.bulto.BultoIncidence;
 import com.redur.electra.data.model.bulto.OperationType;
-import com.redur.electra.data.repository.BultoIncidenceRepository;
+import com.redur.electra.data.model.bulto.BultoIncidencia;
+import com.redur.electra.data.repository.InicdenciaRepository;
 import com.redur.electra.ui.bulto.incidencia.BultoIncidenceEntry;
 import com.redur.electra.ui.bulto.incidencia.BultoIncidenceState;
 import com.redur.electra.ui.bulto.incidencia.BultoIncidenceViewModel;
@@ -34,22 +34,77 @@ public class BultoIncidenceViewModelTest {
     public final InstantTaskExecutorRule instantExecutor = new InstantTaskExecutorRule();
 
     private static final String BARCODE = "14600400072459116400016247001";
+    private static final String OTHER_BARCODE = "14600400072459116400016247002";
     private static final String PHOTO_URI = "content://com.redur.electra.fileprovider/photos/IMG_1.jpg";
-    private static final BultoIncidence A16 = new BultoIncidence("A16", false, false);
-    private static final BultoIncidence A21 = new BultoIncidence("A21", true, false);
-    private static final BultoIncidence I11 = new BultoIncidence("I11", false, true);
+    private static final BultoIncidencia A16 = new BultoIncidencia("A16", "Bulto dañado", false, false);
+    private static final BultoIncidencia A21 = new BultoIncidencia("A21", "Bulto abierto", true, false);
+    private static final BultoIncidencia I11 = new BultoIncidencia("I11", "Falta mercancía", false, true);
 
     private final ScriptedRepository repository = new ScriptedRepository();
 
     @Test
-    public void desdeElMenu_recogidasSinBultoLeido() {
-        repository.willReturn(List.of(A16));
-
+    public void desdeElMenu_esperaAlBulto_sinPedirIncidencias() {
         BultoIncidenceViewModel viewModel = new BultoIncidenceViewModel(new SavedStateHandle(), repository);
 
-        assertEquals(OperationType.RECOGIDAS, viewModel.getArgs().operationType());
+        assertEquals(OperationType.CARGA, viewModel.getArgs().operationType());
         assertNull(viewModel.getArgs().barcode());
-        assertEquals(OperationType.RECOGIDAS, repository.lastOperationType);
+        assertTrue(viewModel.getState().getValue() instanceof BultoIncidenceState.WaitingForBarcode);
+        assertEquals(0, repository.loads);
+        assertFalse(viewModel.canConfirm());
+    }
+
+    @Test
+    public void desdeElMenu_alLeerElBulto_cargaLasIncidenciasDeCAR() {
+        repository.willReturn(List.of(A16));
+        BultoIncidenceViewModel viewModel = new BultoIncidenceViewModel(new SavedStateHandle(), repository);
+
+        viewModel.onBarcodeScanned(BARCODE);
+
+        assertEquals("CAR", repository.lastCodigoAplicacion);
+        assertTrue(viewModel.getState().getValue() instanceof BultoIncidenceState.Ready);
+    }
+
+    @Test
+    public void conBultoEnLosArgumentos_cargaAlAbrir() {
+        repository.willReturn(List.of(A16));
+
+        newViewModel();
+
+        assertEquals(1, repository.loads);
+    }
+
+    @Test
+    public void leerOtroBulto_vuelveACargar_yReleerElMismoNo() {
+        repository.willReturn(List.of(A16));
+        BultoIncidenceViewModel viewModel = newViewModel();
+
+        viewModel.onBarcodeScanned(BARCODE);
+        assertEquals(1, repository.loads);
+
+        viewModel.onBarcodeScanned(OTHER_BARCODE);
+        assertEquals(2, repository.loads);
+    }
+
+    @Test
+    public void lecturaDuranteLaCarga_cancelaLaDelBultoAnterior() {
+        repository.willReturn(List.of(A16));
+        repository.deferResponses();
+        BultoIncidenceViewModel viewModel = new BultoIncidenceViewModel(new SavedStateHandle(), repository);
+        viewModel.onBarcodeScanned(BARCODE);
+
+        viewModel.onBarcodeScanned(OTHER_BARCODE);
+
+        assertEquals(1, repository.cancellations);
+        assertTrue(viewModel.getState().getValue() instanceof BultoIncidenceState.Loading);
+    }
+
+    @Test
+    public void conTipoDeOperacionEnLosArgumentos_pideLasIncidenciasDeEseTipo() {
+        repository.willReturn(List.of(A16));
+
+        newViewModel();
+
+        assertEquals("REC", repository.lastCodigoAplicacion);
     }
 
     @Test
@@ -164,9 +219,21 @@ public class BultoIncidenceViewModelTest {
         BultoIncidenceViewModel viewModel = newViewModel();
         viewModel.onIncidenceSelected(I11);
 
-        assertNull(viewModel.onConfirmClicked("x".repeat(BultoIncidence.OBSERVATIONS_MAX_LENGTH + 1)));
+        assertNull(viewModel.onConfirmClicked("x".repeat(BultoIncidencia.OBSERVATIONS_MAX_LENGTH + 1)));
         assertEquals(Integer.valueOf(R.string.bulto_incidence_error_observations_length),
                 viewModel.getFormState().getValue().observationsError());
+    }
+
+    @Test
+    public void observacionesEscritas_noSeGrabanSiNoSeExigen() {
+        repository.willReturn(List.of(A16));
+        BultoIncidenceViewModel viewModel = newViewModel();
+        viewModel.onIncidenceSelected(A16);
+
+        BultoIncidenceEntry entry = viewModel.onConfirmClicked("x".repeat(BultoIncidencia.OBSERVATIONS_MAX_LENGTH + 1));
+
+        assertNotNull(entry);
+        assertEquals("", entry.observations());
     }
 
     @Test
@@ -210,6 +277,71 @@ public class BultoIncidenceViewModelTest {
         assertEquals(PHOTO_URI, after.getPhotoUri().getValue());
     }
 
+    @Test
+    public void bultoLeido_sustituyeAlDeLosArgumentos_yLaIncidenciaSeGrabaConEl() {
+        repository.willReturn(List.of(A16));
+        BultoIncidenceViewModel viewModel = newViewModel();
+
+        viewModel.onBarcodeScanned("  " + OTHER_BARCODE + " ");
+        viewModel.onIncidenceSelected(A16);
+        BultoIncidenceEntry entry = viewModel.onConfirmClicked("");
+
+        assertEquals(OTHER_BARCODE, viewModel.getBarcode().getValue());
+        assertNotNull(entry);
+        assertEquals(OTHER_BARCODE, entry.barcode());
+    }
+
+    @Test
+    public void desdeElMenu_sinBulto_hastaQueSeLeeUno() {
+        repository.willReturn(List.of(A16));
+        BultoIncidenceViewModel viewModel = new BultoIncidenceViewModel(new SavedStateHandle(), repository);
+        assertNull(viewModel.getBarcode().getValue());
+
+        viewModel.onBarcodeScanned(BARCODE);
+
+        assertEquals(BARCODE, viewModel.getBarcode().getValue());
+    }
+
+    @Test
+    public void leerOtroBulto_descartaLaIncidenciaYLaFotoDelAnterior() {
+        repository.willReturn(List.of(A21));
+        BultoIncidenceViewModel viewModel = newViewModel();
+        viewModel.onIncidenceSelected(A21);
+        viewModel.onPhotoAttached(PHOTO_URI);
+
+        viewModel.onBarcodeScanned(OTHER_BARCODE);
+
+        assertNull(viewModel.getSelectedIncidence().getValue());
+        assertNull(viewModel.getPhotoUri().getValue());
+    }
+
+    @Test
+    public void releerElMismoBulto_oUnaLecturaEnBlanco_conservanLoElegido() {
+        repository.willReturn(List.of(A21));
+        BultoIncidenceViewModel viewModel = newViewModel();
+        viewModel.onIncidenceSelected(A21);
+        viewModel.onPhotoAttached(PHOTO_URI);
+
+        viewModel.onBarcodeScanned(BARCODE);
+        viewModel.onBarcodeScanned("   ");
+
+        assertEquals(BARCODE, viewModel.getBarcode().getValue());
+        assertEquals(A21, viewModel.getSelectedIncidence().getValue());
+        assertEquals(PHOTO_URI, viewModel.getPhotoUri().getValue());
+    }
+
+    @Test
+    public void trasRecrearseElProceso_recuperaElBultoLeido() {
+        repository.willReturn(List.of(A16));
+        repository.willReturn(List.of(A16));
+        SavedStateHandle savedState = savedStateWithArgs();
+        new BultoIncidenceViewModel(savedState, repository).onBarcodeScanned(OTHER_BARCODE);
+
+        BultoIncidenceViewModel after = new BultoIncidenceViewModel(copyOf(savedState), repository);
+
+        assertEquals(OTHER_BARCODE, after.getBarcode().getValue());
+    }
+
     @NonNull
     private BultoIncidenceViewModel newViewModel() {
         return new BultoIncidenceViewModel(savedStateWithArgs(), repository);
@@ -232,30 +364,47 @@ public class BultoIncidenceViewModelTest {
         return copy;
     }
 
-    /** Responde en orden lo programado: una lista de incidencias o un fallo de red. */
-    private static final class ScriptedRepository extends BultoIncidenceRepository {
+    /** Responde en orden lo programado (una lista de incidencias o un fallo) y cuenta las cargas. */
+    private static final class ScriptedRepository extends InicdenciaRepository {
 
-        private final Deque<List<BultoIncidence>> responses = new ArrayDeque<>();
+        private final Deque<List<BultoIncidencia>> responses = new ArrayDeque<>();
         private boolean fail;
-        OperationType lastOperationType;
+        private boolean deferred;
+        String lastCodigoAplicacion;
+        int loads;
+        int cancellations;
 
-        void willReturn(@NonNull List<BultoIncidence> incidences) {
-            responses.add(incidences);
+        ScriptedRepository() {
+            super(null, null, null);
+        }
+
+        void willReturn(@NonNull List<BultoIncidencia> incidencias) {
+            responses.add(incidencias);
         }
 
         void willFail() {
             fail = true;
         }
 
+        /** Las cargas quedan pendientes: sirve para leer otro bulto con una carga en curso. */
+        void deferResponses() {
+            deferred = true;
+        }
+
         @NonNull
         @Override
-        public Cancellable getIncidences(@NonNull OperationType operationType,
-                                         @NonNull ResultCallback<List<BultoIncidence>> callback) {
-            lastOperationType = operationType;
+        public Cancellable getIncidenciasPorCodigo(@NonNull String codigoAplicacion,
+                                                   @NonNull ResultCallback<List<BultoIncidencia>> callback) {
+            lastCodigoAplicacion = codigoAplicacion;
+            loads++;
+            if (deferred) {
+                return () -> cancellations++;
+            }
             if (fail) {
                 callback.onError(new AppError.Api(null, null));
             } else {
-                callback.onSuccess(responses.removeFirst());
+                // La última respuesta programada se repite: cada bulto leído vuelve a cargar
+                callback.onSuccess(responses.size() > 1 ? responses.removeFirst() : responses.getFirst());
             }
             return () -> { };
         }

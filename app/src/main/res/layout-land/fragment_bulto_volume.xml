@@ -185,31 +185,59 @@
             android:paddingHorizontal="@dimen/spacing_l"
             android:paddingVertical="@dimen/spacing_m">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_bulto_volume_barcode"
-                style="?attr/textInputOutlinedStyle"
+            <!-- CB del bulto: con el escáner o, si el terminal no tiene, con la cámara -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/bulto_volume_barcode_hint"
-                app:boxCornerRadiusBottomEnd="@dimen/corner_radius_m"
-                app:boxCornerRadiusBottomStart="@dimen/corner_radius_m"
-                app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
-                app:boxCornerRadiusTopStart="@dimen/corner_radius_m"
-                app:errorEnabled="true"
-                app:helperText="@string/bulto_volume_barcode_helper">
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
-                <!-- Los escáneres terminan la lectura con Intro: pasa al alto -->
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_bulto_volume_barcode"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_bulto_volume_barcode"
+                    style="?attr/textInputOutlinedStyle"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:importantForAutofill="no"
-                    android:inputType="textNoSuggestions|textCapCharacters"
-                    android:maxLines="1"
-                    tools:text="14600400072459116400016247001" />
+                    android:layout_weight="1"
+                    android:hint="@string/bulto_volume_barcode_hint"
+                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius_m"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius_m"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
+                    app:boxCornerRadiusTopStart="@dimen/corner_radius_m"
+                    app:errorEnabled="true"
+                    app:helperText="@string/bulto_volume_barcode_helper">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <!-- Los escáneres que teclean el CB terminan con Intro: pasa al alto -->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_bulto_volume_barcode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:inputType="textNoSuggestions|textCapCharacters"
+                        android:maxLines="1"
+                        tools:text="14600400072459116400016247001" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Sin escáner hardware es la forma de leer el bulto; el fragment lo muestra -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_bulto_volume_scan_camera"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_s"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:contentDescription="@string/bulto_volume_scan_camera_description"
+                    android:minHeight="@dimen/button_height"
+                    android:text="@string/bulto_volume_scan_camera"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:visibility="gone"
+                    app:cornerRadius="@dimen/corner_radius_m"
+                    app:icon="@drawable/ic_barcode_scanner_24"
+                    app:iconGravity="textStart"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
 
             <!-- Medidas de 3 dígitos: en una fila, como en peso, para que el volumen quede a la vista -->
             <LinearLayout

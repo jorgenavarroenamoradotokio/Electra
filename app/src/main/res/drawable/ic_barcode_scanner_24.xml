@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Código de barras enmarcado: escanear con la cámara, distinto de la cámara de la foto -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:tint="?attr/colorControlNormal"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M2,2v5h2V4h3V2H2zM17,2v2h3v3h2V2H17zM2,17v5h5v-2H4v-3H2zM20,17v3h-3v2h5v-5H20zM7,7h1.5v10H7V7zM9.5,7h1v10h-1V7zM11.5,7h2v10h-2V7zM14.5,7h1v10h-1V7zM16.5,7H17v10h-0.5V7z" />
+</vector>

@@ -27,8 +27,8 @@ import timber.log.Timber;
 /**
  * Carga con precinto: al entrar se pide el precinto y, una vez aceptado, se leen bultos. En
  * cualquier momento se puede fijar, cambiar o quitar el tipo de bulto que se asocia a las lecturas
- * siguientes. Precinto, tipo fijado y lecturas se guardan en {@link SavedStateHandle} para no
- * perder la carga si el sistema mata el proceso.
+ * siguientes, y corregir el tipo de un bulto ya leído. Precinto, tipo fijado, último CB y lecturas
+ * se guardan en {@link SavedStateHandle} para no perder la carga si el sistema mata el proceso.
  * <p>
  * Solo UI: las lecturas aún no se validan como CB Redur nacional ni se graban en el servidor.
  */
@@ -42,6 +42,9 @@ public class DirectLoadViewModel extends ViewModel {
     static final String KEY_SEAL = "directLoad.seal";
     static final String KEY_FIXED_TYPE = "directLoad.fixedType";
     static final String KEY_READINGS = "directLoad.readings";
+    static final String KEY_LAST_BARCODE = "directLoad.lastBarcode";
+    /** CB del bulto cuyo tipo se está corrigiendo en el selector; sin él, el selector fija el tipo. */
+    static final String KEY_TYPE_TARGET = "directLoad.typeTarget";
     private static final String KEY_READING_BARCODE = "barcode";
     private static final String KEY_READING_TYPE = "type";
 
@@ -57,7 +60,8 @@ public class DirectLoadViewModel extends ViewModel {
         } else {
             Timber.i("[ESTADO] Se recupera la carga del precinto %s", seal);
             state.setValue(new DirectLoadState.Reading(seal,
-                    BultoTypePicker.fromBundle(savedState.get(KEY_FIXED_TYPE)), restoreReadings(), null));
+                    BultoTypePicker.fromBundle(savedState.get(KEY_FIXED_TYPE)), savedState.get(KEY_LAST_BARCODE),
+                    restoreReadings(), null));
         }
     }
 
@@ -90,7 +94,7 @@ public class DirectLoadViewModel extends ViewModel {
         }
         Timber.i("[ACCION] Precinto aceptado: %s", seal);
         savedState.set(KEY_SEAL, seal);
-        state.setValue(new DirectLoadState.Reading(seal, null, List.of(), null));
+        state.setValue(new DirectLoadState.Reading(seal, null, null, List.of(), null));
     }
 
     /** Al corregir el precinto se retira el error, que ya no describe lo que hay escrito. */
@@ -109,13 +113,12 @@ public class DirectLoadViewModel extends ViewModel {
             return;
         }
         String code = barcode.trim();
-        for (DirectLoadReading reading : current.readings()) {
-            if (reading.barcode().equals(code)) {
-                Timber.i("[ACCION] Bulto %s ya leído en el precinto %s", code, current.seal());
-                state.setValue(new DirectLoadState.Reading(current.seal(), current.fixedType(),
-                        current.readings(), new DirectLoadState.Feedback.Duplicate(code)));
-                return;
-            }
+        savedState.set(KEY_LAST_BARCODE, code);
+        if (indexOf(current.readings(), code) >= 0) {
+            Timber.i("[ACCION] Bulto %s ya leído en el precinto %s", code, current.seal());
+            state.setValue(new DirectLoadState.Reading(current.seal(), current.fixedType(), code,
+                    current.readings(), new DirectLoadState.Feedback.Duplicate(code)));
+            return;
         }
         DirectLoadReading reading = new DirectLoadReading(code, current.fixedType());
         Timber.i("[ACCION] Bulto %s leído en el precinto %s con tipo %s", code, current.seal(),
@@ -124,8 +127,33 @@ public class DirectLoadViewModel extends ViewModel {
         readings.add(reading);
         readings.addAll(current.readings());
         saveReadings(readings);
-        state.setValue(new DirectLoadState.Reading(current.seal(), current.fixedType(), readings,
+        state.setValue(new DirectLoadState.Reading(current.seal(), current.fixedType(), code, readings,
                 new DirectLoadState.Feedback.Added(reading)));
+    }
+
+    /** El selector que se va a abrir fija el tipo de las lecturas siguientes. */
+    @MainThread
+    public void onFixedTypePickerRequested() {
+        savedState.remove(KEY_TYPE_TARGET);
+    }
+
+    /** El selector que se va a abrir corrige el tipo del bulto ya leído {@code barcode}. */
+    @MainThread
+    public void onReadingTypePickerRequested(@NonNull String barcode) {
+        Timber.i("[ACCION] Corregir el tipo del bulto %s", barcode);
+        savedState.set(KEY_TYPE_TARGET, barcode);
+    }
+
+    /** Tipo devuelto por el selector: corrige el bulto pedido o, si no se pidió ninguno, fija el tipo. */
+    @MainThread
+    public void onBultoTypePicked(@NonNull BultoType type) {
+        String target = savedState.get(KEY_TYPE_TARGET);
+        savedState.remove(KEY_TYPE_TARGET);
+        if (target != null) {
+            changeReadingType(target, type);
+        } else {
+            onBultoTypeFixed(type);
+        }
     }
 
     /** Fija o sustituye el tipo que se asocia a los bultos que se lean a partir de ahora. */
@@ -134,9 +162,39 @@ public class DirectLoadViewModel extends ViewModel {
         if (state.getValue() instanceof DirectLoadState.Reading current) {
             Timber.i("[ACCION] Tipo de bulto fijado: %s", type.code());
             savedState.set(KEY_FIXED_TYPE, BultoTypePicker.toBundle(type));
-            state.setValue(new DirectLoadState.Reading(current.seal(), type, current.readings(),
-                    current.feedback()));
+            state.setValue(new DirectLoadState.Reading(current.seal(), type, current.lastBarcode(),
+                    current.readings(), current.feedback()));
         }
+    }
+
+    /** Corrige el tipo con el que se leyó un bulto; el resto de lecturas y su orden no cambian. */
+    private void changeReadingType(@NonNull String barcode, @NonNull BultoType type) {
+        if (!(state.getValue() instanceof DirectLoadState.Reading current)) {
+            return;
+        }
+        int index = indexOf(current.readings(), barcode);
+        if (index < 0) {
+            Timber.w("[ACCION] El bulto %s ya no está en la carga: no se corrige su tipo", barcode);
+            return;
+        }
+        if (type.equals(current.readings().get(index).type())) {
+            return;
+        }
+        Timber.i("[ACCION] Bulto %s corregido al tipo %s", barcode, type.code());
+        List<DirectLoadReading> readings = new ArrayList<>(current.readings());
+        readings.set(index, new DirectLoadReading(barcode, type));
+        saveReadings(readings);
+        state.setValue(new DirectLoadState.Reading(current.seal(), current.fixedType(), current.lastBarcode(),
+                readings, new DirectLoadState.Feedback.TypeChanged(barcode, type)));
+    }
+
+    private static int indexOf(@NonNull List<DirectLoadReading> readings, @NonNull String barcode) {
+        for (int i = 0; i < readings.size(); i++) {
+            if (readings.get(i).barcode().equals(barcode)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /** Los bultos que se lean a partir de ahora no llevan tipo; los ya leídos lo conservan. */
@@ -145,8 +203,8 @@ public class DirectLoadViewModel extends ViewModel {
         if (state.getValue() instanceof DirectLoadState.Reading current && current.fixedType() != null) {
             Timber.i("[ACCION] Se quita el tipo de bulto fijado");
             savedState.remove(KEY_FIXED_TYPE);
-            state.setValue(new DirectLoadState.Reading(current.seal(), null, current.readings(),
-                    current.feedback()));
+            state.setValue(new DirectLoadState.Reading(current.seal(), null, current.lastBarcode(),
+                    current.readings(), current.feedback()));
         }
     }
 

@@ -1,5 +1,6 @@
 package com.redur.electra.ui.bulto.incidencia;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.redur.electra.R;
-import com.redur.electra.data.model.bulto.BultoIncidence;
+import com.redur.electra.data.model.bulto.BultoIncidencia;
 import com.redur.electra.databinding.ItemBultoIncidenceBinding;
 
 import java.util.Objects;
@@ -24,20 +25,20 @@ import java.util.Objects;
  * incidencia elegida se le indica con {@link #setSelectedCode(String)}.
  */
 public class BultoIncidenceAdapter
-        extends ListAdapter<BultoIncidence, BultoIncidenceAdapter.BultoIncidenceViewHolder> {
+        extends ListAdapter<BultoIncidencia, BultoIncidenceAdapter.BultoIncidenceViewHolder> {
 
     public interface OnIncidenceClickListener {
-        void onIncidenceClicked(@NonNull BultoIncidence incidence);
+        void onIncidenceClicked(@NonNull BultoIncidencia incidence);
     }
 
-    private static final DiffUtil.ItemCallback<BultoIncidence> DIFF = new DiffUtil.ItemCallback<>() {
+    private static final DiffUtil.ItemCallback<BultoIncidencia> DIFF = new DiffUtil.ItemCallback<>() {
         @Override
-        public boolean areItemsTheSame(@NonNull BultoIncidence oldItem, @NonNull BultoIncidence newItem) {
-            return oldItem.code().equals(newItem.code());
+        public boolean areItemsTheSame(@NonNull BultoIncidencia oldItem, @NonNull BultoIncidencia newItem) {
+            return oldItem.codigoIncidencia().equals(newItem.codigoIncidencia());
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull BultoIncidence oldItem, @NonNull BultoIncidence newItem) {
+        public boolean areContentsTheSame(@NonNull BultoIncidencia oldItem, @NonNull BultoIncidencia newItem) {
             return oldItem.equals(newItem);
         }
     };
@@ -78,8 +79,8 @@ public class BultoIncidenceAdapter
 
     @Override
     public void onBindViewHolder(@NonNull BultoIncidenceViewHolder holder, int position) {
-        BultoIncidence incidence = getItem(position);
-        holder.bind(incidence, incidence.code().equals(selectedCode));
+        BultoIncidencia incidence = getItem(position);
+        holder.bind(incidence, incidence.codigoIncidencia().equals(selectedCode));
     }
 
     private int positionOf(@Nullable String code) {
@@ -87,7 +88,7 @@ public class BultoIncidenceAdapter
             return RecyclerView.NO_POSITION;
         }
         for (int i = 0; i < getItemCount(); i++) {
-            if (getItem(i).code().equals(code)) {
+            if (getItem(i).codigoIncidencia().equals(code)) {
                 return i;
             }
         }
@@ -117,17 +118,30 @@ public class BultoIncidenceAdapter
             });
         }
 
-        void bind(@NonNull BultoIncidence incidence, boolean selected) {
+        void bind(@NonNull BultoIncidencia incidence, boolean selected) {
             this.selected = selected;
-            binding.textBultoIncidenceCode.setText(incidence.code());
+            binding.textBultoIncidenceCode.setText(incidence.codigoIncidencia());
+            binding.textBultoIncidenceDescription.setText(incidence.descripcion());
+            binding.textBultoIncidenceDescription.setVisibility(
+                    incidence.descripcion().isBlank() ? View.GONE : View.VISIBLE);
             binding.layoutBultoIncidencePhoto.setVisibility(incidence.photoRequired() ? View.VISIBLE : View.GONE);
             binding.radioBultoIncidence.setChecked(selected);
             binding.getRoot().setActivated(selected);
-            binding.getRoot().setContentDescription(incidence.photoRequired()
-                    ? binding.getRoot().getContext().getString(
-                            R.string.bulto_incidence_item_description_photo, incidence.code())
-                    : incidence.code());
+            binding.getRoot().setContentDescription(contentDescription(incidence));
             binding.getRoot().setOnClickListener(v -> listener.onIncidenceClicked(incidence));
+        }
+
+        /** Código, descripción si la hay y si exige foto, en el orden en que se ven. */
+        @NonNull
+        private String contentDescription(@NonNull BultoIncidencia incidence) {
+            Context context = binding.getRoot().getContext();
+            String label = incidence.descripcion().isBlank()
+                    ? incidence.codigoIncidencia()
+                    : context.getString(R.string.bulto_incidence_item_description,
+                            incidence.codigoIncidencia(), incidence.descripcion());
+            return incidence.photoRequired()
+                    ? context.getString(R.string.bulto_incidence_item_description_photo, label)
+                    : label;
         }
     }
 }

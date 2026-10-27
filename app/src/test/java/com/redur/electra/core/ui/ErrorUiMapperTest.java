@@ -31,6 +31,12 @@ public class ErrorUiMapperTest {
     }
 
     @Test
+    public void http403SinCodigoDeApi_informaDeFaltaDePermisos() {
+        assertEquals(new UiText.Res(R.string.error_network_403),
+                ErrorUiMapper.toUiText(new AppError.Api("HTTP_403", null)));
+    }
+
+    @Test
     public void codigosDistintosPuedenCompartirRecurso() {
         assertEquals(
                 ErrorUiMapper.toUiText(new AppError.Api("ERROR_C06", null)),
@@ -88,7 +94,7 @@ public class ErrorUiMapperTest {
                 ErrorUiMapper.toUiText(new AppError.Printer(PrinterFailure.CONNECTION)));
         assertEquals(new UiText.Res(R.string.error_printer_send),
                 ErrorUiMapper.toUiText(new AppError.Printer(PrinterFailure.SEND)));
-        assertEquals(new UiText.Res(R.string.error_printer_bluetooth_unavailable),
+        assertEquals(new UiText.Res(R.string.error_bluetooth_unavailable),
                 ErrorUiMapper.toUiText(new AppError.Printer(PrinterFailure.BLUETOOTH_UNAVAILABLE)));
     }
 }

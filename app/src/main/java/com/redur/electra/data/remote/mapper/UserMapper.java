@@ -30,7 +30,8 @@ public class UserMapper {
 
     @NonNull
     public User toUser(@NonNull UserDTO dto) {
-        return new User(dto.username(), dto.fullname(), dto.plzsId(), toMenu(dto.menu()), toUserPermissions(dto.permission()));
+        return new User(dto.username(), dto.fullname(), dto.plzsId(), toMenu(dto.menu()), toUserPermissions(dto.permission()),
+                dto.environment());
     }
 
     /** Permisos generales del usuario. Se descartan entradas o ids ausentes en el JSON. */

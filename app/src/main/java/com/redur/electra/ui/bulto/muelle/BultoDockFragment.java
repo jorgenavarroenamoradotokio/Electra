@@ -37,19 +37,8 @@ import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
 import timber.log.Timber;
 
-/**
- * Puerta de salida: el operario lee el CB del bulto con el escáner y ve en grande el muelle por
- * el que sale. El muelle queda a la vista hasta leer el bulto siguiente; cancelar lo descarta y
- * vacía el campo.
- * <p>
- * El escáner hardware entrega el CB por broadcast (Honeywell, Datalogic) o tecleándolo en el campo
- * con Intro al final. Si el terminal no tiene escáner compatible, un botón flotante abre la cámara.
- */
 @AndroidEntryPoint
 public class BultoDockFragment extends Fragment {
-
-    /** Provisional: bulto cuyo muelle se muestra al abrir la pantalla, sin esperar a una lectura. */
-    private static final String FIXED_BARCODE = "13020000062081000447204320001";
 
     @Inject
     ScannerManagerFactory scannerManagerFactory;
@@ -75,11 +64,6 @@ public class BultoDockFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(BultoDockViewModel.class);
-        // Solo en la primera creación: tras matar el proceso el ViewModel recupera el último bulto
-        if (savedInstanceState == null) {
-            initialBarcode = FIXED_BARCODE;
-            viewModel.getMuelleBulto(FIXED_BARCODE);
-        }
     }
 
     @NonNull
@@ -287,7 +271,6 @@ public class BultoDockFragment extends Fragment {
         }
     }
 
-    /** "ESPAÑA" o "españa" → "España". */
     @NonNull
     private static String capitalize(@NonNull String text, @NonNull Locale locale) {
         String lower = text.trim().toLowerCase(locale);

@@ -31,10 +31,6 @@ import timber.log.Timber;
  */
 public class BultoTypeRepository extends BaseRepository {
 
-    private static final String LANGUAGE_ENGLISH = "en";
-    /** El backend identifica el inglés como "uk", no con el código ISO. */
-    private static final String BACKEND_LANGUAGE_ENGLISH = "uk";
-
     private final BultoApiService api;
     private final UserSession session;
     private final BultoTypeMapper mapper;

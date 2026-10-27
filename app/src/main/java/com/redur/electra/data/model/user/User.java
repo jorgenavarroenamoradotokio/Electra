@@ -14,13 +14,20 @@ public record User(
         @Nullable String fullName,
         @Nullable String plazaId,
         @NonNull List<MenuItem> menu,
-        @NonNull Set<Integer> permission
+        @NonNull Set<Integer> permission,
+        @Nullable String environment
 ) {
 
     public User {
         Objects.requireNonNull(username, "username");
         menu = List.copyOf(menu);
         permission = Set.copyOf(permission);
+    }
+
+    /** Usuario sin entorno informado por el servidor. */
+    public User(@NonNull String username, @Nullable String fullName, @Nullable String plazaId,
+                @NonNull List<MenuItem> menu, @NonNull Set<Integer> permission) {
+        this(username, fullName, plazaId, menu, permission, null);
     }
 
     /** Nombre con el que se presenta al usuario: el completo si existe, si no su usuario. */
@@ -42,7 +49,7 @@ public record User(
     /** Copia del usuario asignado a otra plaza. */
     @NonNull
     public User withPlazaId(@NonNull String newPlazaId) {
-        return new User(username, fullName, newPlazaId, menu, permission);
+        return new User(username, fullName, newPlazaId, menu, permission, environment);
     }
 
     public boolean hasMenuActive (int menuId){

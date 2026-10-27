@@ -55,7 +55,8 @@ public class NetworkModule {
                             FileApiService.UPLOAD_LOG_PATH,
                             FileApiService.UPLOAD_IMG_PATH,
                             LabelApiService.CREATE_ZPL_PATH,
-                            BultoApiService.BULTO_TYPE_LIST_PATH)));
+                            BultoApiService.BULTO_TYPE_LIST_PATH,
+                            BultoApiService.BULTO_INCIDENCIA_LIST_PATH)));
         }
 
         return builder.build();

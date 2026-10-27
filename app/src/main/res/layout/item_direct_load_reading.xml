@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Bulto leído: nº de orden (cuántos van), CB y el tipo con el que se leyó. El tipo va en una
-    etiqueta tonal; sin tipo se dice con texto, no solo con la ausencia de la etiqueta. TalkBack lee
-    la fila entera con la descripción que pone el adapter.
+    etiqueta tonal; sin tipo se dice con texto, no solo con la ausencia de la etiqueta. Toda la fila
+    abre el selector para corregir el tipo. TalkBack lee la fila entera con la descripción y la
+    acción que pone el adapter.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
     android:focusable="true"
     android:gravity="center_vertical"
     android:minHeight="@dimen/touch_target_min"

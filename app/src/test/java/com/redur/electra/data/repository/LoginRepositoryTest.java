@@ -133,7 +133,7 @@ public class LoginRepositoryTest {
 
     @Test
     public void usuarioSinNombreDeUsuario_seConsideraRespuestaInvalida() {
-        api.willReturn(FakeCall.success(LoginResponses.ok(new UserDTO(null, "Juan", null, null, null))));
+        api.willReturn(FakeCall.success(LoginResponses.ok(new UserDTO(null, "Juan", null, null, null, null))));
 
         repository.login("jperez", "secreta", callback);
 
@@ -158,6 +158,53 @@ public class LoginRepositoryTest {
 
         assertEquals(new AppError.Api("HTTP_503", null), callback.error);
         assertTrue(timber.contains(Log.ERROR, "HTTP_503 en GET /"));
+    }
+
+    @Test
+    public void errorHttpConErrorDeNegocio_priorizaElCodigoDeLaApi() {
+        api.willReturn(FakeCall.success(LoginResponses.httpError(403, "{"
+                + "\"status\":-1,\"errorText\":\"Usuario/contraseña incorrecta\","
+                + "\"errorList\":[{\"errorCode\":\"ERROR_A01\",\"affectedField\":\"userName/password\","
+                + "\"errorDescription\":\"Usuario/contraseña incorrecta\",\"idioma\":\"es\"}]}")));
+
+        repository.login("jperez", "mala", callback);
+
+        assertEquals(new AppError.Api("ERROR_A01", "Usuario/contraseña incorrecta"), callback.error);
+        assertFalse(session.isActive());
+    }
+
+    /** Respuesta real de ElectraWS: el error del servicio interno llega como texto en errorText. */
+    @Test
+    public void errorHttpConErrorAnidadoEnErrorText_extraeElCodigoDeLaApi() {
+        api.willReturn(FakeCall.success(LoginResponses.httpError(403, "{\"status\":403,"
+                + "\"errorText\":\"Error en ElectraWS: 403 FORBIDDEN - {\\\"status\\\":-1,"
+                + "\\\"errorText\\\":\\\"Usuario/contraseña incorrecta\\\",\\\"errorList\\\":[{"
+                + "\\\"errorCode\\\":\\\"ERROR_A01\\\",\\\"affectedField\\\":\\\"userName/password\\\","
+                + "\\\"errorDescription\\\":\\\"Usuario/contraseña incorrecta\\\",\\\"idioma\\\":\\\"es\\\"}]}\","
+                + "\"errorList\":null,\"data\":null}")));
+
+        repository.login("jperez", "mala", callback);
+
+        assertEquals(new AppError.Api("ERROR_A01", "Usuario/contraseña incorrecta"), callback.error);
+    }
+
+    @Test
+    public void errorHttpConErrorTextSinJson_seIdentificaPorSuCodigo() {
+        api.willReturn(FakeCall.success(LoginResponses.httpError(403,
+                "{\"status\":403,\"errorText\":\"Acceso denegado\",\"errorList\":null,\"data\":null}")));
+
+        repository.login("jperez", "secreta", callback);
+
+        assertEquals(new AppError.Api("HTTP_403", null), callback.error);
+    }
+
+    @Test
+    public void errorHttpSinSobreDeApi_seIdentificaPorSuCodigo() {
+        api.willReturn(FakeCall.success(LoginResponses.httpError(403, "<html>Forbidden</html>")));
+
+        repository.login("jperez", "secreta", callback);
+
+        assertEquals(new AppError.Api("HTTP_403", null), callback.error);
     }
 
     // ---------- Fallos de red ----------

@@ -23,7 +23,7 @@ public final class LoginResponses {
         return new UserDTO("jperez", "Juan Pérez", "P01", List.of(
                 new MenuDTO(1, "Recepción", null, List.of(new PermisoDTO(10), new PermisoDTO(11))),
                 new MenuDTO(2, "Descarga", 1, List.of(new PermisoDTO(20)))),
-                List.of(new PermisoUsuarioDTO(1, "CAMBIAR_PLAZA")));
+                List.of(new PermisoUsuarioDTO(1, "CAMBIAR_PLAZA")), "PRE");
     }
 
     public static Response<ApiResponseDTO<UserDTO>> ok(UserDTO user) {
@@ -36,6 +36,10 @@ public final class LoginResponses {
     }
 
     public static Response<ApiResponseDTO<UserDTO>> httpError(int code) {
-        return Response.error(code, ResponseBody.create("", MediaType.get("application/json")));
+        return httpError(code, "");
+    }
+
+    public static Response<ApiResponseDTO<UserDTO>> httpError(int code, String body) {
+        return Response.error(code, ResponseBody.create(body, MediaType.get("application/json")));
     }
 }

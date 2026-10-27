@@ -25,35 +25,82 @@
         android:textColor="?attr/colorOnSurface"
         tools:text="@string/bulto_incidence_operation_recogidas" />
 
-    <!-- Etiqueta y valor se leen juntos con TalkBack -->
+    <!-- Bulto leído y, si el terminal no tiene escáner hardware, el botón que lo lee con la cámara -->
     <LinearLayout
-        android:id="@+id/layout_bulto_incidence_barcode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/screen_padding_horizontal"
         android:layout_marginTop="@dimen/spacing_m"
-        android:focusable="true"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="match_parent"
+        <!-- Etiqueta y valor se leen juntos con TalkBack, que anuncia cada bulto leído -->
+        <LinearLayout
+            android:id="@+id/layout_bulto_incidence_barcode"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/bulto_incidence_barcode_label"
+            android:layout_weight="1"
+            android:accessibilityLiveRegion="polite"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bulto_incidence_barcode_label"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <TextView
+                android:id="@+id/text_bulto_incidence_barcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="14600400072459116400016247001" />
+
+        </LinearLayout>
+
+        <!--
+            Recibe el CB del escáner que lo teclea con Intro al final. Invisible y fuera de
+            TalkBack, solo mantiene el foco. El fragment desactiva el teclado en pantalla.
+        -->
+        <EditText
+            android:id="@+id/input_bulto_incidence_barcode"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:alpha="0"
+            android:background="@null"
+            android:cursorVisible="false"
+            android:imeOptions="actionSearch"
+            android:importantForAccessibility="no"
+            android:importantForAutofill="no"
+            android:inputType="textNoSuggestions|textCapCharacters"
+            android:maxLines="1"
+            tools:ignore="LabelFor" />
+
+        <!-- Sin escáner hardware es la forma de leer el bulto; el fragment lo muestra -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_bulto_incidence_scan_camera"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_s"
+            android:contentDescription="@string/bulto_incidence_scan_camera_description"
+            android:minHeight="@dimen/button_height"
+            android:text="@string/bulto_incidence_scan_camera"
             android:textAppearance="?attr/textAppearanceLabelLarge"
-            android:textColor="?attr/colorOnSurfaceVariant" />
-
-        <TextView
-            android:id="@+id/text_bulto_incidence_barcode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xs"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
-            android:textColor="?attr/colorOnSurface"
-            tools:text="14600400072459116400016247001" />
+            android:visibility="gone"
+            app:cornerRadius="@dimen/corner_radius_m"
+            app:icon="@drawable/ic_barcode_scanner_24"
+            app:iconGravity="textStart"
+            tools:visibility="visible" />
 
     </LinearLayout>
 
     <TextView
+        android:id="@+id/text_bulto_incidence_list_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/screen_padding_horizontal"
@@ -90,6 +137,47 @@
                 tools:listitem="@layout/item_bulto_incidence" />
 
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- Sin bulto leído: qué hacer para ver las incidencias -->
+        <LinearLayout
+            android:id="@+id/layout_bulto_incidences_waiting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:accessibilityLiveRegion="polite"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="@dimen/icon_badge_size"
+                android:layout_height="@dimen/icon_badge_size"
+                android:background="@drawable/bg_icon_badge"
+                android:importantForAccessibility="no"
+                android:scaleType="center"
+                android:src="@drawable/ic_barcode_scanner_24"
+                app:tint="?attr/colorOnSurfaceVariant" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_m"
+                android:accessibilityHeading="true"
+                android:gravity="center"
+                android:text="@string/bulto_incidence_waiting_title"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:gravity="center"
+                android:text="@string/bulto_incidence_waiting"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/layout_bulto_incidences_loading"
@@ -204,6 +292,7 @@
 
     <!-- Estado de la foto en texto e icono (nunca solo color) y el botón que abre la hoja de foto -->
     <LinearLayout
+        android:id="@+id/layout_bulto_incidence_photo_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/screen_padding_horizontal"

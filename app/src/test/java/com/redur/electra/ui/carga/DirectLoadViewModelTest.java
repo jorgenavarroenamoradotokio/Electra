@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import android.app.Application;
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.SavedStateHandle;
 
@@ -17,10 +19,16 @@ import com.redur.electra.ui.carga.directa.DirectLoadViewModel;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.List;
 import java.util.Map;
 
+/** Con Robolectric: las lecturas se guardan como {@link android.os.Bundle} para sobrevivir a la muerte del proceso. */
+@RunWith(RobolectricTestRunner.class)
+@Config(application = Application.class)
 public class DirectLoadViewModelTest {
 
     @Rule
@@ -147,6 +155,65 @@ public class DirectLoadViewModelTest {
         viewModel.onBultoTypeFixed(C_PLUS);
 
         assertEquals("050", viewModel.getFixedTypeCode());
+    }
+
+    @Test
+    public void ultimoCodigoLeido_seMuestraAunqueSeaRepetido() {
+        viewModel.onSealEntered(SEAL);
+        assertNull(reading().lastBarcode());
+
+        viewModel.onBarcodeScanned(BULTO_1);
+        viewModel.onBarcodeScanned(" " + BULTO_2 + " ");
+        assertEquals(BULTO_2, reading().lastBarcode());
+
+        viewModel.onBarcodeScanned(BULTO_1);
+        assertEquals(BULTO_1, reading().lastBarcode());
+    }
+
+    @Test
+    public void tipoElegidoParaUnBultoLeido_loCorrigeSinTocarElFijadoNiElOrden() {
+        viewModel.onSealEntered(SEAL);
+        viewModel.onBarcodeScanned(BULTO_1);
+        viewModel.onBarcodeScanned(BULTO_2);
+
+        viewModel.onReadingTypePickerRequested(BULTO_1);
+        viewModel.onBultoTypePicked(C_PLUS);
+
+        assertNull(reading().fixedType());
+        assertEquals(List.of(new DirectLoadReading(BULTO_2, null), new DirectLoadReading(BULTO_1, C_PLUS)),
+                reading().readings());
+        assertEquals(new DirectLoadState.Feedback.TypeChanged(BULTO_1, C_PLUS), reading().feedback());
+        assertEquals(BULTO_2, reading().lastBarcode());
+    }
+
+    @Test
+    public void tipoElegidoDesdeLaFichaTrasCorregirUnBulto_fijaElTipo() {
+        viewModel.onSealEntered(SEAL);
+        viewModel.onBarcodeScanned(BULTO_1);
+        // Se abrió el selector desde la fila pero se volvió sin elegir
+        viewModel.onReadingTypePickerRequested(BULTO_1);
+
+        viewModel.onFixedTypePickerRequested();
+        viewModel.onBultoTypePicked(C_PLUS);
+
+        assertEquals(C_PLUS, reading().fixedType());
+        assertEquals(List.of(new DirectLoadReading(BULTO_1, null)), reading().readings());
+    }
+
+    @Test
+    public void corregirElTipo_seConservaTrasMatarElProceso() {
+        SavedStateHandle handle = new SavedStateHandle();
+        DirectLoadViewModel first = new DirectLoadViewModel(handle);
+        first.onSealEntered(SEAL);
+        first.onBarcodeScanned(BULTO_1);
+        first.onReadingTypePickerRequested(BULTO_1);
+        first.onBultoTypePicked(C_PLUS);
+
+        DirectLoadState.Reading restored =
+                (DirectLoadState.Reading) new DirectLoadViewModel(handle).getState().getValue();
+
+        assertEquals(List.of(new DirectLoadReading(BULTO_1, C_PLUS)), restored.readings());
+        assertEquals(BULTO_1, restored.lastBarcode());
     }
 
     @Test

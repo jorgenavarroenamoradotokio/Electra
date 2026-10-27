@@ -31,6 +31,8 @@
     <dimen name="bulto_dock_code_text_min">32sp</dimen>
     <!-- Hueco bajo el contenido para que el botón de cámara no tape el último elemento: alto + márgenes -->
     <dimen name="bulto_dock_fab_clearance">88dp</dimen>
+    <!-- Hueco bajo la lista de la carga con precinto para que el botón de escanear no tape la última fila -->
+    <dimen name="direct_load_fab_clearance">88dp</dimen>
     <!-- Carga con precinto: fichas de precinto y tipo de bulto de la cabecera -->
     <dimen name="direct_load_header_min_height">72dp</dimen>
     <!-- Carga de camión: etiquetas compactas de la expedición y barra de progreso de la carga -->

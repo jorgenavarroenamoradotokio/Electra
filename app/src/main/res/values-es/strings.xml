@@ -16,7 +16,11 @@
     <string name="logout_cancel">Cancelar</string>
 
     <!-- Toolbar -->
-    <string name="toolbar_settings">Ajustes</string>
+    <string name="toolbar_environment">Entorno conectado</string>
+    <string name="environment_connected_to">Estás conectado al sistema de</string>
+    <string name="environment_unknown">Entorno desconocido</string>
+    <string name="environment_unknown_message">El servidor no ha indicado el entorno de esta sesión. Si necesitas confirmarlo, cierra sesión y vuelve a entrar.</string>
+    <string name="environment_close">Cerrar</string>
     <string name="toolbar_profile">Perfil</string>
     <string name="toolbar_version">Versión %1$s</string>
 
@@ -147,6 +151,10 @@
     <string name="bulto_volume_check_previous">Peso/Volumen anterior</string>
     <string name="bulto_volume_check_full_expedition">Expedición completa</string>
     <string name="bulto_volume_check_volume">Volumen (sin peso)</string>
+    <string name="bulto_volume_scan_camera">Escanear</string>
+    <string name="bulto_volume_scan_camera_description">Escanear el bulto con la cámara</string>
+    <string name="bulto_volume_scan_prompt">Encuadra el código de barras del bulto</string>
+    <string name="bulto_volume_camera_denied">Permite el acceso a la cámara para escanear el bulto</string>
     <string name="bulto_volume_barcode_hint">CB del bulto</string>
     <string name="bulto_volume_barcode_helper">Léelo con el escáner o el medidor</string>
     <string name="bulto_volume_height_hint">Alto (cm)</string>
@@ -158,11 +166,19 @@
     <string name="bulto_volume_cancel">Cancelar</string>
 
     <!-- Incidencias -->
+    <string name="bulto_incidence_operation_carga">Carga</string>
     <string name="bulto_incidence_operation_recogidas">Recogidas</string>
     <string name="bulto_incidence_barcode_label">Bulto</string>
     <string name="bulto_incidence_no_barcode">Aún no se ha leído ningún bulto</string>
+    <string name="bulto_incidence_scan_camera">Escanear</string>
+    <string name="bulto_incidence_scan_camera_description">Escanear el bulto con la cámara</string>
+    <string name="bulto_incidence_scan_prompt">Encuadra el código de barras del bulto</string>
+    <string name="bulto_incidence_camera_denied">Permite el acceso a la cámara para escanear el bulto</string>
     <string name="bulto_incidence_list_label">Incidencia</string>
+    <string name="bulto_incidence_item_description">%1$s, %2$s</string>
     <string name="bulto_incidence_item_description_photo">%1$s, exige foto</string>
+    <string name="bulto_incidence_waiting_title">Lee un bulto</string>
+    <string name="bulto_incidence_waiting">Sus incidencias aparecerán al leer el código de barras</string>
     <string name="bulto_incidence_loading">Cargando incidencias…</string>
     <string name="bulto_incidence_error_title">No se han podido cargar las incidencias</string>
     <string name="bulto_incidence_empty_title">No hay incidencias disponibles</string>
@@ -211,11 +227,18 @@
     <string name="direct_load_type_clear">Quitar tipo de bulto</string>
     <string name="direct_load_type_choose">Fijar tipo de bulto</string>
     <string name="direct_load_type_change">Cambiar tipo de bulto</string>
-    <string name="direct_load_barcode_hint">Leer bulto</string>
-    <string name="direct_load_barcode_helper">Léelo con el escáner</string>
+    <string name="direct_load_last_barcode_label">Último bulto leído</string>
+    <string name="direct_load_last_barcode_none">Ninguno todavía</string>
+    <string name="direct_load_last_barcode_description">Último bulto leído: %1$s</string>
+    <string name="direct_load_last_barcode_description_none">Aún no se ha leído ningún bulto</string>
+    <string name="direct_load_scan_camera">Escanear</string>
+    <string name="direct_load_scan_camera_description">Escanear el bulto con la cámara</string>
+    <string name="direct_load_scan_prompt">Encuadra el código de barras del bulto</string>
+    <string name="direct_load_camera_denied">Permite el acceso a la cámara para escanear el bulto</string>
     <string name="direct_load_feedback_added">Bulto leído con tipo %1$s</string>
     <string name="direct_load_feedback_added_no_type">Bulto leído sin tipo</string>
     <string name="direct_load_feedback_duplicate">Este bulto ya estaba leído. Lee el siguiente</string>
+    <string name="direct_load_feedback_type_changed">Tipo de bulto cambiado a %1$s</string>
     <plurals name="direct_load_count">
         <item quantity="one">%1$d bulto leído</item>
         <item quantity="many">%1$d bultos leídos</item>
@@ -226,6 +249,8 @@
     <string name="direct_load_reading_no_type">Sin tipo</string>
     <string name="direct_load_reading_description">%1$d. Bulto %2$s, tipo %3$s</string>
     <string name="direct_load_reading_description_no_type">%1$d. Bulto %2$s, sin tipo</string>
+    <string name="direct_load_reading_change_type">cambiar el tipo de bulto</string>
+    <string name="direct_load_list_hint">Toca un bulto para cambiar su tipo</string>
 
     <!-- Carga de camión -->
     <string name="truck_load_refresh">Refrescar</string>

@@ -1,5 +1,6 @@
 package com.redur.electra.ui.bulto.volumen;
 
+import android.content.ActivityNotFoundException;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,33 +14,57 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
+import com.journeyapps.barcodescanner.ScanOptions;
 import com.redur.electra.R;
+import com.redur.electra.core.permission.AppPermission;
+import com.redur.electra.core.permission.PermissionRequester;
+import com.redur.electra.core.permission.PermissionStatus;
+import com.redur.electra.core.scanner.HardwareScannerManager;
+import com.redur.electra.core.scanner.ScannerManagerFactory;
 import com.redur.electra.data.model.bulto.BultoMeasures;
 import com.redur.electra.databinding.FragmentBultoVolumeBinding;
+import com.redur.electra.ui.permission.PermissionSettingsBottomSheet;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import javax.inject.Inject;
+
 import dagger.hilt.android.AndroidEntryPoint;
 import timber.log.Timber;
 
 /**
- * Lectura en modo Volumen (sin peso): se lee el CB del bulto y después alto, ancho y profundo,
- * del escáner o el medidor o a mano. El foco avanza solo al dato que se espera a continuación y,
- * tras aceptar o cancelar, vuelve al CB para el bulto siguiente. De momento, como en el tipo de
- * bulto, aceptar y cancelar solo lo confirman con un aviso y las acciones rápidas aún no están
+ * Lectura en modo Volumen (sin peso): como peso y medidas, pero sin el peso y con el CB del bulto
+ * delante. El CB llega del escáner (tecleado o por broadcast) o, sin escáner, de la cámara; las
+ * medidas, del medidor o a mano. El foco avanza solo al dato que se espera a continuación y, tras
+ * aceptar o cancelar, vuelve al CB para el bulto siguiente. De momento, como en el tipo de bulto,
+ * aceptar y cancelar solo lo confirman con un aviso y las acciones rápidas aún no están
  * disponibles.
  */
 @AndroidEntryPoint
 public class BultoVolumeFragment extends Fragment {
+
+    @Inject
+    ScannerManagerFactory scannerManagerFactory;
+
+    // Se registran al construir el Fragment: así el resultado llega aunque se recree mientras
+    // está abierto el diálogo de permisos o la cámara
+    private final PermissionRequester cameraPermissionRequester =
+            new PermissionRequester(this, this::onCameraPermissionResult);
+    private final ActivityResultLauncher<ScanOptions> cameraScan =
+            registerForActivityResult(new ScanContract(), this::onCameraScanResult);
 
     @Nullable
     private FragmentBultoVolumeBinding binding;
@@ -82,6 +107,14 @@ public class BultoVolumeFragment extends Fragment {
                 onEditorAction(actionId, event, EditorInfo.IME_ACTION_DONE, this::confirm));
         views.buttonBultoVolumeConfirm.setOnClickListener(v -> confirm());
         views.buttonBultoVolumeCancel.setOnClickListener(v -> cancel());
+
+        // Solo entrega lecturas con la vista en RESUMED; el lifecycle de la vista lo libera
+        HardwareScannerManager scanner = scannerManagerFactory.create(this::onBarcodeRead);
+        getViewLifecycleOwner().getLifecycle().addObserver(scanner);
+        if (!scanner.isAvailable()) {
+            views.buttonBultoVolumeScanCamera.setVisibility(View.VISIBLE);
+            views.buttonBultoVolumeScanCamera.setOnClickListener(v -> onScanCameraClicked());
+        }
 
         viewModel.getVolumeMode().observe(getViewLifecycleOwner(), this::renderVolumeMode);
         viewModel.getFormState().observe(getViewLifecycleOwner(), this::renderForm);
@@ -162,6 +195,66 @@ public class BultoVolumeFragment extends Fragment {
         if (!volumeMode) {
             hideKeyboard();
         }
+    }
+
+    /**
+     * CB que no llega tecleado en el campo (broadcast del escáner o cámara): sustituye al que
+     * hubiera y la lectura sigue por el alto.
+     */
+    private void onBarcodeRead(@NonNull String barcode) {
+        if (!viewModel.isVolumeMode()) {
+            Timber.i("[ACCION] CB leído con el modo volumen desactivado: se ignora");
+            return;
+        }
+        FragmentBultoVolumeBinding views = requireBinding();
+        views.inputBultoVolumeBarcode.setText(barcode);
+        moveFocusTo(views.inputBultoVolumeHeight);
+    }
+
+    /** Se desactiva hasta cerrar la cámara o resolver el permiso: evita abrirla dos veces. */
+    private void onScanCameraClicked() {
+        requireBinding().buttonBultoVolumeScanCamera.setEnabled(false);
+        cameraPermissionRequester.request(AppPermission.CAMERA);
+    }
+
+    private void onCameraPermissionResult(@NonNull PermissionStatus status) {
+        if (status == PermissionStatus.GRANTED) {
+            launchCameraScan();
+            return;
+        }
+        FragmentBultoVolumeBinding views = requireBinding();
+        views.buttonBultoVolumeScanCamera.setEnabled(true);
+        if (status == PermissionStatus.PERMANENTLY_DENIED) {
+            PermissionSettingsBottomSheet.showIfNotShown(getChildFragmentManager(), AppPermission.CAMERA);
+        } else {
+            Snackbar.make(views.getRoot(), R.string.bulto_volume_camera_denied, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void launchCameraScan() {
+        ScanOptions options = new ScanOptions()
+                .setPrompt(getString(R.string.bulto_volume_scan_prompt))
+                .setBeepEnabled(true)
+                // El visor sigue la orientación del terminal (ver CaptureActivity en el manifest)
+                .setOrientationLocked(false);
+        try {
+            Timber.i("Abrimos la cámara para escanear el bulto del volumen");
+            cameraScan.launch(options);
+        } catch (ActivityNotFoundException e) {
+            Timber.e(e, "No se puede abrir el visor de escaneo por cámara");
+            requireBinding().buttonBultoVolumeScanCamera.setEnabled(true);
+        }
+    }
+
+    /** Sin contenido es que el operario cerró la cámara sin leer nada. */
+    private void onCameraScanResult(@NonNull ScanIntentResult result) {
+        requireBinding().buttonBultoVolumeScanCamera.setEnabled(true);
+        String barcode = result.getContents();
+        if (barcode == null || barcode.isEmpty()) {
+            Timber.d("Escaneo por cámara cancelado");
+            return;
+        }
+        onBarcodeRead(barcode);
     }
 
     private void renderForm(@NonNull BultoVolumeFormState state) {

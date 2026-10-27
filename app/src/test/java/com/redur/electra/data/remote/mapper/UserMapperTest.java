@@ -46,7 +46,7 @@ public class UserMapperTest {
 
     @Test
     public void coleccionesAusentesEnElJson_seTratanComoVacias() {
-        User user = mapper.toUser(new UserDTO("jperez", null, null, null, null));
+        User user = mapper.toUser(new UserDTO("jperez", null, null, null, null, null));
 
         assertTrue(user.menu().isEmpty());
         assertNull(user.fullName());
@@ -57,7 +57,7 @@ public class UserMapperTest {
         UserDTO dto = new UserDTO("jperez", null, null, Arrays.asList(
                 null,
                 new MenuDTO(3, null, null, Arrays.asList(null, null))),
-                Arrays.asList(null, new PermisoUsuarioDTO(null, "SIN_ID")));
+                Arrays.asList(null, new PermisoUsuarioDTO(null, "SIN_ID")), null);
 
         List<MenuItem> menu = mapper.toUser(dto).menu();
 
@@ -86,5 +86,15 @@ public class UserMapperTest {
         assertEquals("MAD", user.plazaId());
         assertEquals(Set.of(1), user.permission());
         assertTrue(user.hasPermission(1));
+        assertNull(user.environment());
+    }
+
+    @Test
+    public void jsonDelLogin_leeElEntorno() {
+        String json = "{\"userName\":\"infjorna\",\"entorno\":\"PRE\",\"menu\":[],\"permiso\":[]}";
+
+        User user = mapper.toUser(new Gson().fromJson(json, UserDTO.class));
+
+        assertEquals("PRE", user.environment());
     }
 }

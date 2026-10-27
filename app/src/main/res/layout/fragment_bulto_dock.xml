@@ -304,7 +304,7 @@
             android:contentDescription="@string/bulto_dock_scan_camera_description"
             android:text="@string/bulto_dock_scan_camera"
             android:visibility="gone"
-            app:icon="@drawable/ic_photo_camera_24"
+            app:icon="@drawable/ic_barcode_scanner_24"
             tools:visibility="visible" />
 
     </FrameLayout>

@@ -2,8 +2,9 @@
 <!--
     Carga con precinto, fase 2, en horizontal: la lista de bultos leídos ocupa toda la altura a la
     derecha, con la confirmación de la última lectura y el recuento encima. El panel lateral reúne
-    el precinto y el tipo fijado (apilados), el campo del escáner y la acción de fijar o cambiar el
-    tipo. Mismos ids que la versión vertical.
+    el precinto y el tipo fijado (apilados), el último CB leído y la acción de fijar o cambiar el
+    tipo. Sin escáner hardware, el botón de cámara flota sobre la lista. Mismos ids que la versión
+    vertical.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -144,31 +145,64 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/layout_direct_load_barcode"
-                    style="?attr/textInputOutlinedStyle"
+                <!--
+                    Captura del escáner que teclea el CB y termina con Intro: no se ve ni lo lee TalkBack, solo
+                    mantiene el foco. El fragment desactiva el teclado en pantalla.
+                -->
+                <EditText
+                    android:id="@+id/input_direct_load_barcode"
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:alpha="0"
+                    android:background="@null"
+                    android:cursorVisible="false"
+                    android:imeOptions="actionSearch"
+                    android:importantForAccessibility="no"
+                    android:importantForAutofill="no"
+                    android:inputType="textNoSuggestions|textCapCharacters"
+                    android:maxLines="1"
+                    tools:ignore="LabelFor" />
+
+                <!-- Último CB leído, aunque fuera repetido: solo se muestra, no se edita -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_direct_load_last_barcode"
+                    style="?attr/materialCardViewOutlinedStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_m"
-                    android:hint="@string/direct_load_barcode_hint"
-                    app:boxCornerRadiusBottomEnd="@dimen/corner_radius_m"
-                    app:boxCornerRadiusBottomStart="@dimen/corner_radius_m"
-                    app:boxCornerRadiusTopEnd="@dimen/corner_radius_m"
-                    app:boxCornerRadiusTopStart="@dimen/corner_radius_m"
-                    app:helperText="@string/direct_load_barcode_helper">
+                    android:focusable="true"
+                    app:cardCornerRadius="@dimen/corner_radius_m">
 
-                    <!-- Solo con el escáner, como en la puerta de salida: no se abre el teclado en pantalla -->
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/input_direct_load_barcode"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:imeOptions="actionSearch"
-                        android:importantForAutofill="no"
-                        android:inputType="textNoSuggestions|textCapCharacters"
-                        android:maxLines="1"
-                        tools:text="13020000062081000447204320001" />
+                        android:importantForAccessibility="noHideDescendants"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/direct_load_last_barcode_label"
+                            android:textAllCaps="true"
+                            android:textAppearance="?attr/textAppearanceLabelMedium"
+                            android:textColor="?attr/colorOnSurfaceVariant" />
+
+                        <!-- Monoespaciada: un CB largo se compara mejor dígito a dígito -->
+                        <TextView
+                            android:id="@+id/text_direct_load_last_barcode"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:fontFamily="monospace"
+                            android:maxLines="2"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textColor="?attr/colorOnSurface"
+                            tools:text="13020000062081000447204320001" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
@@ -263,6 +297,17 @@
             android:textColor="?attr/colorOnSurfaceVariant"
             tools:text="3 bultos leídos" />
 
+        <TextView
+            android:id="@+id/text_direct_load_list_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_l"
+            android:text="@string/direct_load_list_hint"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -319,6 +364,23 @@
                     android:textColor="?attr/colorOnSurfaceVariant" />
 
             </LinearLayout>
+
+            <!--
+                Solo en terminales sin escáner hardware: abre la cámara para leer el CB. El fragment lo
+                muestra y deja hueco bajo la lista para que no tape la última fila.
+            -->
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/fab_direct_load_scan_camera"
+                style="@style/Widget.Electra.ExtendedFab.Primary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/spacing_m"
+                android:contentDescription="@string/direct_load_scan_camera_description"
+                android:text="@string/direct_load_scan_camera"
+                android:visibility="gone"
+                app:icon="@drawable/ic_barcode_scanner_24"
+                tools:visibility="visible" />
 
         </FrameLayout>
 

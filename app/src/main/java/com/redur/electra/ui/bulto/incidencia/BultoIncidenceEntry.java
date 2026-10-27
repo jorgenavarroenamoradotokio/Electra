@@ -3,7 +3,7 @@ package com.redur.electra.ui.bulto.incidencia;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.redur.electra.data.model.bulto.BultoIncidence;
+import com.redur.electra.data.model.bulto.BultoIncidencia;
 
 import java.util.Objects;
 
@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 public record BultoIncidenceEntry(
         @Nullable String barcode,
-        @NonNull BultoIncidence incidence,
+        @NonNull BultoIncidencia incidence,
         @NonNull String observations,
         @Nullable String photoUri
 ) {

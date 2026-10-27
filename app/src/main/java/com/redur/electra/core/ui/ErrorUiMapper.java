@@ -24,17 +24,33 @@ public final class ErrorUiMapper {
 
     static {
         Map<String, Integer> codes = new HashMap<>();
+        // Errores de status de peticion
+        codes.put("HTTP_403", R.string.error_network_403);
         codes.put("HTTP_500",R.string.error_unknown);
         codes.put("HTTP_503",R.string.error_network_503);
-        codes.put("ERROR_A01", R.string.error_login_failed);
-        codes.put("ERROR_A06", R.string.error_user_not_active);
-        codes.put("ERROR_FILE_01", R.string.error_file_not_upload);
 
+        // Errores de autenticacion
+        codes.put("ERROR_A01", R.string.error_login_failed);
+        codes.put("ERROR_A05", R.string.error_user_not_active);
+        codes.put("ERROR_A06", R.string.error_user_not_active);
+
+        // Errores por no tener menu asociado
         codes.put("ERROR_M01", R.string.error_user_menu_not_configuration);
-        codes.put("ERROR_T01", R.string.error_truck_plaza_failed);
-        codes.put("ERROR_C01", R.string.error_truck_request_invalid);
-        codes.put("ERROR_C06", R.string.error_truck_barcode_invalid);
-        codes.put("ERROR_CCB_04_BARCODE_INVALID", R.string.error_truck_barcode_invalid);
+
+        // Errores por subir fichero
+        codes.put("ERROR_F01", R.string.error_file_not_upload);
+
+        // Errores Muelle
+        codes.put("ERROR_MU01", R.string.error_dock_barcode_empty);
+
+        // Errores Incidencia
+        codes.put("ERROR_I01", R.string.error_incidence_aplication_code_empty);
+
+        // Errores que retorna el servidor
+        codes.put("ERROR_S01_ERROR_INTERNO_DEL_SERVIDOR", R.string.error_unknown);
+        codes.put("ERROR_S02_ERROR_DATOS_NO_LOCALIZADOS", R.string.error_network_not_data_found);
+        codes.put("ERROR_S03_ERROR_REQUEST_VACIA", R.string.error_network_body_request_empty);
+
         API_CODES = Collections.unmodifiableMap(codes);
     }
 
@@ -88,7 +104,7 @@ public final class ErrorUiMapper {
         return switch (failure) {
             case CONNECTION -> R.string.error_printer_connection;
             case SEND -> R.string.error_printer_send;
-            case BLUETOOTH_UNAVAILABLE -> R.string.error_printer_bluetooth_unavailable;
+            case BLUETOOTH_UNAVAILABLE -> R.string.error_bluetooth_unavailable;
         };
     }
 }

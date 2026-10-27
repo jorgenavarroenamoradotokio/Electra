@@ -16,7 +16,11 @@
     <string name="logout_cancel">Cancel</string>
 
     <!-- Toolbar -->
-    <string name="toolbar_settings">Settings</string>
+    <string name="toolbar_environment">Connected environment</string>
+    <string name="environment_connected_to">You are connected to the system of</string>
+    <string name="environment_unknown">Unknown environment</string>
+    <string name="environment_unknown_message">The server did not report the environment for this session. If you need to confirm it, sign out and sign in again.</string>
+    <string name="environment_close">Close</string>
     <string name="toolbar_profile">Profile</string>
     <string name="toolbar_version">Version %1$s</string>
 
@@ -151,6 +155,10 @@
     <string name="bulto_volume_check_previous">Previous weight/volume</string>
     <string name="bulto_volume_check_full_expedition">Full shipment</string>
     <string name="bulto_volume_check_volume">Volume (no weight)</string>
+    <string name="bulto_volume_scan_camera">Scan</string>
+    <string name="bulto_volume_scan_camera_description">Scan the package with the camera</string>
+    <string name="bulto_volume_scan_prompt">Frame the package barcode</string>
+    <string name="bulto_volume_camera_denied">Allow camera access to scan the package</string>
     <string name="bulto_volume_barcode_hint">Package barcode</string>
     <string name="bulto_volume_barcode_helper">Read it with the scanner or the measuring device</string>
     <string name="bulto_volume_height_hint">Height (cm)</string>
@@ -162,11 +170,19 @@
     <string name="bulto_volume_cancel">Cancel</string>
 
     <!-- Incidencias -->
+    <string name="bulto_incidence_operation_carga">Loading</string>
     <string name="bulto_incidence_operation_recogidas">Collections</string>
     <string name="bulto_incidence_barcode_label">Package</string>
     <string name="bulto_incidence_no_barcode">No package read yet</string>
+    <string name="bulto_incidence_scan_camera">Scan</string>
+    <string name="bulto_incidence_scan_camera_description">Scan the package with the camera</string>
+    <string name="bulto_incidence_scan_prompt">Fit the package barcode inside the frame</string>
+    <string name="bulto_incidence_camera_denied">Allow camera access to scan the package</string>
     <string name="bulto_incidence_list_label">Incident</string>
+    <string name="bulto_incidence_item_description">%1$s, %2$s</string>
     <string name="bulto_incidence_item_description_photo">%1$s, photo required</string>
+    <string name="bulto_incidence_waiting_title">Scan a package</string>
+    <string name="bulto_incidence_waiting">Its incidents will appear once you scan its barcode</string>
     <string name="bulto_incidence_loading">Loading incidents…</string>
     <string name="bulto_incidence_error_title">Incidents could not be loaded</string>
     <string name="bulto_incidence_empty_title">No incidents available</string>
@@ -215,11 +231,18 @@
     <string name="direct_load_type_clear">Remove package type</string>
     <string name="direct_load_type_choose">Set package type</string>
     <string name="direct_load_type_change">Change package type</string>
-    <string name="direct_load_barcode_hint">Read package</string>
-    <string name="direct_load_barcode_helper">Read it with the scanner</string>
+    <string name="direct_load_last_barcode_label">Last package read</string>
+    <string name="direct_load_last_barcode_none">None yet</string>
+    <string name="direct_load_last_barcode_description">Last package read: %1$s</string>
+    <string name="direct_load_last_barcode_description_none">No package read yet</string>
+    <string name="direct_load_scan_camera">Scan</string>
+    <string name="direct_load_scan_camera_description">Scan the package with the camera</string>
+    <string name="direct_load_scan_prompt">Fit the package barcode inside the frame</string>
+    <string name="direct_load_camera_denied">Allow camera access to scan the package</string>
     <string name="direct_load_feedback_added">Package read with type %1$s</string>
     <string name="direct_load_feedback_added_no_type">Package read without type</string>
     <string name="direct_load_feedback_duplicate">This package was already read. Read the next one</string>
+    <string name="direct_load_feedback_type_changed">Package type changed to %1$s</string>
     <plurals name="direct_load_count">
         <item quantity="one">%1$d package read</item>
         <item quantity="other">%1$d packages read</item>
@@ -229,6 +252,8 @@
     <string name="direct_load_reading_no_type">No type</string>
     <string name="direct_load_reading_description">%1$d. Package %2$s, type %3$s</string>
     <string name="direct_load_reading_description_no_type">%1$d. Package %2$s, no type</string>
+    <string name="direct_load_reading_change_type">change the package type</string>
+    <string name="direct_load_list_hint">Tap a package to change its type</string>
 
     <!-- Carga de camión -->
     <string name="truck_load_refresh">Refresh</string>

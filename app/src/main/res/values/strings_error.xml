@@ -5,18 +5,32 @@
     <string name="error_network_no_connection">No connection. Check your network and try again.</string>
     <string name="error_network_timeout">The server is taking too long to respond. Try again.</string>
 
-    <!-- Errores de HTTP controlados-->
-    <string name="error_network_503">The service is temporarily unavailable. Please try again in a few minutes.</string>
+    <!-- Errores de conexiones caidas -->
+    <string name="error_bluetooth_unavailable">Bluetooth is no longer available. Check that it is on and that the app can access nearby devices.</string>
 
-    <!-- Códigos de API -->
-    <string name="error_login_failed">Incorrect username or password. Check them and try again.</string>
-    <string name="error_user_not_active">Your user is not active. Contact your administrator.</string>
-    <string name="error_file_not_upload">The document could not be uploaded.</string>
-    <string name="error_user_menu_not_configuration">Your user has no menu configured. Contact your administrator.</string>
-    <string name="error_truck_plaza_failed">The truck bay could not be assigned. Try again.</string>
-    <string name="error_truck_request_invalid">The truck request is not valid. Review the data and try again.</string>
-    <string name="error_truck_barcode_invalid">The barcode is not valid. Scan it again.</string>
+    <!-- Errores de conexion impresion  -->
     <string name="error_printer_connection">The printer could not be reached. Check that it is on, close by and not in use by another device, then tap it again.</string>
     <string name="error_printer_send">The connection with the printer was lost while sending the label. Tap the printer to try again.</string>
-    <string name="error_printer_bluetooth_unavailable">Bluetooth is no longer available. Check that it is on and that the app can access nearby devices.</string>
+
+    <!-- Errores de HTTP controlados-->
+    <string name="error_network_403">You don\'t have permission to do this. If you think you should, contact your administrator.</string>
+    <string name="error_network_503">The service is temporarily unavailable. Please try again in a few minutes.</string>
+    <string name="error_network_not_data_found">No results found.</string>
+    <string name="error_network_body_request_empty">No data was received in the request.</string>
+
+    <!-- Códigos de API Usuario -->
+    <string name="error_login_failed">Incorrect username or password. Check them and try again.</string>
+    <string name="error_user_not_active">Your user is not active. Contact your administrator.</string>
+    <string name="error_user_not_plzs">The plaza has not been specified in the request.</string>
+    <string name="error_user_menu_not_configuration">Your user has no menu configured. Contact your administrator.</string>
+
+    <!-- Códigos de API Fichero -->
+    <string name="error_file_not_upload">The document could not be uploaded.</string>
+
+    <!-- Codigos de API Muelle -->
+    <string name="error_dock_barcode_empty">The specified barcode could not be found.</string>
+
+    <!-- Codigos de API Incidencias -->
+    <string name="error_incidence_aplication_code_empty">The application code is missing.</string>
+
 </resources>

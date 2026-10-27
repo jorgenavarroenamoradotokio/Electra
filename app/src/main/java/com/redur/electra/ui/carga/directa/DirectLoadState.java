@@ -19,12 +19,14 @@ public sealed interface DirectLoadState permits DirectLoadState.SealEntry, Direc
     /**
      * Precinto aceptado: se leen bultos.
      *
-     * @param fixedType tipo que se asocia a cada bulto leído a partir de ahora, o null si ninguno.
-     * @param readings  bultos leídos, el último primero.
-     * @param feedback  resultado de la última lectura, o null si aún no se ha leído ninguno.
+     * @param fixedType   tipo que se asocia a cada bulto leído a partir de ahora, o null si ninguno.
+     * @param lastBarcode último CB leído, aunque fuera repetido; null si aún no se ha leído ninguno.
+     * @param readings    bultos leídos, el último primero.
+     * @param feedback    resultado de la última acción sobre los bultos, o null si aún no hay ninguna.
      */
     record Reading(@NonNull String seal,
                    @Nullable BultoType fixedType,
+                   @Nullable String lastBarcode,
                    @NonNull List<DirectLoadReading> readings,
                    @Nullable Feedback feedback) implements DirectLoadState {
         public Reading {
@@ -33,8 +35,8 @@ public sealed interface DirectLoadState permits DirectLoadState.SealEntry, Direc
         }
     }
 
-    /** Resultado de una lectura de bulto, para confirmarla al operario sin que mire la lista. */
-    sealed interface Feedback permits Feedback.Added, Feedback.Duplicate {
+    /** Resultado de una lectura o corrección de bulto, para confirmarla al operario sin que mire la lista. */
+    sealed interface Feedback permits Feedback.Added, Feedback.Duplicate, Feedback.TypeChanged {
 
         record Added(@NonNull DirectLoadReading reading) implements Feedback {
             public Added {
@@ -46,6 +48,14 @@ public sealed interface DirectLoadState permits DirectLoadState.SealEntry, Direc
         record Duplicate(@NonNull String barcode) implements Feedback {
             public Duplicate {
                 Objects.requireNonNull(barcode, "barcode");
+            }
+        }
+
+        /** Se ha corregido el tipo de un bulto ya leído. */
+        record TypeChanged(@NonNull String barcode, @NonNull BultoType type) implements Feedback {
+            public TypeChanged {
+                Objects.requireNonNull(barcode, "barcode");
+                Objects.requireNonNull(type, "type");
             }
         }
     }

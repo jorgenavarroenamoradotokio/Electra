@@ -5,18 +5,31 @@
     <string name="error_network_no_connection">Sin conexión. Comprueba tu red e inténtalo de nuevo.</string>
     <string name="error_network_timeout">El servidor está tardando demasiado en responder. Inténtalo de nuevo.</string>
 
-    <!-- Errores de HTTP controlados-->
-    <string name="error_network_503">El servicio no está disponible temporalmente. Inténtalo de nuevo en unos minutos.</string>
+    <!-- Errores de conexiones caidas -->
+    <string name="error_bluetooth_unavailable">El Bluetooth ya no está disponible. Comprueba que está activado y que la app puede acceder a los dispositivos cercanos.</string>
 
-    <!-- Códigos de API -->
-    <string name="error_login_failed">Usuario o contraseña incorrectos. Revísalos e inténtalo de nuevo.</string>
-    <string name="error_user_not_active">Tu usuario no está activo. Contacta con tu administrador.</string>
-    <string name="error_user_menu_not_configuration">Tu usuario no tiene menú configurado. Contacta con tu administrador.</string>
-    <string name="error_file_not_upload">El documento no se ha podido subir.</string>
-    <string name="error_truck_plaza_failed">No se ha podido asignar la plaza del camión. Inténtalo de nuevo.</string>
-    <string name="error_truck_request_invalid">La solicitud del camión no es válida. Revisa los datos e inténtalo de nuevo.</string>
-    <string name="error_truck_barcode_invalid">El código de barras no es válido. Vuelve a escanearlo.</string>
+    <!-- Errores de conexion impresion  -->
     <string name="error_printer_connection">No se ha podido conectar con la impresora. Comprueba que está encendida, cerca y sin usar por otro dispositivo, y vuelve a tocarla.</string>
     <string name="error_printer_send">Se ha perdido la conexión con la impresora al enviar la etiqueta. Tócala para intentarlo de nuevo.</string>
-    <string name="error_printer_bluetooth_unavailable">El Bluetooth ya no está disponible. Comprueba que está activado y que la app puede acceder a los dispositivos cercanos.</string>
+
+    <!-- Errores de HTTP controlados-->
+    <string name="error_network_403">No tienes permisos para realizar esta acción. Si crees que deberías tenerlos, contacta con tu administrador.</string>
+    <string name="error_network_503">El servicio no está disponible temporalmente. Inténtalo de nuevo en unos minutos.</string>
+    <string name="error_network_not_data_found">No se han encontrado resultados.</string>
+    <string name="error_network_body_request_empty">El cuerpo de la solicitud está vacío.</string>
+
+    <!-- Códigos de API Usuario -->
+    <string name="error_login_failed">Usuario o contraseña incorrectos. Revísalos e inténtalo de nuevo.</string>
+    <string name="error_user_not_active">Tu usuario no está activo. Contacta con tu administrador.</string>
+    <string name="error_user_not_plzs">No se ha indicado la plaza en la solicitud.</string>
+    <string name="error_user_menu_not_configuration">Tu usuario no tiene menú configurado. Contacta con tu administrador.</string>
+
+    <!-- Códigos de API Fichero -->
+    <string name="error_file_not_upload">El documento no se ha podido subir.</string>
+
+    <!-- Codigos de API Muelle -->
+    <string name="error_dock_barcode_empty">No se ha encontrado el código de barras indicado.</string>
+
+    <!-- Codigos de API Incidencias -->
+    <string name="error_incidence_aplication_code_empty">Falta indicar el código de aplicación.</string>
 </resources>

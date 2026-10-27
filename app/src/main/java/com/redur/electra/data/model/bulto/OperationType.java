@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 /** Tipo de operación en que se lee el bulto: decide qué incidencias se le pueden grabar. */
 public enum OperationType {
 
+    CARGA("CAR"),
     RECOGIDAS("REC");
 
     @NonNull

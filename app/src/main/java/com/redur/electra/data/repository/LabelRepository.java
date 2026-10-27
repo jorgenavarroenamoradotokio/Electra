@@ -21,7 +21,6 @@ import com.redur.electra.data.session.UserSession;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
@@ -39,10 +38,6 @@ import timber.log.Timber;
  * principal y no se entrega si la operación se cancela.
  */
 public class LabelRepository extends BaseRepository {
-
-    // El backend identifica el inglés como "uk" (igual que en el login)
-    private static final String LANGUAGE_ENGLISH = "en";
-    private static final String BACKEND_LANGUAGE_ENGLISH = "uk";
     private static final Pattern WHITESPACE = Pattern.compile("\\s");
 
     private final LabelApiService api;

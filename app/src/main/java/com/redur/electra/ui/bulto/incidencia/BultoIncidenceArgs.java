@@ -12,7 +12,7 @@ import java.util.Objects;
 
 /**
  * Argumentos de la pantalla de incidencias: el tipo de operación, que decide la lista, y el último
- * bulto leído. Abierta sin argumentos propios, como desde el menú lateral, equivale a una recogida
+ * bulto leído. Abierta sin argumentos propios, como desde el menú lateral, equivale a una carga
  * sin bulto leído.
  */
 public record BultoIncidenceArgs(@NonNull OperationType operationType, @Nullable String barcode) {
@@ -38,7 +38,7 @@ public record BultoIncidenceArgs(@NonNull OperationType operationType, @Nullable
         String operationName = handle.get(KEY_OPERATION_TYPE);
         OperationType operationType = operationName != null
                 ? OperationType.valueOf(operationName)
-                : OperationType.RECOGIDAS;
+                : OperationType.CARGA;
         return new BultoIncidenceArgs(operationType, handle.get(KEY_BARCODE));
     }
 }

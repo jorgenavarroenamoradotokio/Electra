@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Incidencia seleccionable, con la misma anatomía que el tipo de bulto: radio, código y, si la
-    incidencia la exige, el aviso de foto. La fila completa es el objetivo táctil; el radio es
+    Incidencia seleccionable, con la misma anatomía que el tipo de bulto: radio, código con su
+    descripción debajo y, si la incidencia la exige, el aviso de foto. La fila completa es el objetivo táctil; el radio es
     decorativo y TalkBack lee la fila como un único elemento marcable.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -24,15 +24,31 @@
         android:focusable="false"
         android:importantForAccessibility="no" />
 
-    <TextView
-        android:id="@+id/text_bulto_incidence_code"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_xs"
         android:layout_weight="1"
-        android:textAppearance="?attr/textAppearanceTitleMedium"
-        android:textColor="?attr/colorOnSurface"
-        tools:text="A23" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_bulto_incidence_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface"
+            tools:text="A23" />
+
+        <!-- Oculta si el backend no envía descripción -->
+        <TextView
+            android:id="@+id/text_bulto_incidence_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="BULTO DAÑADO" />
+
+    </LinearLayout>
 
     <!-- Solo en las incidencias que exigen foto: icono y texto, nunca solo color -->
     <LinearLayout

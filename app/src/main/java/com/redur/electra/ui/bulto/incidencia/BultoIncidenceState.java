@@ -3,23 +3,28 @@ package com.redur.electra.ui.bulto.incidencia;
 import androidx.annotation.NonNull;
 
 import com.redur.electra.core.ui.UiText;
-import com.redur.electra.data.model.bulto.BultoIncidence;
+import com.redur.electra.data.model.bulto.BultoIncidencia;
 
 import java.util.List;
 import java.util.Objects;
 
 /** Estado de la carga de incidencias del tipo de operación. */
 public sealed interface BultoIncidenceState permits
+        BultoIncidenceState.WaitingForBarcode,
         BultoIncidenceState.Loading,
         BultoIncidenceState.Ready,
         BultoIncidenceState.Empty,
         BultoIncidenceState.Failed {
 
+    /** Aún no se ha leído ningún bulto: las incidencias se cargan al leer uno. */
+    record WaitingForBarcode() implements BultoIncidenceState {
+    }
+
     record Loading() implements BultoIncidenceState {
     }
 
     /** Incidencias seleccionables, al menos una, en el orden en que se muestran. */
-    record Ready(@NonNull List<BultoIncidence> incidences) implements BultoIncidenceState {
+    record Ready(@NonNull List<BultoIncidencia> incidences) implements BultoIncidenceState {
         public Ready {
             incidences = List.copyOf(incidences);
         }

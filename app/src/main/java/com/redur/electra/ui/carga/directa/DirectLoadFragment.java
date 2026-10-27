@@ -1,5 +1,6 @@
 package com.redur.electra.ui.carga.directa;
 
+import android.content.ActivityNotFoundException;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,9 +9,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -20,16 +23,29 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.divider.MaterialDividerItemDecoration;
+import com.google.android.material.snackbar.Snackbar;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
+import com.journeyapps.barcodescanner.ScanOptions;
 import com.redur.electra.R;
+import com.redur.electra.core.permission.AppPermission;
+import com.redur.electra.core.permission.PermissionRequester;
+import com.redur.electra.core.permission.PermissionStatus;
+import com.redur.electra.core.scanner.HardwareScannerManager;
+import com.redur.electra.core.scanner.ScannerManagerFactory;
 import com.redur.electra.data.model.bulto.BultoType;
 import com.redur.electra.databinding.FragmentDirectLoadBinding;
 import com.redur.electra.databinding.ViewDirectLoadReadingBinding;
 import com.redur.electra.databinding.ViewDirectLoadSealBinding;
 import com.redur.electra.ui.bulto.tipo.BultoTypePicker;
+import com.redur.electra.ui.permission.PermissionSettingsBottomSheet;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import timber.log.Timber;
@@ -38,9 +54,24 @@ import timber.log.Timber;
  * Carga con precinto: al entrar se pide el precinto (CB o tecleado) y después se leen los bultos
  * con el escáner. Precinto y tipo de bulto fijado quedan siempre a la vista en la cabecera; el tipo
  * se elige en la pantalla general de tipo de bulto, abierta como selector, y se quita desde la ficha.
+ * El mismo selector, abierto desde una fila de la lista, corrige el tipo de un bulto ya leído.
+ * <p>
+ * El escáner hardware entrega el CB por broadcast (Honeywell, Datalogic) o tecleándolo en el campo
+ * con el foco, con Intro al final. Si el terminal no tiene escáner compatible, tras aceptar el
+ * precinto un botón flotante abre la cámara para leer los bultos.
  */
 @AndroidEntryPoint
 public class DirectLoadFragment extends Fragment {
+
+    @Inject
+    ScannerManagerFactory scannerManagerFactory;
+
+    // Se registran al construir el Fragment: así el resultado llega aunque se recree mientras
+    // está abierto el diálogo de permisos o la cámara
+    private final PermissionRequester cameraPermissionRequester =
+            new PermissionRequester(this, this::onCameraPermissionResult);
+    private final ActivityResultLauncher<ScanOptions> cameraScan =
+            registerForActivityResult(new ScanContract(), this::onCameraScanResult);
 
     @Nullable
     private FragmentDirectLoadBinding binding;
@@ -56,6 +87,8 @@ public class DirectLoadFragment extends Fragment {
     @Nullable
     private ColorStateList emptyTypeBackground;
     private int emptyTypeStrokeWidth;
+    /** Sin escáner hardware: la cámara es la forma de leer los bultos. */
+    private boolean cameraScanNeeded;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,12 +129,19 @@ public class DirectLoadFragment extends Fragment {
         });
         seal.buttonDirectLoadStart.setOnClickListener(v -> submitSeal());
 
-        // Bultos: solo con el escáner, el campo recibe el foco sin abrir el teclado en pantalla
+        // Bultos: campo oculto que recibe el CB del escáner por teclado; tiene el foco sin abrir el
+        // teclado en pantalla
         reading.inputDirectLoadBarcode.setShowSoftInputOnFocus(false);
         reading.inputDirectLoadBarcode.setOnEditorActionListener((v, actionId, event) ->
                 onEditorAction(actionId, event, EditorInfo.IME_ACTION_SEARCH, this::onBarcodeScanned));
 
-        adapter = new DirectLoadReadingAdapter();
+        // Solo entrega lecturas con la vista en RESUMED; el lifecycle de la vista lo libera
+        HardwareScannerManager scanner = scannerManagerFactory.create(this::onBarcodeRead);
+        getViewLifecycleOwner().getLifecycle().addObserver(scanner);
+        cameraScanNeeded = !scanner.isAvailable();
+        reading.fabDirectLoadScanCamera.setOnClickListener(v -> onScanCameraClicked());
+
+        adapter = new DirectLoadReadingAdapter(this::openTypePicker);
         reading.recyclerDirectLoadReadings.setAdapter(adapter);
         MaterialDividerItemDecoration divider = new MaterialDividerItemDecoration(requireContext(),
                 MaterialDividerItemDecoration.VERTICAL);
@@ -111,8 +151,8 @@ public class DirectLoadFragment extends Fragment {
         emptyTypeStroke = reading.cardDirectLoadType.getStrokeColorStateList();
         emptyTypeBackground = reading.cardDirectLoadType.getCardBackgroundColor();
         emptyTypeStrokeWidth = reading.cardDirectLoadType.getStrokeWidth();
-        reading.cardDirectLoadType.setOnClickListener(v -> openTypePicker());
-        reading.buttonDirectLoadType.setOnClickListener(v -> openTypePicker());
+        reading.cardDirectLoadType.setOnClickListener(v -> openFixedTypePicker());
+        reading.buttonDirectLoadType.setOnClickListener(v -> openFixedTypePicker());
         reading.buttonDirectLoadTypeClear.setOnClickListener(v -> viewModel.onBultoTypeCleared());
 
         observeTypePickerResult();
@@ -127,15 +167,31 @@ public class DirectLoadFragment extends Fragment {
             BultoType type = BultoTypePicker.fromBundle(result);
             if (type != null) {
                 handle.remove(BultoTypePicker.RESULT_KEY);
-                viewModel.onBultoTypeFixed(type);
+                viewModel.onBultoTypePicked(type);
             }
         });
     }
 
-    private void openTypePicker() {
+    private void openFixedTypePicker() {
         Timber.i("[ACCION] Abrir selector de tipo de bulto");
-        NavHostFragment.findNavController(this).navigate(R.id.nav_bulto_type_picker,
-                BultoTypePicker.args(viewModel.getFixedTypeCode()));
+        viewModel.onFixedTypePickerRequested();
+        navigateToTypePicker(viewModel.getFixedTypeCode());
+    }
+
+    /** Corrige el tipo de un bulto ya leído: el selector se abre con el suyo marcado. */
+    private void openTypePicker(@NonNull DirectLoadReading reading) {
+        viewModel.onReadingTypePickerRequested(reading.barcode());
+        navigateToTypePicker(reading.type() != null ? reading.type().code() : null);
+    }
+
+    private void navigateToTypePicker(@Nullable String preselectedCode) {
+        NavController navController = NavHostFragment.findNavController(this);
+        NavDestination current = navController.getCurrentDestination();
+        // Un doble toque rápido no abre el selector dos veces
+        if (current == null || current.getId() != R.id.nav_direct_load) {
+            return;
+        }
+        navController.navigate(R.id.nav_bulto_type_picker, BultoTypePicker.args(preselectedCode));
     }
 
     private void submitSeal() {
@@ -143,12 +199,71 @@ public class DirectLoadFragment extends Fragment {
         viewModel.onSealEntered(text != null ? text.toString() : null);
     }
 
+    /**
+     * Lectura que no llega tecleada en un campo (broadcast del escáner o cámara). Antes de aceptar
+     * el precinto es el precinto: con la salida por broadcast su campo no recibe lo leído.
+     */
+    private void onBarcodeRead(@NonNull String barcode) {
+        if (viewModel.getState().getValue() instanceof DirectLoadState.SealEntry) {
+            requireBinding().layoutDirectLoadSeal.inputDirectLoadSeal.setText(barcode);
+            submitSeal();
+        } else {
+            viewModel.onBarcodeScanned(barcode);
+        }
+    }
+
     private void onBarcodeScanned() {
         ViewDirectLoadReadingBinding views = requireBinding().layoutDirectLoadReading;
         CharSequence text = views.inputDirectLoadBarcode.getText();
         viewModel.onBarcodeScanned(text != null ? text.toString() : null);
-        // El CB queda a la vista; la lectura siguiente del escáner lo sustituye en lugar de añadirse
-        views.inputDirectLoadBarcode.selectAll();
+        // El CB se ve en la ficha del último leído; el campo se vacía para la lectura siguiente
+        views.inputDirectLoadBarcode.setText(null);
+    }
+
+    /** Se desactiva hasta cerrar la cámara o resolver el permiso: evita abrirla dos veces. */
+    private void onScanCameraClicked() {
+        requireBinding().layoutDirectLoadReading.fabDirectLoadScanCamera.setEnabled(false);
+        cameraPermissionRequester.request(AppPermission.CAMERA);
+    }
+
+    private void onCameraPermissionResult(@NonNull PermissionStatus status) {
+        if (status == PermissionStatus.GRANTED) {
+            launchCameraScan();
+            return;
+        }
+        FragmentDirectLoadBinding views = requireBinding();
+        views.layoutDirectLoadReading.fabDirectLoadScanCamera.setEnabled(true);
+        if (status == PermissionStatus.PERMANENTLY_DENIED) {
+            PermissionSettingsBottomSheet.showIfNotShown(getChildFragmentManager(), AppPermission.CAMERA);
+        } else {
+            Snackbar.make(views.getRoot(), R.string.direct_load_camera_denied, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void launchCameraScan() {
+        ScanOptions options = new ScanOptions()
+                .setPrompt(getString(R.string.direct_load_scan_prompt))
+                .setBeepEnabled(true)
+                // El visor sigue la orientación del terminal (ver CaptureActivity en el manifest)
+                .setOrientationLocked(false);
+        try {
+            Timber.i("Abrimos la cámara para escanear el bulto de la carga");
+            cameraScan.launch(options);
+        } catch (ActivityNotFoundException e) {
+            Timber.e(e, "No se puede abrir el visor de escaneo por cámara");
+            requireBinding().layoutDirectLoadReading.fabDirectLoadScanCamera.setEnabled(true);
+        }
+    }
+
+    /** Sin contenido es que el operario cerró la cámara sin leer nada. */
+    private void onCameraScanResult(@NonNull ScanIntentResult result) {
+        requireBinding().layoutDirectLoadReading.fabDirectLoadScanCamera.setEnabled(true);
+        String barcode = result.getContents();
+        if (barcode == null || barcode.isEmpty()) {
+            Timber.d("Escaneo por cámara cancelado");
+            return;
+        }
+        onBarcodeRead(barcode);
     }
 
     private void render(@NonNull DirectLoadState state) {
@@ -170,8 +285,13 @@ public class DirectLoadFragment extends Fragment {
                 // Del teclado del precinto se pasa al escáner: el teclado ya no hace falta
                 hideKeyboard(views.layoutDirectLoadSeal.inputDirectLoadSeal);
                 views.layoutDirectLoadReading.inputDirectLoadBarcode.requestFocus();
+                if (cameraScanNeeded) {
+                    // Se anuncia al pasar el precinto, no al recrear la vista con la carga empezada
+                    showCameraScan(renderedPhase == DirectLoadState.SealEntry.class);
+                }
             }
             renderHeader(reading);
+            renderLastBarcode(reading.lastBarcode());
             renderFeedback(reading.feedback());
             renderReadings(reading);
         }
@@ -214,6 +334,43 @@ public class DirectLoadFragment extends Fragment {
         }
     }
 
+    private void renderLastBarcode(@Nullable String barcode) {
+        ViewDirectLoadReadingBinding views = requireBinding().layoutDirectLoadReading;
+        if (barcode != null) {
+            views.textDirectLoadLastBarcode.setText(barcode);
+            views.textDirectLoadLastBarcode.setTextColor(MaterialColors.getColor(views.textDirectLoadLastBarcode,
+                    com.google.android.material.R.attr.colorOnSurface));
+            views.cardDirectLoadLastBarcode.setContentDescription(
+                    getString(R.string.direct_load_last_barcode_description, barcode));
+        } else {
+            views.textDirectLoadLastBarcode.setText(R.string.direct_load_last_barcode_none);
+            views.textDirectLoadLastBarcode.setTextColor(MaterialColors.getColor(views.textDirectLoadLastBarcode,
+                    com.google.android.material.R.attr.colorOnSurfaceVariant));
+            views.cardDirectLoadLastBarcode.setContentDescription(
+                    getString(R.string.direct_load_last_barcode_description_none));
+        }
+    }
+
+    /** Muestra el botón de cámara y deja hueco bajo la lista para que no tape la última fila. */
+    private void showCameraScan(boolean animate) {
+        ViewDirectLoadReadingBinding views = requireBinding().layoutDirectLoadReading;
+        View fab = views.fabDirectLoadScanCamera;
+        fab.setVisibility(View.VISIBLE);
+        View list = views.recyclerDirectLoadReadings;
+        list.setPaddingRelative(list.getPaddingStart(), list.getPaddingTop(), list.getPaddingEnd(),
+                getResources().getDimensionPixelSize(R.dimen.direct_load_fab_clearance));
+        if (animate) {
+            // Entra subiendo un poco desde su sitio: se percibe como parte de la pantalla, no como un aviso
+            fab.setAlpha(0f);
+            fab.setTranslationY(getResources().getDimension(R.dimen.spacing_m));
+            fab.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(getResources().getInteger(R.integer.motion_duration_enter))
+                    .setInterpolator(new DecelerateInterpolator());
+        }
+    }
+
     private void renderFeedback(@Nullable DirectLoadState.Feedback feedback) {
         ViewDirectLoadReadingBinding views = requireBinding().layoutDirectLoadReading;
         views.cardDirectLoadFeedback.setVisibility(feedback != null ? View.VISIBLE : View.GONE);
@@ -226,6 +383,10 @@ public class DirectLoadFragment extends Fragment {
         } else if (feedback instanceof DirectLoadState.Feedback.Duplicate) {
             showFeedback(R.drawable.ic_report_problem_24, R.color.msg_warning_bg, R.color.msg_warning_icon,
                     R.color.msg_warning_text, getString(R.string.direct_load_feedback_duplicate));
+        } else if (feedback instanceof DirectLoadState.Feedback.TypeChanged changed) {
+            showFeedback(R.drawable.ic_check_24, R.color.msg_success_bg, R.color.msg_success_icon,
+                    R.color.msg_success_text,
+                    getString(R.string.direct_load_feedback_type_changed, changed.type().type()));
         }
     }
 
@@ -245,6 +406,7 @@ public class DirectLoadFragment extends Fragment {
         views.textDirectLoadCount.setText(
                 getResources().getQuantityString(R.plurals.direct_load_count, count, count));
         views.layoutDirectLoadEmpty.setVisibility(count == 0 ? View.VISIBLE : View.GONE);
+        views.textDirectLoadListHint.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
         views.recyclerDirectLoadReadings.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
         if (adapter != null) {
             // La lectura nueva entra arriba: solo entonces se lleva la lista al principio
@@ -300,6 +462,7 @@ public class DirectLoadFragment extends Fragment {
         super.onDestroyView();
         if (binding != null) {
             binding.layoutDirectLoadReading.recyclerDirectLoadReadings.setAdapter(null);
+            binding.layoutDirectLoadReading.fabDirectLoadScanCamera.animate().cancel();
         }
         adapter = null;
         renderedPhase = null;

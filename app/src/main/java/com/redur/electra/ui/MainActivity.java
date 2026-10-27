@@ -31,6 +31,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.redur.electra.R;
 import com.redur.electra.core.ui.SystemBarInsets;
 import com.redur.electra.databinding.ActivityMainBinding;
+import com.redur.electra.ui.environment.EnvironmentBottomSheet;
 import com.redur.electra.ui.label.PrintLabelBottomSheet;
 import com.redur.electra.ui.logout.LogoutBottomSheet;
 import com.redur.electra.ui.menu.DrawerMenuAdapter;
@@ -134,11 +135,10 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        // Indicamos la accion que trendra cuando se haga click sobre el btn de settings
-        if (id == R.id.action_settings) {
-            Timber.i("[TOOLBAR] Ajustes pulsado (no disponible)");
-            // Pantalla aún no implementada: se avisa en lugar de ignorar el toque
-            showUnavailable();
+        // Indicamos la accion que tendra cuando se haga click sobre el btn de entorno
+        if (id == R.id.action_environment) {
+            Timber.i("[TOOLBAR] Entorno pulsado");
+            EnvironmentBottomSheet.showIfNotShown(getSupportFragmentManager());
             return true;
         }
         return false;

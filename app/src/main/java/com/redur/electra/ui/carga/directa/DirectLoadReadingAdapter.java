@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,8 +18,15 @@ import com.redur.electra.databinding.ItemDirectLoadReadingBinding;
 
 import java.util.Locale;
 
-/** Bultos leídos en la carga, el último primero. Solo pinta: no hay acciones sobre las lecturas. */
+/**
+ * Bultos leídos en la carga, el último primero. Solo pinta: qué hacer al pulsar una lectura (corregir
+ * su tipo) lo decide quien la crea.
+ */
 public class DirectLoadReadingAdapter extends ListAdapter<DirectLoadReading, DirectLoadReadingAdapter.ReadingViewHolder> {
+
+    public interface OnReadingClickListener {
+        void onReadingClicked(@NonNull DirectLoadReading reading);
+    }
 
     private static final DiffUtil.ItemCallback<DirectLoadReading> DIFF = new DiffUtil.ItemCallback<>() {
         @Override
@@ -32,15 +41,19 @@ public class DirectLoadReadingAdapter extends ListAdapter<DirectLoadReading, Dir
         }
     };
 
-    public DirectLoadReadingAdapter() {
+    @NonNull
+    private final OnReadingClickListener listener;
+
+    public DirectLoadReadingAdapter(@NonNull OnReadingClickListener listener) {
         super(DIFF);
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public ReadingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ReadingViewHolder(ItemDirectLoadReadingBinding.inflate(
-                LayoutInflater.from(parent.getContext()), parent, false));
+                LayoutInflater.from(parent.getContext()), parent, false), listener);
     }
 
     @Override
@@ -53,9 +66,19 @@ public class DirectLoadReadingAdapter extends ListAdapter<DirectLoadReading, Dir
 
         private final ItemDirectLoadReadingBinding binding;
 
-        ReadingViewHolder(@NonNull ItemDirectLoadReadingBinding binding) {
+        ReadingViewHolder(@NonNull ItemDirectLoadReadingBinding binding, @NonNull OnReadingClickListener listener) {
             super(binding.getRoot());
             this.binding = binding;
+            binding.getRoot().setOnClickListener(v -> {
+                int position = getBindingAdapterPosition();
+                if (position != RecyclerView.NO_POSITION
+                        && getBindingAdapter() instanceof DirectLoadReadingAdapter adapter) {
+                    listener.onReadingClicked(adapter.getItem(position));
+                }
+            });
+            // TalkBack anuncia "doble toque para cambiar el tipo" en lugar de "para activar"
+            ViewCompat.replaceAccessibilityAction(binding.getRoot(), AccessibilityActionCompat.ACTION_CLICK,
+                    binding.getRoot().getContext().getString(R.string.direct_load_reading_change_type), null);
         }
 
         void bind(@NonNull DirectLoadReading reading, int order) {
